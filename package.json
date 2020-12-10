@@ -1,0 +1,17 @@
+{
+	"name": "spotify-test",
+	"version": "0.0.1",
+	"description": "",
+	"main": "src/test.js",
+	"type": "module",
+	"scripts": {
+		"start": "node --experimental-modules src/test.js",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"dependencies": {
+		"@babel/node": "^7.12.6",
+		"child_process": "^1.0.2",
+		"spotify-web-api-js": "^1.5.1",
+		"spotify-web-api-node": "^5.0.0"
+	}
+}
