@@ -1,7 +1,7 @@
 import SpotifyWebApi from 'spotify-web-api-js';
 import SpotifyWebApiNode from 'spotify-web-api-node';
 import { execSync } from 'child_process';
-import { writeFile, readFileSync } from 'fs';
+import { writeFile, readFileSync, unlink as removeFile } from 'fs';
 
 let creds = {
 	id: '104889eeeb724a9ca5efa673f527f38f',
@@ -20,6 +20,9 @@ var spotify = new SpotifyWebApiNode({
 });
 // let spotify = new SpotifyWebApi();
 spotify.setAccessToken(token);
+
+const continuousArray = i => new Array(i).fill(0).map((_, k) => k);
+const tempFileName = x => `playlistTemp_${x}.json`;
 
 // Promise.all(
 // 	new Array(99)
@@ -66,23 +69,22 @@ async function run() {
 					})
 				);
 				if (output.length == 0) finalOut = false;
-				else writeFile(`${i++}.json`, JSON.stringify(output), e => console.error(e));
+				else writeFile(tempFileName(i++), JSON.stringify(output), e => console.error(e));
 			},
 			e => console.error(e)
 		);
 	} while (finalOut);
+	let is = continuousArray(i);
 	writeFile(
 		'playlists.json',
 		JSON.stringify(
-			new Array(i)
-				.fill(0)
-				.map((_, k) => k)
-				.reduce(
-					(acc, k) => [...acc, ...JSON.parse(Buffer.from(readFileSync(`${k}.json`)).toString())],
-					[]
-				)
+			is.reduce(
+				(acc, k) => [...acc, ...JSON.parse(Buffer.from(readFileSync(tempFileName(k))).toString())],
+				[]
+			)
 		),
 		e => console.error(e)
 	);
+	is.forEach(k => removeFile(tempFileName(k), e => console.error(e)));
 }
 run();
