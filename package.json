@@ -11,6 +11,8 @@
 	"dependencies": {
 		"@babel/node": "^7.12.6",
 		"child_process": "^1.0.2",
+		"node-fetch": "^2.6.1",
+		"open": "^7.3.0",
 		"spotify-web-api-js": "^1.5.1",
 		"spotify-web-api-node": "^5.0.0"
 	}
