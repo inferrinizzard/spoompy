@@ -1,24 +1,21 @@
-import logo from './logo.svg';
+import React from 'react';
+import SpotifyWebApi from 'spotify-web-api-js';
+import Spotify from './Spotify';
 import './App.css';
 
-function App() {
+import Search from './Components/Search';
+
+// redirect on click.login, catch & fetch code → fetch token, store & redirect again
+const spotify = new Spotify('104889eeeb724a9ca5efa673f527f38f');
+
+const App: React.FC = () => {
+	// const spotify = new SpotifyWebApi();
+
 	return (
 		<div className="App">
-			<header className="App-header">
-				<img src={logo} className="App-logo" alt="logo" />
-				<p>
-					Edit <code>src/App.js</code> and save to reload.
-				</p>
-				<a
-					className="App-link"
-					href="https://reactjs.org"
-					target="_blank"
-					rel="noopener noreferrer">
-					Learn React
-				</a>
-			</header>
+			<Search></Search>
 		</div>
 	);
-}
+};
 
 export default App;
