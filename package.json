@@ -5,7 +5,7 @@
 	"main": "src/savePlaylists.js",
 	"type": "module",
 	"scripts": {
-		"start": "node --experimental-modules src/savePlaylists.js",
+		"save_playlists": "node --experimental-modules node_save_playlists/src/savePlaylists.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"dependencies": {
