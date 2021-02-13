@@ -19,25 +19,34 @@ async function sha256(str: string) {
 	return hashHex;
 }
 
+const hostname = 'http://localhost:3000';
 export default class Spotify {
 	client_id: string;
+	code_verifier: string;
 	code_challenge!: string;
 	state: string;
+
+	access_token!: string;
+	refresh_token!: string;
+	timeout!: number;
 
 	constructor(client_id: string) {
 		this.client_id = client_id;
 		this.state = randomString(30);
+		if (!sessionStorage.getItem('spoompy-state'))
+			sessionStorage.setItem('spoompy-state', this.state);
+		this.code_verifier = randomString(64);
+		if (!sessionStorage.getItem('spoompy-code_verifier'))
+			sessionStorage.setItem('spoompy-code_verifier', this.code_verifier);
 	}
 
 	login = () =>
-		sha256(randomString(64)).then(code_challenge => {
+		sha256(this.code_verifier).then(code_challenge => {
 			this.code_challenge = code_challenge;
 			let params = new URLSearchParams({
 				client_id: this.client_id,
-				response_type: 'code',
-				redirect_uri: 'http://localhost:3000',
-				code_challenge_method: 'S256',
-				code_challenge: btoa(code_challenge),
+				response_type: 'token',
+				redirect_uri: hostname,
 				state: this.state,
 			});
 
@@ -45,19 +54,46 @@ export default class Spotify {
 			window.location.replace(auth_url);
 		});
 
-	getAccessToken() {
-		// 		4. Your app exchanges the code for an access token
-		// If the user accepted your request, then your app is ready to exchange the authorization code for an access token. It can do this by making a POST request to the https://accounts.spotify.com/api/token endpoint. The body of this POST request must contain the following parameters encoded as application/x-www-form-urlencoded:
-		// REQUEST BODY PARAMETER	VALUE
-		// client_id	Required.
-		// The client ID for your app, available from the developer dashboard.
-		// grant_type	Required.
-		// This field must contain the value authorization_code.
-		// code	Required.
-		// The authorization code obtained in step 3.
-		// redirect_uri	Required.
-		// The value of this parameter must match the value of the redirect_uri parameter your app supplied when requesting the authorization code.
-		// code_verifier	Required.
-		// The value of this parameter must match the value of the code_verifier that your app generated in step 1.
+	getAccessToken(auth_code: string) {
+		const body = {
+			client_id: this.client_id,
+			grant_type: 'authorization_code',
+			code: auth_code,
+			redirect_uri: hostname,
+			code_verifier: this.code_verifier,
+		};
+		fetch('https://accounts.spotify.com/api/token', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: JSON.stringify(body),
+		}).then(this.applyToken);
+	}
+
+	refresh = () => {
+		const body = {
+			client_id: this.client_id,
+			grant_type: 'refresh_token',
+			refresh_token: this.refresh_token,
+		};
+		fetch('https://accounts.spotify.com/api/token', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+			},
+			body: JSON.stringify(body),
+		}).then(this.applyToken);
+	};
+
+	async applyToken(res: Response) {
+		sessionStorage.removeItem('spoompy-code_verifier');
+		if (res.status === 200 && res.body) {
+			let { access_token, expires_in, refresh_token } = await res.json();
+			this.access_token = access_token;
+			this.timeout = expires_in;
+			this.refresh_token = refresh_token;
+			setTimeout(this.refresh, expires_in * 1000);
+		}
 	}
 }
