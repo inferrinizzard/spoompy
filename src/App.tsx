@@ -6,6 +6,9 @@ import Search from './Components/Search';
 
 const spotify = new Spotify('104889eeeb724a9ca5efa673f527f38f');
 
+type Artist = { name: string; id: string };
+type Track = { artists: Artist[]; name: string; id?: string };
+
 const App: React.FC = () => {
 	if (window.location.hash) {
 		const params = new URLSearchParams(window.location.hash);
@@ -18,23 +21,52 @@ const App: React.FC = () => {
 		}
 	}
 
-	// const [artists, setArtists] = useState([] as SpotifyApi.SingleArtistResponse[]);
+	const [artists, setArtists] = useState({} as { [id: string]: Track[] });
 
 	return (
 		<div className="App">
 			<Search
 				spotify={spotify}
 				addArtist={artist => {
-					// (
-					// artists.length < 5 &&
-					// 	!artists.some(({ id }) => id === artist) &&
-					// 	spotify.getArtist(artist).then(a => (console.log(a), setArtists([...artists, a])))
-					// )
+					(curr => curr.length < 5 && !curr.includes(artist))(Object.keys(artists)) &&
+						spotify
+							.getArtistAlbums(artist)
+							.then(({ items }) => items.map(({ id }) => spotify.getAlbumTracks(id)))
+							.then(x =>
+								Promise.all(x).then(albums =>
+									setArtists({
+										...artists,
+										[artist]: albums.reduce(
+											(tracks, { items }) => [
+												...tracks,
+												...items
+													.map(({ artists, name, id }) => ({
+														artists: artists.map(({ name, id }) => ({ name, id })),
+														name,
+														id,
+													}))
+													.filter(song => !tracks.some(track => track.id === song.id)),
+											],
+											[] as Track[]
+										),
+									})
+								)
+							);
 				}}></Search>
 			{!spotify.access_token && <button onClick={spotify.login}>login</button>}
-			{/* {artists.map(a => (
-				<h1>{a}</h1>
-			))} */}
+			{Object.values(artists).map((tracks, i) => (
+				<div key={i}>
+					{tracks
+						.sort((a, b) => (a.name > b.name ? 1 : -1))
+						.map(track => (
+							<div key={track.id}>
+								<span>{`${track.name} : ${track.id} w/${track.artists.length} artists`}</span>
+							</div>
+						))}
+					<span>{tracks.length}</span>
+				</div>
+			))}
+			<button onClick={() => setArtists({})}>clear</button>
 		</div>
 	);
 };
