@@ -42,27 +42,26 @@ class Spotify extends SpotifyWebApi {
 	};
 }
 
-const wrap = <Func extends (...args: any[]) => any>(
-	fn: Func
-): ((...args: Parameters<Func>) => ReturnType<Func> | void) => (
+type Class = { [key: string]: any };
+const wrap = <T extends Class, Func extends (...args: any[]) => any>(_class: T, fn: Func) => (
 	...args: Parameters<Func>
-): ReturnType<Func> | void => {
+): ReturnType<Func> | Promise<ReturnType<Func>> | void => {
 	try {
-		console.log('wrapped!');
-		return fn(...args);
+		const res = fn.apply(_class, args); // needs this reference
+		Promise.resolve(res).then(null, ({ status }) => console.log('err', status));
+		return res;
 	} catch (e) {
-		console.log('failed!');
 		console.log(e);
 	}
 };
 
-export function wrapObj<T extends { [key: string]: any }>(_class: T): T {
+export function wrapObj<T extends Class>(_class: T, blacklist = ['login']): T {
 	for (let fn in _class) {
 		let member = _class[fn];
-		if (typeof member === 'function')
+		if (typeof member === 'function' && !blacklist.includes(member))
 			Object.defineProperty(_class, fn, {
 				...Object.getOwnPropertyDescriptor(_class, fn),
-				value: wrap(member),
+				value: wrap(_class, member),
 			});
 	}
 	return _class;
