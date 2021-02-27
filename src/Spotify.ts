@@ -3,7 +3,8 @@ import SpotifyWebApi from 'spotify-web-api-js';
 export const hostname = 'http://localhost:3000';
 export const stateName = 'spoompy-state',
 	accessTokenName = 'spoompy-access_token';
-export default class Spotify extends SpotifyWebApi {
+
+class Spotify extends SpotifyWebApi {
 	client_id: string;
 	state: string;
 	access_token!: string;
@@ -12,7 +13,7 @@ export default class Spotify extends SpotifyWebApi {
 		super();
 		this.client_id = client_id;
 		this.state = [...Array(30)].map(() => Math.random().toString(36)[2]).join('');
-		if (!sessionStorage.getItem(stateName)) sessionStorage.setItem(stateName, this.state);
+		if (!sessionStorage.getItem(stateName)) sessionStorage.setItem(stateName, this.state); // add time for expiry / flush old
 		if (sessionStorage.getItem(accessTokenName)) {
 			sessionStorage.removeItem(stateName);
 			this.access_token = sessionStorage.getItem(accessTokenName) ?? '';
@@ -33,9 +34,38 @@ export default class Spotify extends SpotifyWebApi {
 			response_type: 'token',
 			redirect_uri: hostname,
 			state: this.state,
+			scope: ['user-read-recently-played', 'playlist-read-private'].join(' '),
 		});
 
 		const auth_url = `https://accounts.spotify.com/authorize?${params.toString()}`;
 		window.location.replace(auth_url);
 	};
 }
+
+const wrap = <Func extends (...args: any[]) => any>(
+	fn: Func
+): ((...args: Parameters<Func>) => ReturnType<Func> | void) => (
+	...args: Parameters<Func>
+): ReturnType<Func> | void => {
+	try {
+		console.log('wrapped!');
+		return fn(...args);
+	} catch (e) {
+		console.log('failed!');
+		console.log(e);
+	}
+};
+
+export function wrapObj<T extends { [key: string]: any }>(_class: T): T {
+	for (let fn in _class) {
+		let member = _class[fn];
+		if (typeof member === 'function')
+			Object.defineProperty(_class, fn, {
+				...Object.getOwnPropertyDescriptor(_class, fn),
+				value: wrap(member),
+			});
+	}
+	return _class;
+}
+
+export default Spotify;

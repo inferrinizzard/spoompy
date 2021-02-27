@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import Spotify, { hostname, stateName, accessTokenName } from './Spotify';
+import Spotify, { hostname, stateName, accessTokenName, wrapObj } from './Spotify';
 import './App.css';
 
 import Search from './Components/Search';
 
-const spotify = new Spotify('104889eeeb724a9ca5efa673f527f38f');
+const spotify = wrapObj(new Spotify('104889eeeb724a9ca5efa673f527f38f'));
 
 type Artist = { name: string; id: string };
 type Track = { artists: Artist[]; name: string; id?: string };
@@ -67,6 +67,22 @@ const App: React.FC = () => {
 				</div>
 			))}
 			<button onClick={() => setArtists({})}>clear</button>
+			<button
+				onClick={async () => {
+					let active = true;
+					let time = +new Date();
+					let i = 0;
+					while (active) {
+						console.log(i);
+						await spotify.getMyRecentlyPlayedTracks({ limit: 50, before: time }).then(
+							res => (console.log(res), (time = +res.cursors.after)), // eslint-disable-line no-loop-func
+							() => (active = false) // eslint-disable-line no-loop-func
+						);
+						if (i++ > 10) active = false;
+					}
+				}}>
+				a
+			</button>
 		</div>
 	);
 };

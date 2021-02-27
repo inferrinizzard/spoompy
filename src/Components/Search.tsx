@@ -32,10 +32,10 @@ const Search: React.FC<SearchProps> = ({ spotify, addArtist }) => {
 				onChange={e => setQuery(e.target.value)}
 			/>
 			<button onClick={() => spotify.searchArtists(query).then(setResults)}>{'Search'}</button>
-			<div style={{ overflowY: 'scroll' }}>
+			<div style={{ height: '100%', overflowY: 'scroll' }}>
 				{searchResults.map(r => (
 					<div key={r.id} onClick={() => addArtist(r.id)}>
-						{r.images && <img src={r.images[0]?.url} height={64} width={64} />}
+						{r.images && <img src={r.images[0]?.url} height={64} width={64} alt={r.name} />}
 						<h5 style={{ display: 'inline-block' }}>{r.name}</h5>
 					</div>
 				))}
