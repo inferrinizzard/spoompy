@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Spotify, { hostname, stateName, accessTokenName, wrapObj } from './Spotify';
+import Spotify, { hostname, Storage, wrapObj } from './Spotify';
 import './App.css';
 
 import Search from './Components/Search';
@@ -12,10 +12,10 @@ type Track = { artists: Artist[]; name: string; id?: string };
 const App: React.FC = () => {
 	if (window.location.hash) {
 		const params = new URLSearchParams(window.location.hash);
-		if (params.get('state') === sessionStorage.getItem(stateName)) {
-			sessionStorage.removeItem(stateName);
+		if (params.get('state') === Storage.state) {
+			Storage.removeState();
 			spotify.access_token = params.get('#access_token') ?? '';
-			sessionStorage.setItem(accessTokenName, spotify.access_token);
+			Storage.assignToken(spotify.access_token);
 			spotify.setAccessToken(spotify.access_token);
 			window.location.replace(hostname);
 		}
@@ -53,7 +53,7 @@ const App: React.FC = () => {
 								)
 							);
 				}}></Search>
-			{!spotify.access_token && <button onClick={spotify.login}>login</button>}
+			{!Storage.accessToken && <button onClick={spotify.login}>login</button>}
 			{Object.values(artists).map((tracks, i) => (
 				<div key={i}>
 					{tracks

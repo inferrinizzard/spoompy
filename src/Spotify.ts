@@ -1,8 +1,44 @@
 import SpotifyWebApi from 'spotify-web-api-js';
 
 export const hostname = 'http://localhost:3000';
-export const stateName = 'spoompy-state',
-	accessTokenName = 'spoompy-access_token';
+
+export class Storage {
+	static readonly stateName = 'spoompy-state';
+	static readonly accessTokenName = 'spoompy-access_token';
+
+	static get state() {
+		return sessionStorage.getItem(Storage.stateName);
+	}
+	static get accessToken() {
+		return sessionStorage.getItem(Storage.accessTokenName);
+	}
+	static get stateTime() {
+		return +(sessionStorage.getItem(Storage.stateName + '=time') ?? 0);
+	}
+	static get accessTokenTime() {
+		return +(sessionStorage.getItem(Storage.accessTokenName + '=time') ?? 0);
+	}
+
+	static assignState = (state: string) => (
+		sessionStorage.setItem(Storage.stateName, state),
+		sessionStorage.setItem(Storage.stateName + '=time', +new Date() + '')
+	);
+
+	static assignToken = (token: string) => (
+		sessionStorage.setItem(Storage.accessTokenName, token),
+		sessionStorage.setItem(Storage.accessTokenName + '=time', +new Date() + '')
+	);
+
+	static removeState = () => (
+		sessionStorage.removeItem(Storage.stateName),
+		sessionStorage.removeItem(Storage.stateName + '=time')
+	);
+
+	static removeToken = () => (
+		sessionStorage.removeItem(Storage.accessTokenName),
+		sessionStorage.removeItem(Storage.accessTokenName + '=time')
+	);
+}
 
 class Spotify extends SpotifyWebApi {
 	client_id: string;
@@ -13,18 +49,17 @@ class Spotify extends SpotifyWebApi {
 		super();
 		this.client_id = client_id;
 		this.state = [...Array(30)].map(() => Math.random().toString(36)[2]).join('');
-		if (!sessionStorage.getItem(stateName)) sessionStorage.setItem(stateName, this.state); // add time for expiry / flush old
-		if (sessionStorage.getItem(accessTokenName)) {
-			sessionStorage.removeItem(stateName);
-			this.access_token = sessionStorage.getItem(accessTokenName) ?? '';
+		if (+new Date() - Storage.stateTime > 1000 * 60 * 60) Storage.removeState();
+		if (!Storage.state) Storage.assignState(this.state);
+		if (Storage.accessToken) {
+			Storage.removeState();
+			// greater than 1 hr = expired
+			if (+new Date() - Storage.accessTokenTime > 1000 * 60 * 60) {
+				Storage.removeToken();
+				return;
+			}
+			this.access_token = Storage.accessToken ?? '';
 			this.setAccessToken(this.access_token);
-			this.getMe().then(
-				() => {},
-				({ status, responseText }) =>
-					status === 401 &&
-					responseText.includes('expired') &&
-					((this.access_token = ''), sessionStorage.removeItem(accessTokenName))
-			);
 		}
 	}
 
@@ -47,8 +82,13 @@ const wrap = <T extends Class, Func extends (...args: any[]) => any>(_class: T, 
 	...args: Parameters<Func>
 ): ReturnType<Func> | Promise<ReturnType<Func>> | void => {
 	try {
-		const res = fn.apply(_class, args); // needs this reference
-		Promise.resolve(res).then(null, ({ status }) => console.log('err', status));
+		const res = fn.apply(_class, args); // needs `this` reference
+		Promise.resolve(res).then(
+			null,
+			({ status }) => (
+				console.log('err', status), status === 401 && (Storage.removeState(), Storage.removeToken())
+			)
+		);
 		return res;
 	} catch (e) {
 		console.log(e);
