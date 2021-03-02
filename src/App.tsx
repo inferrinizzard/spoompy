@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 import React, { useState } from 'react';
 import Spotify, { hostname, Storage, wrapObj } from './Spotify';
 import './App.css';
@@ -9,6 +10,30 @@ const spotify = wrapObj(new Spotify('104889eeeb724a9ca5efa673f527f38f'));
 type Artist = { name: string; id: string };
 type Track = { artists: Artist[]; name: string; id?: string };
 const maxArtists = 8;
+
+const loop = <
+	Func extends (
+		query: string,
+		options?: { limit?: number; offset?: number }
+	) => Promise<SpotifyApi.PagingObject<any>>
+>(
+	fn: Func
+) => async (query: string) => {
+	let out = { items: [] } as Unpromise<ReturnType<Func>>;
+	let active = true;
+	let i = 0;
+	while (active)
+		await fn(query, { offset: 50 * i++, limit: 50 }).then(
+			res =>
+				res.items.length
+					? (out = out
+							? { ...out, items: [...out.items, ...res.items], limit: out.limit + res.items.length }
+							: (res as any))
+					: (active = false),
+			() => (active = false)
+		);
+	return out;
+};
 
 const App: React.FC = () => {
 	if (window.location.hash) {
@@ -27,8 +52,7 @@ const App: React.FC = () => {
 	);
 	const addArtist = (artist: string, name: string) =>
 		(curr => curr.length < maxArtists && !curr.includes(artist))(Object.keys(artists)) &&
-		spotify
-			.getArtistAlbums(artist, { limit: 50 }) // limited to 50, need to loop
+		loop(spotify.getArtistAlbums)(artist)
 			.then(({ items }) => items.map(({ id }) => spotify.getAlbumTracks(id, { limit: 50 })))
 			.then(x =>
 				Promise.all(x).then(albums => {
@@ -96,6 +120,14 @@ const App: React.FC = () => {
 					}
 				}}>
 				a
+			</button>
+			<button
+				onClick={() => {
+					spotify
+						.getPlaylistTracks('6TCDIbwJ2riDAzBZvPQemA', { offset: 100 })
+						.then(res => console.log(res));
+				}}>
+				b
 			</button>
 			<div style={{ position: 'fixed', width: '80vw', height: '100vh', right: 0 }}>
 				{Object.entries(artists).map(([id, artist], i) => (
