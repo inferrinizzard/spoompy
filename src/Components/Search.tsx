@@ -18,11 +18,8 @@ const Search: React.FC<SearchProps> = ({ spotify, addArtist }) => {
 	return (
 		<div
 			style={{
-				height: '100vh',
-				width: '20vw',
-				position: 'fixed',
-				left: 0,
-				top: 0,
+				height: '100%',
+				width: '100%',
 				backgroundColor: 'aliceblue',
 			}}>
 			<input
