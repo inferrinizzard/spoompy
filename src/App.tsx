@@ -28,17 +28,26 @@ const App: React.FC = () => {
 	const addArtist = (artist: string, name: string) =>
 		(curr => curr.length < maxArtists && !curr.includes(artist))(Object.keys(artists)) &&
 		loop(spotify.getArtistAlbums)(artist)
-			.then(({ items }) => items.map(({ id }) => spotify.getAlbumTracks(id, { limit: 50 })))
-			.then(x =>
-				Promise.all(x).then(albums => {
-					const tracks = getTracks(albums, artist);
-					const collaborators = getCollaborators(tracks, artist);
-					const newArtists = { ...artists, [artist]: { name, tracks, collaborators } };
-					setArtists(newArtists);
-					setTree(buildTree(newArtists));
-				})
-			);
-
+			.then(({ items }) =>
+				Promise.all(items.map(({ id }) => spotify.getAlbumTracks(id, { limit: 50 })))
+			)
+			.then(albums =>
+				Promise.all(
+					getTracks(albums, artist).map(async track => ({
+						...track,
+						...(await spotify
+							.getTrack(track.id)
+							.then(({ album }) => spotify.getAlbum(album.id))
+							.then(({ id: album, release_date }) => ({ album, release_date }))),
+					}))
+				)
+			)
+			.then(tracks => {
+				const collaborators = getCollaborators(tracks, artist);
+				const newArtists = { ...artists, [artist]: { name, tracks, collaborators } };
+				setArtists(newArtists);
+				setTree(buildTree(newArtists));
+			});
 	return (
 		<div className="App">
 			<Nav />
