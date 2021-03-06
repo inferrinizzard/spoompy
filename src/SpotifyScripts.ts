@@ -72,7 +72,7 @@ export const buildTree = (artists: ArtistGroup) =>
 				[] as Track[]
 			),
 		}),
-		{}
+		{} as { [id: string]: Track[] }
 	);
 
 // export const getHistory = ()

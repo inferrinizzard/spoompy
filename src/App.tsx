@@ -31,23 +31,31 @@ const App: React.FC = () => {
 			.then(({ items }) =>
 				Promise.all(items.map(({ id }) => spotify.getAlbumTracks(id, { limit: 50 })))
 			)
-			.then(albums =>
-				Promise.all(
-					getTracks(albums, artist).map(async track => ({
-						...track,
-						...(await spotify
-							.getTrack(track.id)
-							.then(({ album }) => spotify.getAlbum(album.id))
-							.then(({ id: album, release_date }) => ({ album, release_date }))),
-					}))
-				)
-			)
-			.then(tracks => {
+			.then(albums => {
+				const tracks = getTracks(albums, artist);
 				const collaborators = getCollaborators(tracks, artist);
 				const newArtists = { ...artists, [artist]: { name, tracks, collaborators } };
 				setArtists(newArtists);
-				setTree(buildTree(newArtists));
-			});
+				return newArtists;
+			})
+			.then(newArtists =>
+				Object.entries(buildTree(newArtists)).reduce(
+					async (tree, [k, v]) => ({
+						...(await tree),
+						[k]: await Promise.all(
+							v.map(track =>
+								spotify
+									.getTrack(track.id)
+									.then(({ album }) => spotify.getAlbum(album.id))
+									.then(({ id: album, release_date }) => ({ ...track, album, release_date }))
+							)
+						),
+					}),
+					{} as Promise<{ [id: string]: Track[] }>
+				)
+			)
+			.then(setTree);
+
 	return (
 		<div className="App">
 			<Nav />
