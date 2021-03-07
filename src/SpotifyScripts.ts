@@ -55,24 +55,4 @@ export const getCollaborators = (tracks: Track[], artist: string) =>
 		[] as Artist[]
 	);
 
-export const buildTree = (artists: ArtistGroup) =>
-	Object.entries(artists).reduce(
-		(graph, [id, { tracks, collaborators: c }]) => ({
-			...graph,
-			[id]: c.reduce(
-				(acc, { id }) =>
-					Object.keys(artists).includes(id)
-						? [
-								...acc,
-								...tracks.filter(
-									track => track.artists.some(a => a.id === id) && !acc.some(a => a.id === track.id)
-								),
-						  ]
-						: acc,
-				[] as Track[]
-			),
-		}),
-		{} as { [id: string]: Track[] }
-	);
-
 // export const getHistory = ()

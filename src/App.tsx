@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Spotify, { hostname, Storage, wrapObj } from './Spotify';
 import './App.css';
 
-import { loop, getTracks, getCollaborators, buildTree } from './SpotifyScripts';
+import { loop, getTracks, getCollaborators } from './SpotifyScripts';
 
 import Nav from './Components/Nav';
 import Search from './Components/Search';
@@ -24,7 +24,7 @@ const App: React.FC = () => {
 	}
 
 	const [artists, setArtists] = useState({} as ArtistGroup);
-	const [tree, setTree] = useState({});
+	const [timeline, setTimeline] = useState([] as Track[]);
 	const addArtist = (artist: string, name: string) =>
 		(curr => curr.length < maxArtists && !curr.includes(artist))(Object.keys(artists)) &&
 		loop(spotify.getArtistAlbums)(artist)
@@ -36,25 +36,31 @@ const App: React.FC = () => {
 				const collaborators = getCollaborators(tracks, artist);
 				const newArtists = { ...artists, [artist]: { name, tracks, collaborators } };
 				setArtists(newArtists);
-				return newArtists;
+				return [tracks, Object.keys(newArtists)] as [Track[], string[]];
 			})
-			.then(newArtists =>
-				Object.entries(buildTree(newArtists)).reduce(
-					async (tree, [k, v]) => ({
-						...(await tree),
-						[k]: await Promise.all(
-							v.map(track =>
-								spotify
-									.getTrack(track.id)
-									.then(({ album }) => spotify.getAlbum(album.id))
-									.then(({ id: album, release_date }) => ({ ...track, album, release_date }))
-							)
-						),
-					}),
-					{} as Promise<{ [id: string]: Track[] }>
+			.then(([tracks, newArtists]) =>
+				Promise.all(
+					tracks.reduce(
+						(acc, track) =>
+							!timeline.some(t => t.id === track.id) &&
+							track.artists.filter(artist => newArtists.includes(artist.id)).length > 1
+								? [
+										...acc,
+										spotify
+											.getTrack(track.id)
+											.then(({ album }) => spotify.getAlbum(album.id))
+											.then(({ id: album, release_date }) => ({ ...track, album, release_date })),
+								  ]
+								: acc,
+						[] as Promise<Track>[]
+					) as Promise<Track>[]
 				)
 			)
-			.then(setTree);
+			.then(newTimeline =>
+				setTimeline(prev =>
+					[...prev, ...newTimeline].sort((a, b) => (a.release_date! > b.release_date! ? 1 : -1))
+				)
+			);
 
 	return (
 		<div className="App">
@@ -75,7 +81,7 @@ const App: React.FC = () => {
 					}}>
 					<div style={{ position: 'absolute', top: 0 }}>
 						{!Storage.accessToken && <button onClick={spotify.login}>login</button>}
-						<button onClick={() => setArtists({})}>clear</button>
+						<button onClick={() => (setArtists({}), setTimeline([]))}>clear</button>
 						<button
 							onClick={async () => {
 								let active = true;
