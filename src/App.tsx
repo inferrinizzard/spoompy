@@ -40,20 +40,18 @@ const App: React.FC = () => {
 			})
 			.then(([tracks, newArtists]) =>
 				Promise.all(
-					tracks.reduce(
-						(acc, track) =>
-							!timeline.some(t => t.id === track.id) &&
-							track.artists.filter(artist => newArtists.includes(artist.id)).length > 1
-								? [
-										...acc,
-										spotify
-											.getTrack(track.id)
-											.then(({ album }) => spotify.getAlbum(album.id))
-											.then(({ id: album, release_date }) => ({ ...track, album, release_date })),
-								  ]
-								: acc,
-						[] as Promise<Track>[]
-					) as Promise<Track>[]
+					tracks
+						.filter(
+							track =>
+								!timeline.some(t => t.id === track.id) &&
+								track.artists.filter(artist => newArtists.includes(artist.id)).length > 1
+						)
+						.map(track =>
+							spotify
+								.getTrack(track.id)
+								.then(({ album }) => spotify.getAlbum(album.id))
+								.then(({ id: album, release_date }) => ({ ...track, album, release_date }))
+						)
 				)
 			)
 			.then(newTimeline =>

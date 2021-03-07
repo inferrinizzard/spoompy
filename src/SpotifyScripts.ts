@@ -28,20 +28,16 @@ export const getTracks = (albums: SpotifyApi.AlbumTracksResponse[], artist: stri
 	albums.reduce(
 		(tracks, { items }) => [
 			...tracks,
-			...items.reduce(
-				(acc, { artists, name, id }) =>
-					artists.some(a => a.id === artist) && !tracks.some(track => track.id === id)
-						? [
-								...acc,
-								{
-									artists: artists.map(({ name, id }) => ({ name, id })),
-									name,
-									id,
-								},
-						  ]
-						: acc,
-				[] as Track[]
-			),
+			...items
+				.filter(
+					({ artists, id }) =>
+						artists.some(a => a.id === artist) && !tracks.some(track => track.id === id)
+				)
+				.map(({ artists, name, id }) => ({
+					artists: artists.map(({ name, id }) => ({ name, id })),
+					name,
+					id,
+				})),
 		],
 		[] as Track[]
 	);
