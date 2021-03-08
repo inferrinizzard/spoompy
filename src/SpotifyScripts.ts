@@ -44,11 +44,14 @@ export const getTracks = (albums: SpotifyApi.AlbumTracksResponse[], artist: stri
 
 export const getCollaborators = (tracks: Track[], artist: string) =>
 	tracks.reduce(
-		(acc, track) =>
-			track.artists.length > 1
-				? [...acc, ...track.artists.filter(a => a.id !== artist && !acc.some(ac => ac.id === a.id))]
+		(acc, { artists }) =>
+			artists.length > 1
+				? [...acc, ...artists.filter(a => a.id !== artist && !acc.some(ac => ac.id === a.id))]
 				: acc,
 		[] as Artist[]
 	);
+
+export const timestampSort = <T extends { release_date?: string }>(a: T, b: T) =>
+	a.release_date! > b.release_date! ? 1 : -1;
 
 // export const getHistory = ()

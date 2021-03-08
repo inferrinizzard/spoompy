@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Spotify, { hostname, Storage, wrapObj } from './Spotify';
 import './App.css';
 
-import { loop, getTracks, getCollaborators } from './SpotifyScripts';
+import { loop, getTracks, getCollaborators, timestampSort } from './SpotifyScripts';
 
 import Nav from './Components/Nav';
 import Search from './Components/Search';
@@ -31,34 +31,39 @@ const App: React.FC = () => {
 			.then(({ items }) =>
 				Promise.all(items.map(({ id }) => spotify.getAlbumTracks(id, { limit: 50 })))
 			)
-			.then(albums => {
-				const tracks = getTracks(albums, artist);
-				const collaborators = getCollaborators(tracks, artist);
-				const newArtists = { ...artists, [artist]: { name, tracks, collaborators } };
-				setArtists(newArtists);
-				return [tracks, Object.keys(newArtists)] as [Track[], string[]];
-			})
-			.then(([tracks, newArtists]) =>
+			.then(albums =>
 				Promise.all(
-					tracks
-						.filter(
-							track =>
-								!timeline.some(t => t.id === track.id) &&
-								track.artists.filter(artist => newArtists.includes(artist.id)).length > 1
-						)
-						.map(track =>
-							spotify
-								.getTrack(track.id)
-								.then(({ album }) => spotify.getAlbum(album.id))
-								.then(({ id: album, release_date }) => ({ ...track, album, release_date }))
-						)
+					getTracks(albums, artist).map(track =>
+						spotify
+							.getTrack(track.id)
+							.then(({ album }) => spotify.getAlbum(album.id))
+							.then(({ id: album, release_date }) => ({
+								...track,
+								primary: track.artists[0].id,
+								album,
+								release_date,
+							}))
+					)
 				)
 			)
-			.then(newTimeline =>
+			.then(tracks => {
+				const collaborators = getCollaborators(tracks, artist);
+				const newArtists = {
+					...artists,
+					[artist]: { name, tracks: tracks.sort(timestampSort), collaborators },
+				};
+				setArtists(newArtists);
 				setTimeline(prev =>
-					[...prev, ...newTimeline].sort((a, b) => (a.release_date! > b.release_date! ? 1 : -1))
-				)
-			);
+					[
+						...prev,
+						...tracks.filter(
+							track =>
+								!timeline.some(t => t.id === track.id) &&
+								track.artists.filter(artist => newArtists[artist.id]).length > 1
+						),
+					].sort(timestampSort)
+				);
+			});
 
 	return (
 		<div className="App">
