@@ -38,18 +38,30 @@ const App: React.FC = () => {
 					}))
 				)
 			)
-			.then(albums =>
-				Promise.all(
-					albums.map(async ({ id, name, img, tracks }) => ({
-						id,
-						name,
-						img,
-						tracks: getTracks(tracks, artist),
-						release_date: await spotify.getAlbum(id).then(({ release_date }) => release_date),
-					}))
-				)
+			.then(
+				albums =>
+					(async () => [
+						albums,
+						(
+							await Promise.all(
+								(list =>
+									[...new Array(Math.ceil(list.length / 20))].map((_, i) =>
+										list.slice(i * 20, (i + 1) * 20)
+									))(albums.map(({ id }) => id)).map(chunk => spotify.getAlbums(chunk))
+							)
+						)
+							.reduce((acc, { albums }) => [...acc, ...albums], [] as SpotifyApi.AlbumObjectFull[])
+							.reduce((acc, { id, release_date }) => ({ ...acc, [id]: release_date }), {}),
+					])() as Promise<[typeof albums, { [id: string]: string }]>
 			)
-			.then(albums => {
+			.then(([_albums, dates]) => {
+				const albums = _albums.map(({ id, name, img, tracks }) => ({
+					id,
+					name,
+					img,
+					tracks: getTracks(tracks, artist),
+					release_date: dates[id],
+				}));
 				const collaborators = getCollaborators(
 					albums.reduce((tracks, album) => [...tracks, ...album.tracks], [] as Track[]),
 					artist
