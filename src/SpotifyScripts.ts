@@ -24,23 +24,17 @@ export const loop = <
 	return out;
 };
 
-export const getTracks = (albums: SpotifyApi.AlbumTracksResponse[], artist: string) =>
-	albums.reduce(
-		(tracks, { items }) => [
-			...tracks,
-			...items
-				.filter(
-					({ artists, id }) =>
-						artists.some(a => a.id === artist) && !tracks.some(track => track.id === id)
-				)
-				.map(({ artists, name, id }) => ({
-					artists: artists.map(({ name, id }) => ({ name, id })),
-					name,
-					id,
-				})),
-		],
-		[] as Track[]
-	);
+export const getTracks = (album: SpotifyApi.AlbumTracksResponse, artist: string): TrackBase[] =>
+	album.items
+		.filter(
+			({ artists }) => artists.some(a => a.id === artist)
+			// && !tracks.some(track => track.id === id)
+		)
+		.map(({ artists, name, id }) => ({
+			artists: artists.map(({ name, id }) => ({ name, id })),
+			name,
+			id,
+		}));
 
 export const getCollaborators = (tracks: Track[], artist: string) =>
 	tracks.reduce(
@@ -50,6 +44,17 @@ export const getCollaborators = (tracks: Track[], artist: string) =>
 				: acc,
 		[] as Artist[]
 	);
+
+export const buildTimeline = (prev: Timeline, next: ArtistGroup) =>
+	Object.entries(next).reduce((timeline, [artist, { albums }]) => {
+		albums.forEach(({ name, id, release_date }) =>
+			((month, album) =>
+				timeline[month]
+					? !timeline[month].some(({ id }) => id === album.id) && timeline[month].push(album)
+					: (timeline[month] = [album]))(release_date.slice(0, -3), { name, id, artist })
+		);
+		return timeline;
+	}, prev);
 
 export const timestampSort = <T extends { release_date?: string }>(a: T, b: T) =>
 	a.release_date! > b.release_date! ? 1 : -1;

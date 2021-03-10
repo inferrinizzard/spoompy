@@ -6,9 +6,15 @@ declare global {
 	type ValueOf<T> = T[keyof T];
 	type Unpromise<T> = T extends Promise<infer U> ? U : T;
 
-	type Artist = { name: string; id: string };
-	type TrackBase = { artists: Artist[]; name: string; id: string };
+	type ID = { name: string; id: string };
+	type Artist = ID;
+
+	type TrackBase = ID & { artists: Artist[] };
 	type TimelineTrack = { album: string; primary: string; release_date: string };
 	type Track = TrackBase & Partial<TimelineTrack>;
-	type ArtistGroup = { [id: string]: { name: string; tracks: Track[]; collaborators: Artist[] } };
+
+	type Album = ID & { tracks: Track[]; img?: string; release_date: string };
+	type ArtistGroup = { [id: string]: { name: string; albums: Album[]; collaborators: Artist[] } };
+
+	type Timeline = { [month: string]: (ID & { artist: string })[] };
 }

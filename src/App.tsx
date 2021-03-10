@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Spotify, { hostname, Storage, wrapObj } from './Spotify';
 import './App.css';
 
-import { loop, getTracks, getCollaborators, timestampSort } from './SpotifyScripts';
+import { loop, getTracks, getCollaborators, timestampSort, buildTimeline } from './SpotifyScripts';
 
 import Nav from './Components/Nav';
 import Search from './Components/Search';
@@ -24,45 +24,42 @@ const App: React.FC = () => {
 	}
 
 	const [artists, setArtists] = useState({} as ArtistGroup);
-	const [timeline, setTimeline] = useState([] as Track[]);
+	const [timeline, setTimeline] = useState({} as Timeline);
 	const addArtist = (artist: string, name: string) =>
 		(curr => curr.length < maxArtists && !curr.includes(artist))(Object.keys(artists)) &&
 		loop(spotify.getArtistAlbums)(artist)
 			.then(({ items }) =>
-				Promise.all(items.map(({ id }) => spotify.getAlbumTracks(id, { limit: 50 })))
+				Promise.all(
+					items.map(async ({ name, id, images }) => ({
+						name,
+						id,
+						img: images?.shift()?.url ?? '',
+						tracks: await spotify.getAlbumTracks(id, { limit: 50 }),
+					}))
+				)
 			)
 			.then(albums =>
 				Promise.all(
-					getTracks(albums, artist).map(track =>
-						spotify
-							.getTrack(track.id)
-							.then(({ album }) => spotify.getAlbum(album.id))
-							.then(({ id: album, release_date }) => ({
-								...track,
-								primary: track.artists[0].id,
-								album,
-								release_date,
-							}))
-					)
+					albums.map(async ({ id, name, img, tracks }) => ({
+						id,
+						name,
+						img,
+						tracks: getTracks(tracks, artist),
+						release_date: await spotify.getAlbum(id).then(({ release_date }) => release_date),
+					}))
 				)
 			)
-			.then(tracks => {
-				const collaborators = getCollaborators(tracks, artist);
+			.then(albums => {
+				const collaborators = getCollaborators(
+					albums.reduce((tracks, album) => [...tracks, ...album.tracks], [] as Track[]),
+					artist
+				);
 				const newArtists = {
 					...artists,
-					[artist]: { name, tracks: tracks.sort(timestampSort), collaborators },
+					[artist]: { name, albums: albums.sort(timestampSort), collaborators },
 				};
 				setArtists(newArtists);
-				setTimeline(prev =>
-					[
-						...prev,
-						...tracks.filter(
-							track =>
-								!timeline.some(t => t.id === track.id) &&
-								track.artists.filter(artist => newArtists[artist.id]).length > 1
-						),
-					].sort(timestampSort)
-				);
+				setTimeline(prev => buildTimeline(prev, newArtists));
 			});
 
 	return (
@@ -84,7 +81,7 @@ const App: React.FC = () => {
 					}}>
 					<div style={{ position: 'absolute', top: 0 }}>
 						{!Storage.accessToken && <button onClick={spotify.login}>login</button>}
-						<button onClick={() => (setArtists({}), setTimeline([]))}>clear</button>
+						<button onClick={() => (setArtists({}), setTimeline({}))}>clear</button>
 						<button
 							onClick={async () => {
 								let active = true;
@@ -136,7 +133,7 @@ const App: React.FC = () => {
 									</div>
 								))}
 							</span>
-							<span>{artist.tracks.length}</span>
+							<span>{artist.albums.length}</span>
 						</div>
 					))}
 				</div>

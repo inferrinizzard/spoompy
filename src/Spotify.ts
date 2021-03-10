@@ -85,8 +85,9 @@ const wrap = <T extends Class, Func extends (...args: any[]) => any>(_class: T, 
 		const res = fn.apply(_class, args); // needs `this` reference
 		Promise.resolve(res).then(
 			null,
-			({ status }) => (
-				console.log('err', status), status === 401 && (Storage.removeState(), Storage.removeToken())
+			err => (
+				console.log('err', err.status, err),
+				err.status === 401 && (Storage.removeState(), Storage.removeToken())
 			)
 		);
 		return res;
