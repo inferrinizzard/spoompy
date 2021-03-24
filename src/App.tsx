@@ -6,6 +6,7 @@ import { loop, getTracks, getCollaborators, timestampSort, buildTimeline } from 
 
 import Nav from './Components/Nav';
 import Search from './Components/Search';
+import Tree from './Components/Tree';
 
 const spotify = wrapObj(new Spotify('104889eeeb724a9ca5efa673f527f38f'));
 const maxArtists = 8;
@@ -91,27 +92,68 @@ const App: React.FC = () => {
 						position: 'relative',
 						overflowY: 'scroll',
 					}}>
-					<div style={{ position: 'absolute', top: 0 }}>
-						{!Storage.accessToken && <button onClick={spotify.login}>login</button>}
-						<button onClick={() => (setArtists({}), setTimeline({}))}>clear</button>
-						<button
-							onClick={async () => {
-								let active = true;
-								let time = +new Date();
-								let i = 0;
-								while (active) {
-									console.log(i);
-									await spotify.getMyRecentlyPlayedTracks({ limit: 50, before: time }).then(
-										res => (console.log(res), (time = +res.cursors.after)), // eslint-disable-line no-loop-func
-										() => (active = false) // eslint-disable-line no-loop-func
-									);
-									if (i++ > 10) active = false;
-								}
-							}}>
-							test recent history
-						</button>
+					<div style={{ position: 'absolute', top: 0, width: '100%' }}>
+						<div>
+							{!Storage.accessToken && <button onClick={spotify.login}>login</button>}
+							<button onClick={() => (setArtists({}), setTimeline({}))}>clear</button>
+							<button
+								onClick={async () => {
+									let active = true;
+									let time = +new Date();
+									let i = 0;
+									while (active) {
+										console.log(i);
+										await spotify.getMyRecentlyPlayedTracks({ limit: 50, before: time }).then(
+											res => (console.log(res), (time = +res.cursors.after)), // eslint-disable-line no-loop-func
+											() => (active = false) // eslint-disable-line no-loop-func
+										);
+										if (i++ > 10) active = false;
+									}
+								}}>
+								test recent history
+							</button>
+							<button
+								onClick={() => {
+									if (!artists['0gKR8NI5vgeG9kCyt8q06v'])
+										addArtist('0gKR8NI5vgeG9kCyt8q06v', 'Ryce');
+									else if (!artists['1OgLpkhh88FmT6Jyx7eDHY'])
+										addArtist('1OgLpkhh88FmT6Jyx7eDHY', 'Garrett.');
+									else if (!artists['1dtZllLT0EINXgSftEnOjv'])
+										addArtist('1dtZllLT0EINXgSftEnOjv', 'Atwood');
+									else if (!artists['2K7iE9Z2ySIBKsG8UnG8PR'])
+										addArtist('2K7iE9Z2ySIBKsG8UnG8PR', 'Colliding With Mars');
+									else if (!artists['3CIq9N0VQGWfBpCAMzMZZN'])
+										addArtist('3CIq9N0VQGWfBpCAMzMZZN', 'again&again');
+									else if (!artists['40DgzqFfLrkIx2mas3Bpfv'])
+										addArtist('40DgzqFfLrkIx2mas3Bpfv', 'juicebox caviar');
+									else if (!artists['4OeVEA18McK3X8qrYaxw4D'])
+										addArtist('4OeVEA18McK3X8qrYaxw4D', 'Bluknight');
+									else if (!artists['6c2imUuGk5LXiyJICv0sdf'])
+										addArtist('6c2imUuGk5LXiyJICv0sdf', 'planet girl');
+								}}>
+								test
+							</button>
+						</div>
+						<div style={{ width: '100%' }}>
+							{Object.entries(artists).map(([id, { name }], i) => (
+								<div key={i} style={{ width: `${100 / maxArtists}%`, display: 'inline-block' }}>
+									<h5
+										onClick={() =>
+											setArtists(prev =>
+												Object.entries(prev).reduce(
+													(acc, [k, v]) => (k === id ? acc : { ...acc, [k]: v }),
+													{}
+												)
+											)
+										}>
+										{name}
+									</h5>
+								</div>
+							))}
+						</div>
 					</div>
-					{Object.entries(artists).map(([id, artist], i) => (
+					<Tree timeline={timeline} artists={artists} />
+					{/* {Object.entries(artists).map(([id, artist], i) => (
 						<div key={i} style={{ width: `${100 / maxArtists}%`, display: 'inline-block' }}>
 							<h5
 								onClick={() =>
@@ -124,17 +166,6 @@ const App: React.FC = () => {
 								}>
 								{artist.name}
 							</h5>
-							{/* <span>
-						{artist.tracks
-							.sort((a, b) => (a.name > b.name ? 1 : -1))
-							.map(track => (
-								<div key={track.id}>
-									<span>{`${track.name} : ${track.id} w/${track.artists
-										.map(a => a.name)
-										.join(', ')}`}</span>
-								</div>
-							))}
-					</span> */}
 							<span>
 								{artist.collaborators.map(a => (
 									<div
@@ -147,7 +178,7 @@ const App: React.FC = () => {
 							</span>
 							<span>{artist.albums.length}</span>
 						</div>
-					))}
+					))} */}
 				</div>
 			</div>
 		</div>
