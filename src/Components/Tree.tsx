@@ -1,4 +1,6 @@
-import React, { useRef, useLayoutEffect, useState } from 'react';
+import React, { useRef, useLayoutEffect, useState, SVGProps } from 'react';
+
+const colours = ['red', 'blue', 'yellow', 'violet', 'green', 'cyan', 'pink', 'orange'];
 
 export interface TreeProps {
 	timeline: Timeline;
@@ -21,27 +23,30 @@ const Tree: React.FC<TreeProps> = ({ timeline, artists }) => {
 			width="100%"
 			height={(Object.keys(timeline).length + 3) * 100}
 			style={{ marginTop: '2rem' }}>
-			{Object.entries(timeline).map(([month, albums], k) =>
-				albums.map(album => (
-					<AlbumNode
-						text={month + ': ' + album.name}
-						key={album.id + '-' + k}
-						pos={{
-							x:
-								(width / 8) * (artistsIndices[album.artist] + 0.5) +
-								albums
-									.filter(a => a.artist === album.artist)
-									.findIndex(({ id }) => id === album.id) *
-									20,
-							y: 100 * (k + 1),
-						}}
-						r={16}
-						n={49}
-					/>
-				))
-			)}
+			{Object.entries(timeline).map(([month, albums], k) => (
+				<React.Fragment key={k}>
+					{albums.map(album => (
+						<AlbumNode
+							text={month + ': ' + album.name}
+							key={album.id + '-' + k}
+							pos={{
+								x:
+									(width / 8) * (artistsIndices[album.artist] + 0.5) +
+									albums
+										.filter(a => a.artist === album.artist)
+										.findIndex(({ id }) => id === album.id) *
+										12 *
+										2 *
+										1.25,
+								y: 100 * (k + 1),
+							}}
+							r={12}
+							nodeProps={{ fill: colours[artistsIndices[album.artist]] }}
+						/>
+					))}
+				</React.Fragment>
+			))}
 			{/* <AlbumNode pos={{ x: 100, y: 200 }} r={16} n={49} />
-			<CollabLine head={{ x: 100, y: 200 }} tail={{ x: 100, y: 100 }} />
 			<AlbumNode pos={{ x: 200, y: 200 }} r={16} n={49} />
 			<CollabLine head={{ x: 200, y: 200 }} tail={{ x: 100, y: 100 }} /> */}
 		</svg>
@@ -64,12 +69,12 @@ const CollabLine: React.FC<CollabLineProps> = ({ head, tail }) => (
 interface AlbumNodeProps {
 	pos: { x: number; y: number };
 	r: number;
-	n: number;
 	text?: string;
+	nodeProps?: SVGProps<SVGCircleElement>;
 }
 
-const AlbumNode: React.FC<AlbumNodeProps> = ({ pos: { x, y }, r, n, text }) => (
-	<circle cx={x} cy={y} r={r}>
+const AlbumNode: React.FC<AlbumNodeProps> = ({ pos: { x, y }, r, text, nodeProps }) => (
+	<circle cx={x} cy={y} r={r} {...nodeProps}>
 		<title>{text}</title>
 	</circle>
 

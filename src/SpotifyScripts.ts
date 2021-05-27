@@ -45,7 +45,7 @@ export const getCollaborators = (tracks: Track[], artist: string) =>
 		[] as Artist[]
 	);
 
-export const buildTimeline = (prev: Timeline, next: ArtistGroup) =>
+export const buildTimeline = (next: ArtistGroup) => (prev: Timeline) =>
 	(t =>
 		Object.keys(t)
 			.sort()

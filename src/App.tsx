@@ -72,7 +72,7 @@ const App: React.FC = () => {
 					[artist]: { name, albums: albums.sort(timestampSort), collaborators },
 				};
 				setArtists(newArtists);
-				setTimeline(prev => buildTimeline(prev, newArtists));
+				setTimeline(buildTimeline(newArtists));
 			});
 
 	return (
