@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Spotify, { hostname, Storage, wrapObj } from './Spotify';
 import './App.css';
 
@@ -19,9 +19,19 @@ const App: React.FC = () => {
 		}
 	}
 
+	const [playlists, setPlaylists] = useState([] as SpotifyApi.PlaylistObjectSimplified[]);
+
+	useEffect(() => {
+		Storage.accessToken &&
+			loop(spotify.getUserPlaylists)('12121954989').then(({ items }) => setPlaylists(items));
+	}, []);
+
 	return (
 		<div className="App">
 			{!Storage.accessToken && <button onClick={spotify.login}>login</button>}
+			{playlists.map(playlist => (
+				<div key={playlist.name}>{playlist.name}</div>
+			))}
 		</div>
 	);
 };

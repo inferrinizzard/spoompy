@@ -1,28 +1,35 @@
 /* eslint-disable no-loop-func */
 
-export const loop = <
-	Func extends (
-		query: string,
-		options?: { limit?: number; offset?: number }
-	) => Promise<SpotifyApi.PagingObject<any>>
->(
-	fn: Func
-) => async (query: string) => {
-	let out = { items: [] } as Unpromise<ReturnType<Func>>;
-	let active = true;
-	let i = 0;
-	while (active)
-		await fn(query, { offset: 50 * i++, limit: 50 }).then(
-			res =>
-				res.items.length
-					? (out = out
-							? { ...out, items: [...out.items, ...res.items], limit: out.limit + res.items.length }
-							: (res as any))
-					: (active = false),
-			() => (active = false)
-		);
-	return out;
-};
+export const loop =
+	<
+		Func extends (
+			query?: any,
+			options?: { limit?: number; offset?: number }
+		) => Promise<SpotifyApi.PagingObject<any>>
+	>(
+		fn: Func
+	) =>
+	async (query?: any) => {
+		let out = { items: [] } as Unpromise<ReturnType<Func>>;
+		let active = true;
+		let i = 0;
+		while (active) {
+			await fn(query, { offset: 50 * i++, limit: 50 }).then(
+				res =>
+					res.items.length
+						? (out = out
+								? {
+										...out,
+										items: [...out.items, ...res.items],
+										limit: out.limit + res.items.length,
+								  }
+								: (res as any))
+						: (active = false),
+				() => (active = false)
+			);
+		}
+		return out;
+	};
 
 export const getTracks = (album: SpotifyApi.AlbumTracksResponse, artist: string): TrackBase[] =>
 	album.items
