@@ -27,10 +27,24 @@ const App: React.FC = () => {
 			loop(spotify.getUserPlaylists)('12121954989').then(({ items }) => setPlaylists(items));
 	}, []);
 
+	const [active, setActive] = useState(
+		null as {
+			playlist: SpotifyApi.PlaylistObjectSimplified;
+			tracks: SpotifyApi.PlaylistTrackObject[];
+		} | null
+	);
+	const loadActive = (playlist: SpotifyApi.PlaylistObjectSimplified) =>
+		loop(spotify.getPlaylistTracks)(playlist.id).then(tracks =>
+			setActive({ playlist, tracks: tracks.items })
+		);
+
 	return (
 		<div className="App">
 			{!Storage.accessToken && <button onClick={spotify.login}>login</button>}
-			<PlaylistGrid playlists={playlists} />
+			<PlaylistGrid playlists={playlists} setActive={loadActive} />
+			{active && (
+				<div style={{ position: 'fixed', bottom: 0, zIndex: 1 }}>{active.playlist.name}</div>
+			)}
 		</div>
 	);
 };

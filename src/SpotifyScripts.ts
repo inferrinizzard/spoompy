@@ -17,13 +17,7 @@ export const loop =
 			await fn(query, { offset: 50 * i++, limit: 50 }).then(
 				res =>
 					res.items.length
-						? (out = out
-								? {
-										...out,
-										items: [...out.items, ...res.items],
-										limit: out.limit + res.items.length,
-								  }
-								: (res as any))
+						? (out = out ? { ...out, items: [...out.items, ...res.items] } : (res as any))
 						: (active = false),
 				() => (active = false)
 			);

@@ -1,4 +1,6 @@
 import SpotifyWebApi from 'spotify-web-api-js';
+// docs: https://github.com/JMPerez/spotify-web-api-js
+// Spotify API: https://developer.spotify.com/documentation/web-api/
 
 export const hostname = 'http://localhost:3000';
 
@@ -69,7 +71,12 @@ class Spotify extends SpotifyWebApi {
 			response_type: 'token',
 			redirect_uri: hostname,
 			state: this.state,
-			scope: ['user-read-recently-played', 'playlist-read-private'].join(' '),
+			scope: [
+				'user-read-recently-played',
+				'playlist-read-private',
+				'playlist-read-collaborative',
+				'user-library-read',
+			].join(' '),
 		});
 
 		const auth_url = `https://accounts.spotify.com/authorize?${params.toString()}`;
@@ -78,23 +85,23 @@ class Spotify extends SpotifyWebApi {
 }
 
 type Class = { [key: string]: any };
-const wrap = <T extends Class, Func extends (...args: any[]) => any>(_class: T, fn: Func) => (
-	...args: Parameters<Func>
-): ReturnType<Func> | Promise<ReturnType<Func>> | void => {
-	try {
-		const res = fn.apply(_class, args); // needs `this` reference
-		Promise.resolve(res).then(
-			null,
-			err => (
-				console.log('err', err.status, err),
-				err.status === 401 && (Storage.removeState(), Storage.removeToken())
-			)
-		);
-		return res;
-	} catch (e) {
-		console.log(e);
-	}
-};
+const wrap =
+	<T extends Class, Func extends (...args: any[]) => any>(_class: T, fn: Func) =>
+	(...args: Parameters<Func>): ReturnType<Func> | Promise<ReturnType<Func>> | void => {
+		try {
+			const res = fn.apply(_class, args); // needs `this` reference
+			Promise.resolve(res).then(
+				null,
+				err => (
+					console.log('err', err.status, err),
+					err.status === 401 && (Storage.removeState(), Storage.removeToken())
+				)
+			);
+			return res;
+		} catch (e) {
+			console.log(e);
+		}
+	};
 
 export function wrapObj<T extends Class>(_class: T, blacklist = ['login']): T {
 	for (let fn in _class) {
