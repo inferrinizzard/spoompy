@@ -3,6 +3,7 @@ import Spotify, { hostname, Storage, wrapObj } from './Spotify';
 import './App.css';
 
 import { loop, getTracks, getCollaborators, timestampSort, buildTimeline } from './SpotifyScripts';
+import PlaylistGrid from './Components/PlaylistGrid';
 
 const spotify = wrapObj(new Spotify('104889eeeb724a9ca5efa673f527f38f'));
 
@@ -29,9 +30,7 @@ const App: React.FC = () => {
 	return (
 		<div className="App">
 			{!Storage.accessToken && <button onClick={spotify.login}>login</button>}
-			{playlists.map(playlist => (
-				<div key={playlist.name}>{playlist.name}</div>
-			))}
+			<PlaylistGrid playlists={playlists} />
 		</div>
 	);
 };
