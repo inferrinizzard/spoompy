@@ -17,6 +17,11 @@
 		"@testing-library/jest-dom": "^5.11.4",
 		"@testing-library/react": "^11.1.0",
 		"@testing-library/user-event": "^12.1.10",
+		"@visx/axis": "^1.11.1",
+		"@visx/curve": "^1.7.0",
+		"@visx/group": "^1.7.0",
+		"@visx/scale": "^1.11.1",
+		"@visx/shape": "^1.11.1",
 		"child_process": "^1.0.2",
 		"node-fetch": "^2.6.1",
 		"open": "^7.3.0",
@@ -30,6 +35,7 @@
 		"web-vitals": "^1.0.1"
 	},
 	"devDependencies": {
+		"@types/d3-array": "^2.12.1",
 		"@types/react": "^17.0.2",
 		"@types/styled-components": "^5.1.9"
 	},

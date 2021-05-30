@@ -4,6 +4,8 @@ declare global {
 	type SpotifyType = Spotify;
 
 	type ValueOf<T> = T[keyof T];
+	type ArrayElement<ArrayType extends readonly unknown[]> =
+		ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
 	type Unpromise<T> = T extends Promise<infer U> ? U : T;
 
 	type ID = { name: string; id: string };

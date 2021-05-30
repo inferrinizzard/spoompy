@@ -4,6 +4,12 @@ import './App.css';
 
 import { loop, getTracks, getCollaborators, timestampSort, buildTimeline } from './SpotifyScripts';
 import PlaylistGrid from './Components/PlaylistGrid';
+import Inspect from './Components/Inspect';
+
+export type ActivePlaylist = {
+	playlist: SpotifyApi.PlaylistObjectSimplified;
+	tracks: SpotifyApi.PlaylistTrackObject[];
+} | null;
 
 const spotify = wrapObj(new Spotify('104889eeeb724a9ca5efa673f527f38f'));
 
@@ -17,6 +23,9 @@ const App: React.FC = () => {
 			Storage.assignToken(spotify.access_token);
 			spotify.setAccessToken(spotify.access_token);
 			window.location.replace(hostname);
+		} else if (Storage.state) {
+			Storage.removeState();
+			window.location.replace(hostname);
 		}
 	}
 
@@ -27,12 +36,7 @@ const App: React.FC = () => {
 			loop(spotify.getUserPlaylists)('12121954989').then(({ items }) => setPlaylists(items));
 	}, []);
 
-	const [active, setActive] = useState(
-		null as {
-			playlist: SpotifyApi.PlaylistObjectSimplified;
-			tracks: SpotifyApi.PlaylistTrackObject[];
-		} | null
-	);
+	const [active, setActive] = useState(null as ActivePlaylist);
 	const loadActive = (playlist: SpotifyApi.PlaylistObjectSimplified) =>
 		loop(spotify.getPlaylistTracks)(playlist.id).then(tracks =>
 			setActive({ playlist, tracks: tracks.items })
@@ -42,9 +46,7 @@ const App: React.FC = () => {
 		<div className="App">
 			{!Storage.accessToken && <button onClick={spotify.login}>login</button>}
 			<PlaylistGrid playlists={playlists} setActive={loadActive} />
-			{active && (
-				<div style={{ position: 'fixed', bottom: 0, zIndex: 1 }}>{active.playlist.name}</div>
-			)}
+			{active && <Inspect active={active} />}
 		</div>
 	);
 };
