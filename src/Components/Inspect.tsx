@@ -1,18 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
-import { ActivePlaylist } from '../App';
+import { SpotifyContext, ActivePlaylist } from '../App';
 import ContributionGraph from './Charts/ContributionGraph';
+import GenrePie from './Charts/GenrePie';
 
 export interface InspectProps {
 	active: ActivePlaylist;
 }
 
 export type Frequency = { [leaf: string]: number };
+export type GenreData = {
+	artists: { [artist: string]: string[] }; // artist to genre mapping
+	genres: Frequency; // genre frequency
+};
+
+const frequency = (data: string[]) =>
+	data.reduce((acc, d) => ({ ...acc, [d]: (acc[d] ?? 0) + 1 }), {} as Frequency);
 
 const Inspect: React.FC<InspectProps> = ({ active }) => {
-	const addedFrequency = active!.tracks
-		.map(track => track.added_at.split('T')[0])
-		.reduce((leaf, date) => ({ ...leaf, [date]: (leaf[date] ?? 0) + 1 }), {} as Frequency);
+	const spotify = useContext(SpotifyContext);
+
+	const addedFrequency = frequency(active!.tracks.map(track => track.added_at.split('T')[0]));
+
+	const artistList = active!.tracks.reduce(
+		(artists, { track }) => [
+			...artists,
+			...(track as SpotifyApi.TrackObjectFull).artists.map(({ id }) => id),
+			// .filter(a => !artists.includes(a)),
+		],
+		[] as string[]
+	);
+
+	const artistFreq = frequency(artistList);
+	const [artistData, setArtistData] = useState([] as SpotifyApi.ArtistObjectFull[]);
+	const [genreData, setGenreData] = useState({} as GenreData);
+
+	useEffect(() => {
+		spotify.getArtists(artistList).then(({ artists }) => {
+			setArtistData(artists);
+			const _artists = artists.reduce(
+				(lookup, a) => (a.genres.length ? { ...lookup, [a.id]: a.genres } : lookup),
+				{} as { [artist: string]: string[] }
+			);
+			const _genres = frequency(([] as string[]).concat(...Object.values(_artists)));
+			setGenreData({ artists: _artists, genres: _genres });
+		});
+	}, [active]); // eslint-disable-line react-hooks/exhaustive-deps
 
 	return (
 		<div
@@ -25,15 +58,8 @@ const Inspect: React.FC<InspectProps> = ({ active }) => {
 				backgroundColor: 'white',
 			}}>
 			<div>{active?.playlist.name}</div>
-			<ContributionGraph frequency={addedFrequency} />
-			{/* <div>
-				{active?.tracks.map(track => (
-					<div key={track.track.id}>
-						<div style={{ display: 'inline' }}>{track.added_at}</div>
-						<div style={{ display: 'inline' }}>{track.track.name}</div>
-					</div>
-				))}
-			</div> */}
+			{/* <ContributionGraph frequency={addedFrequency} /> */}
+			{artistData.length && Object.keys(genreData).length && <GenrePie data={genreData} />}
 		</div>
 	);
 };

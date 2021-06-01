@@ -12,6 +12,7 @@ export type ActivePlaylist = {
 } | null;
 
 const spotify = wrapObj(new Spotify('104889eeeb724a9ca5efa673f527f38f'));
+export const SpotifyContext = React.createContext(spotify);
 
 const App: React.FC = () => {
 	// move to redirect page
@@ -44,9 +45,11 @@ const App: React.FC = () => {
 
 	return (
 		<div className="App">
-			{!Storage.accessToken && <button onClick={spotify.login}>login</button>}
-			<PlaylistGrid playlists={playlists} setActive={loadActive} />
-			{active && <Inspect active={active} />}
+			<SpotifyContext.Provider value={spotify}>
+				{!Storage.accessToken && <button onClick={spotify.login}>login</button>}
+				<PlaylistGrid playlists={playlists} setActive={loadActive} />
+				{active && <Inspect active={active} />}
+			</SpotifyContext.Provider>
 		</div>
 	);
 };
