@@ -18,11 +18,11 @@ const generateDates = (start: string | Date, end: string | Date) => {
 		.map((_, i) => startDate + i * msDay);
 };
 
-export interface ContributionGraphProps {
+export interface CumulativeGraphProps {
 	frequency: Frequency;
 }
 
-const ContributionGraph: React.FC<ContributionGraphProps> = ({ frequency }) => {
+const CumulativeGraph: React.FC<CumulativeGraphProps> = ({ frequency }) => {
 	const keys = (k => ({
 		start: k[0],
 		end: k[k.length - 1],
@@ -57,7 +57,7 @@ const ContributionGraph: React.FC<ContributionGraphProps> = ({ frequency }) => {
 	return (
 		<svg width={width} height={height}>
 			<Group top={margin.top} left={margin.left}>
-				{/* <AreaClosed // split into CumulativeGraph
+				<AreaClosed
 					curve={curveBasis}
 					data={cumData}
 					yScale={yScaleCum}
@@ -65,29 +65,12 @@ const ContributionGraph: React.FC<ContributionGraphProps> = ({ frequency }) => {
 					y={d => yScaleCum(y(d))}
 					stroke="#333"
 					fill={'aliceblue'}
-				/> */}
-				<LinePath // maybe make you a bargraph
-					curve={curveMonotoneX}
-					data={data}
-					x={d => xScale(x(d))}
-					y={d => yScale(y(d))}
-					stroke="#333"
-					strokeWidth={1}
-					strokeOpacity={1}
-					shapeRendering="geometricPrecision"
 				/>
-				{/* <AxisRight
-					scale={yScaleCum}
-					top={0}
-					left={xMax}
-					label={'Cumulative Tracks'}
-					stroke={'#1b1a1e'}
-				/> */}
-				<AxisLeft scale={yScale} top={0} left={0} label={'Tracks Added'} stroke={'#1b1a1e'} />
+				<AxisLeft scale={yScaleCum} top={0} left={0} label={'Tracks Added'} stroke={'#1b1a1e'} />
 				<AxisBottom scale={xScale} top={yMax} label={'Time'} stroke={'#1b1a1e'} />
 			</Group>
 		</svg>
 	);
 };
 
-export default ContributionGraph;
+export default CumulativeGraph;

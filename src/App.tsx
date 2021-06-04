@@ -49,6 +49,13 @@ const App: React.FC = () => {
 				{!Storage.accessToken && <button onClick={spotify.login}>login</button>}
 				<PlaylistGrid playlists={playlists} setActive={loadActive} />
 				{active && <Inspect active={active} />}
+				{active && (
+					<button
+						style={{ position: 'fixed', top: '1rem', left: '1rem', zIndex: 1 }}
+						onClick={() => setActive(null)}>
+						X
+					</button>
+				)}
 			</SpotifyContext.Provider>
 		</div>
 	);

@@ -10,26 +10,32 @@ export interface GenrePieProps {
 }
 
 const GenrePie: React.FC<GenrePieProps> = ({ data: { artists, genres } }) => {
-	const [height, width] = [400, 400];
-	const margin = { top: 60, bottom: 60, left: 80, right: 80 };
-	const radius = 200;
+	const r = 200;
 
-	const data = Object.entries(genres).map(([genre, value]) => ({ genre, value }));
+	const data = Object.entries(genres)
+		.map(([genre, value]) => ({ genre, value }))
+		.sort((a, b) => b.value - a.value || (b.genre > a.genre ? -1 : 1));
+	const freq = (total =>
+		data.reduce(
+			({ count, arr }, { value }) => ({ count: count - value, arr: [...arr, count / total] }),
+			{ count: total, arr: [] as number[] }
+		).arr)(data.reduce((sum, { value }) => sum + value, 0));
 	const getValue = (p: ArrayElement<typeof data>) => p.value;
+
 	return (
-		<svg width={width} height={height}>
-			<Group top={margin.top + radius / 2} left={margin.left + radius / 2}>
-				<Pie data={data} pieValue={getValue} outerRadius={radius}>
+		<svg width={r * 2} height={r * 2}>
+			<Group top={r} left={r}>
+				<Pie data={data} pieValue={getValue} pieSortValues={(a, b) => b - a} outerRadius={r}>
 					{pie =>
 						pie.arcs.map((p, i) => {
 							const { genre } = p.data;
 							const [centroidX, centroidY] = pie.path.centroid(p);
-							const hasSpaceForLabel = p.endAngle - p.startAngle >= 0.1;
+							const hasSpaceForLabel = p.endAngle - p.startAngle >= 0.3;
 							const arcPath = pie.path(p)!;
-							//  const arcFill = getLetterFrequencyColor(genre);
+
 							return (
 								<g key={`p-${genre}-${i}`}>
-									<path d={arcPath} fill={`rgb(${(255 / pie.arcs.length) * i}, 255, 255)`} />
+									<path d={arcPath} fill={`hsl(${freq[i] * 100}, 100%, 50%)`} />
 									{hasSpaceForLabel && (
 										<text
 											x={centroidX}

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 
 import { SpotifyContext, ActivePlaylist } from '../App';
 import ContributionGraph from './Charts/ContributionGraph';
+import CumulativeGraph from './Charts/CumulativeGraph';
 import GenrePie from './Charts/GenrePie';
 
 export interface InspectProps {
@@ -54,12 +55,13 @@ const Inspect: React.FC<InspectProps> = ({ active }) => {
 				bottom: 0,
 				zIndex: 1,
 				width: '100%',
-				height: '50%',
+				height: '100%',
 				backgroundColor: 'white',
 			}}>
 			<div>{active?.playlist.name}</div>
-			{/* <ContributionGraph frequency={addedFrequency} /> */}
+			<ContributionGraph frequency={addedFrequency} />
 			{artistData.length && Object.keys(genreData).length && <GenrePie data={genreData} />}
+			<CumulativeGraph frequency={addedFrequency} />
 		</div>
 	);
 };
