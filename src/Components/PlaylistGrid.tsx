@@ -35,7 +35,6 @@ const ImageBlock = styled.div`
 		position: absolute;
 		opacity: 0;
 		transition: all 0.5s;
-		width: 100%;
 	}
 	&:after {
 		content: '';
@@ -55,6 +54,7 @@ const ImageBlock = styled.div`
 	}
 	&:hover:after,
 	&:hover:before {
+		width: 100%;
 		opacity: 1;
 	}
 `;
