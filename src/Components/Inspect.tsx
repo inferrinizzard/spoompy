@@ -31,13 +31,20 @@ const Inspect: React.FC<InspectProps> = ({ active }) => {
 		],
 		[] as string[]
 	);
+	const fetchArtists = Promise.all(
+		new Array(Math.ceil(artistList.length / 50))
+			.fill(0)
+			.map((_, i) => spotify.getArtists(artistList.slice(i * 50, (i + 1) * 50)))
+	).then(res =>
+		res.reduce((arr, { artists }) => [...arr, ...artists], [] as SpotifyApi.ArtistObjectFull[])
+	);
 
 	const artistFreq = frequency(artistList);
 	const [artistData, setArtistData] = useState([] as SpotifyApi.ArtistObjectFull[]);
 	const [genreData, setGenreData] = useState({} as GenreData);
 
 	useEffect(() => {
-		spotify.getArtists(artistList).then(({ artists }) => {
+		fetchArtists.then(artists => {
 			setArtistData(artists);
 			const _artists = artists.reduce(
 				(lookup, a) => (a.genres.length ? { ...lookup, [a.id]: a.genres } : lookup),
@@ -66,4 +73,7 @@ const Inspect: React.FC<InspectProps> = ({ active }) => {
 	);
 };
 
-export default Inspect;
+export default React.memo(
+	Inspect,
+	(prev, next) => prev.active?.playlist.id === next.active?.playlist.id
+);
