@@ -10,17 +10,15 @@ export type ActivePlaylist = {
 	tracks: SpotifyApi.PlaylistTrackObject[];
 } | null;
 
-export interface PlaylistExplorerProps {
-	connected: boolean;
-}
+export interface PlaylistExplorerProps {}
 
-const PlaylistExplorer: React.FC<PlaylistExplorerProps> = ({ connected }) => {
+const PlaylistExplorer: React.FC<PlaylistExplorerProps> = ({}) => {
 	const spotify = useContext(SpotifyContext);
 
 	const [playlists, setPlaylists] = useState([] as SpotifyApi.PlaylistObjectSimplified[]);
 
 	useEffect(() => {
-		connected &&
+		spotify.connected &&
 			loop(spotify.getUserPlaylists)('12121954989').then(({ items }) => setPlaylists(items));
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 

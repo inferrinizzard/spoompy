@@ -46,6 +46,7 @@ class Spotify extends SpotifyWebApi {
 	client_id: string;
 	state: string;
 	access_token!: string;
+	connected = false;
 
 	constructor(client_id: string) {
 		super();
@@ -58,10 +59,13 @@ class Spotify extends SpotifyWebApi {
 			// greater than 1 hr = expired
 			if (+new Date() - Storage.accessTokenTime > 1000 * 60 * 60) {
 				Storage.removeToken();
+				this.connected = false;
 				return;
 			}
 			this.access_token = Storage.accessToken ?? '';
 			this.setAccessToken(this.access_token);
+			this.connected = true;
+			setTimeout(() => alert('Your access token has expired, please refresh.'), 1000 * 60 * 60);
 		}
 	}
 
