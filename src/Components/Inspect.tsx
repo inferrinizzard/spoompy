@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 
-import { SpotifyContext, ActivePlaylist } from '../App';
+import { SpotifyContext } from '../App';
+import { ActivePlaylist } from './PlaylistExplorer';
 import ContributionGraph from './Charts/ContributionGraph';
 import CumulativeGraph from './Charts/CumulativeGraph';
 import GenrePie from './Charts/GenrePie';
