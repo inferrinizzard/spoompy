@@ -1,89 +1,63 @@
 import React from 'react';
 
-import { scaleTime, scaleLinear } from '@visx/scale';
+import { scaleLinear, scaleTime } from '@visx/scale';
 import { Group } from '@visx/group';
-import { LinePath, AreaClosed } from '@visx/shape';
-import { curveMonotoneX, curveBasis } from '@visx/curve';
-import { AxisLeft, AxisRight, AxisBottom } from '@visx/axis';
+import { Bar } from '@visx/shape';
+import { AxisLeft, AxisBottom } from '@visx/axis';
 import { max, extent } from 'd3-array';
 
-import { Frequency } from '../Inspect';
-
-const generateDates = (start: string | Date, end: string | Date) => {
-	const startDate = +new Date(start);
-	const endDate = +new Date(end);
-	const msDay = 86400000;
-	return new Array(Math.ceil((endDate - startDate) / msDay))
-		.fill(0)
-		.map((_, i) => startDate + i * msDay);
-};
+import { DateFreqList } from '../Inspect';
 
 export interface ContributionGraphProps {
-	frequency: Frequency;
+	frequency: DateFreqList;
 }
 
 const ContributionGraph: React.FC<ContributionGraphProps> = ({ frequency }) => {
-	const keys = (k => ({
-		start: k[0],
-		end: k[k.length - 1],
-		lookup: k.reduce(
-			(acc, cur) => ({ ...acc, [+new Date(cur)]: cur }),
-			{} as { [time: number]: string }
-		),
-	}))(Object.keys(frequency).sort());
-	const data = generateDates(keys.start, keys.end).map(d => [
-		d,
-		frequency[keys.lookup[d]] ?? 0,
-	]) as [number, number][];
+	const data = frequency;
 	type Datum = ArrayElement<typeof data>;
-	const cumData = data.reduce(
-		(acc, [date, val]) =>
-			[...acc, [date, acc.length ? acc[acc.length - 1][1] + val : val]] as Datum[],
-		[] as Datum[]
-	);
 
 	const [height, width] = [400, 800];
 	const margin = { top: 50, bottom: 50, left: 50, right: 50 };
 	const xMax = width - margin.left - margin.right;
 	const yMax = height - margin.top - margin.bottom;
 
-	const x = (d: Datum) => d[0];
-	const y = (d: Datum) => d[1];
+	const x = (d: Datum) => d.raw;
+	const y = (d: Datum) => d.value;
 
-	const xScale = scaleTime({ range: [0, xMax], domain: extent(data, x) as Datum });
-	const yScale = scaleLinear({ range: [yMax, 0], domain: [0, max(data, y) as number] });
-	const yScaleCum = scaleLinear({ range: [yMax, 0], domain: [0, max(cumData, y) as number] });
+	const xScale = scaleTime({
+		range: [0, xMax],
+		domain: extent(data, x) as [number, number],
+		nice: true,
+	});
+	const yScale = scaleLinear({
+		range: [yMax, 0],
+		domain: [0, Math.max(5, max(data, y) as number) as number],
+		nice: true,
+	});
 
 	return (
 		<svg width={width} height={height}>
 			<Group top={margin.top} left={margin.left}>
-				{/* <AreaClosed // split into CumulativeGraph
-					curve={curveBasis}
-					data={cumData}
-					yScale={yScaleCum}
-					x={d => xScale(x(d))}
-					y={d => yScaleCum(y(d))}
-					stroke="#333"
-					fill={'aliceblue'}
-				/> */}
-				<LinePath // maybe make you a bargraph
-					curve={curveMonotoneX}
-					data={data}
-					x={d => xScale(x(d))}
-					y={d => yScale(y(d))}
-					stroke="#333"
-					strokeWidth={1}
-					strokeOpacity={1}
-					shapeRendering="geometricPrecision"
-				/>
-				{/* <AxisRight
-					scale={yScaleCum}
+				{data.map(({ raw, value }, i) =>
+					value ? (
+						<Bar
+							key={i}
+							height={yMax - yScale(value)}
+							width={xMax / data.length}
+							x={xScale(raw)}
+							y={yScale(value)}
+							fill={'red'}
+						/>
+					) : null
+				)}
+				<AxisLeft
+					numTicks={(([a, b]) => Math.min(10, b - a))(yScale.domain())}
+					scale={yScale}
 					top={0}
-					left={xMax}
-					label={'Cumulative Tracks'}
+					left={0}
+					label={'Tracks Added'}
 					stroke={'#1b1a1e'}
-				/> */}
-				<AxisLeft scale={yScale} top={0} left={0} label={'Tracks Added'} stroke={'#1b1a1e'} />
+				/>
 				<AxisBottom scale={xScale} top={yMax} label={'Time'} stroke={'#1b1a1e'} />
 			</Group>
 		</svg>

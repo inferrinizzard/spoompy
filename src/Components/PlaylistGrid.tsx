@@ -23,7 +23,7 @@ const PlaylistGrid: React.FC<PlaylistGridProps> = ({ playlists, setActive }) => 
 				gridGap: '1rem',
 			}}>
 			{playlists.map(playlist => (
-				<PlaylistBlock key={playlist.id} data={playlist} onClick={setActive}></PlaylistBlock>
+				<PlaylistBlock key={playlist.id} data={playlist} setActive={setActive}></PlaylistBlock>
 			))}
 		</div>
 	);
@@ -61,14 +61,14 @@ const ImageBlock = styled.div`
 
 export interface PlaylistBlockProps {
 	data: SpotifyApi.PlaylistObjectSimplified;
-	onClick: PlaylistGridProps['setActive'];
+	setActive: PlaylistGridProps['setActive'];
 }
 
-const PlaylistBlock: React.FC<PlaylistBlockProps> = ({ data, onClick }) => {
+const PlaylistBlock: React.FC<PlaylistBlockProps> = ({ data, setActive }) => {
 	return (
 		<ImageBlock
 			data-content={data.name}
-			onClick={() => onClick(data)}
+			onClick={() => setActive(data)}
 			style={{ position: 'relative' }}>
 			<img
 				src={data.images[0]?.url ?? ''}

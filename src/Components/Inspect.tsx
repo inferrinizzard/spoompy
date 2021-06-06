@@ -10,6 +10,7 @@ export interface InspectProps {
 }
 
 export type Frequency = { [leaf: string]: number };
+export type DateFreqList = { raw: number; date: string; value: number }[];
 export type GenreData = {
 	artists: { [artist: string]: string[] }; // artist to genre mapping
 	genres: Frequency; // genre frequency
@@ -18,10 +19,20 @@ export type GenreData = {
 const frequency = (data: string[]) =>
 	data.reduce((acc, d) => ({ ...acc, [d]: (acc[d] ?? 0) + 1 }), {} as Frequency);
 
+const generateDates = (start: string | Date, end: string | Date) => {
+	const startDate = +new Date(start);
+	const endDate = +new Date(end);
+	const msDay = 86400000;
+	console.log(start, startDate, end, endDate);
+	return new Array(Math.ceil((endDate - startDate) / msDay))
+		.fill(0)
+		.map((_, i) => startDate + i * msDay);
+};
+
+const msToDate = (ms: number) => new Date(ms).toISOString().split('T')[0];
+
 const Inspect: React.FC<InspectProps> = ({ active }) => {
 	const spotify = useContext(SpotifyContext);
-
-	const addedFrequency = frequency(active!.tracks.map(track => track.added_at.split('T')[0]));
 
 	const artistList = active!.tracks.reduce(
 		(artists, { track }) => [
@@ -55,6 +66,13 @@ const Inspect: React.FC<InspectProps> = ({ active }) => {
 		});
 	}, [active]); // eslint-disable-line react-hooks/exhaustive-deps
 
+	const addedFrequency = frequency(active!.tracks.map(track => track.added_at.split('T')[0]));
+	const keys = Object.keys(addedFrequency).sort();
+	const freqData = generateDates(keys[0], keys[keys.length - 1]).map(d => {
+		const date = msToDate(d);
+		return { raw: d, date, value: addedFrequency[date] ?? 0 };
+	});
+
 	return (
 		<div
 			style={{
@@ -66,9 +84,13 @@ const Inspect: React.FC<InspectProps> = ({ active }) => {
 				backgroundColor: 'white',
 			}}>
 			<div>{active?.playlist.name}</div>
-			<ContributionGraph frequency={addedFrequency} />
-			{artistData.length && Object.keys(genreData).length && <GenrePie data={genreData} />}
-			<CumulativeGraph frequency={addedFrequency} />
+			<div style={{ display: 'inline-block' }}>
+				<ContributionGraph frequency={freqData} />
+				<CumulativeGraph frequency={freqData} />
+			</div>
+			<div>
+				{artistData.length && Object.keys(genreData).length && <GenrePie data={genreData} />}
+			</div>
 		</div>
 	);
 };
