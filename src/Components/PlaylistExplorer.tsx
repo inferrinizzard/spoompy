@@ -19,7 +19,10 @@ const PlaylistExplorer: React.FC<PlaylistExplorerProps> = ({}) => {
 
 	useEffect(() => {
 		spotify.connected &&
-			loop(spotify.getUserPlaylists)('12121954989').then(({ items }) => setPlaylists(items));
+			spotify
+				.getMe()
+				.then(({ id }) => loop(spotify.getUserPlaylists)(id))
+				.then(({ items }) => setPlaylists(items));
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const [active, setActive] = useState(null as ActivePlaylist);
