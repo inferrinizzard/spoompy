@@ -23,12 +23,20 @@ const generateDates = (start: string | Date, end: string | Date) => {
 	const startDate = +new Date(start);
 	const endDate = +new Date(end);
 	const msDay = 86400000;
-	console.log(start, startDate, end, endDate);
 	return new Array(Math.ceil((endDate - startDate) / msDay))
 		.fill(0)
 		.map((_, i) => startDate + i * msDay);
 };
 
+const trim = <T extends any>(data: T[], accessor: (item: T) => number): T[] =>
+	data.length > 1
+		? data.slice(
+				accessor(data[0]) ? 0 : data.findIndex(d => accessor(d)),
+				accessor(data[data.length - 1])
+					? data.length
+					: data.reduce((latest, cur, i) => (accessor(cur) ? i : latest), 0) + 1 + 3 // 3 element buffer
+		  )
+		: data;
 const msToDate = (ms: number) => new Date(ms).toISOString().split('T')[0];
 
 const Inspect: React.FC<InspectProps> = ({ active }) => {
@@ -68,10 +76,10 @@ const Inspect: React.FC<InspectProps> = ({ active }) => {
 
 	const addedFrequency = frequency(active!.tracks.map(track => track.added_at.split('T')[0]));
 	const keys = Object.keys(addedFrequency).sort();
-	const freqData = generateDates(keys[0], keys[keys.length - 1]).map(d => {
-		const date = msToDate(d);
-		return { raw: d, date, value: addedFrequency[date] ?? 0 };
-	});
+	const rawFreqData = generateDates(keys[0], keys[keys.length - 1]).map(d =>
+		(date => ({ raw: d, date, value: addedFrequency[date] ?? 0 }))(msToDate(d))
+	);
+	const freqData = trim(rawFreqData, d => d.value);
 
 	return (
 		<div

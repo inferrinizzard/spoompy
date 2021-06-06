@@ -52,6 +52,7 @@ const CumulativeGraph: React.FC<CumulativeGraphProps> = ({ frequency }) => {
 				/>
 				<AxisLeft
 					numTicks={(([a, b]) => Math.min(10, b - a))(yScale.domain())}
+					tickFormat={yScale.tickFormat(4, 's')}
 					scale={yScale}
 					top={0}
 					left={0}

@@ -12,14 +12,23 @@ export interface GenrePieProps {
 const GenrePie: React.FC<GenrePieProps> = ({ data: { artists, genres } }) => {
 	const r = 200;
 
-	const data = Object.entries(genres)
+	let data = Object.entries(genres)
 		.map(([genre, value]) => ({ genre, value }))
 		.sort((a, b) => b.value - a.value || (b.genre > a.genre ? -1 : 1));
-	const freq = (total =>
-		data.reduce(
-			({ count, arr }, { value }) => ({ count: count - value, arr: [...arr, count / total] }),
-			{ count: total, arr: [] as number[] }
-		).arr)(data.reduce((sum, { value }) => sum + value, 0));
+	let total = data.reduce((sum, { value }) => sum + value, 0);
+	// data = data
+	// 	.filter(({ value }) => value >= total / 20)
+	// 	.concat({
+	// 		genre: 'other',
+	// 		value: data
+	// 			.filter(({ value }) => value < total / 20)
+	// 			.reduce((acc, { value }) => acc + value, 0),
+	// 	});
+	// total = data.reduce((sum, { value }) => sum + value, 0);
+	const freq = data.reduce(
+		({ count, arr }, { value }) => ({ count: count - value, arr: [...arr, count / total] }),
+		{ count: total, arr: [] as number[] }
+	).arr;
 	const getValue = (p: ArrayElement<typeof data>) => p.value;
 
 	return (
