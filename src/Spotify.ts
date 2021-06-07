@@ -65,6 +65,7 @@ class Spotify extends SpotifyWebApi {
 			this.access_token = Storage.accessToken ?? '';
 			this.setAccessToken(this.access_token);
 			this.connected = true;
+			console.log('Connected:', this.connected);
 			setTimeout(() => alert('Your access token has expired, please refresh.'), 1000 * 60 * 60);
 		}
 	}
@@ -80,6 +81,7 @@ class Spotify extends SpotifyWebApi {
 				'playlist-read-private',
 				'playlist-read-collaborative',
 				'user-library-read',
+				'user-top-read',
 			].join(' '),
 		});
 

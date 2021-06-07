@@ -3,6 +3,7 @@ import Spotify, { hostname, Storage, wrapObj } from './Spotify';
 import './App.css';
 
 import PlaylistExplorer from './Components/PlaylistExplorer';
+import ListeningExplorer from './Components/ListeningExplorer';
 
 const spotify = wrapObj(new Spotify('104889eeeb724a9ca5efa673f527f38f'));
 export const SpotifyContext = React.createContext(spotify);
@@ -27,7 +28,8 @@ const App: React.FC = () => {
 		<div className="App">
 			<SpotifyContext.Provider value={spotify}>
 				{!Storage.accessToken && <button onClick={spotify.login}>login</button>}
-				<PlaylistExplorer />
+				<ListeningExplorer />
+				{/* <PlaylistExplorer /> */}
 			</SpotifyContext.Provider>
 		</div>
 	);

@@ -66,3 +66,22 @@ export const timestampSort = <T extends { release_date?: string }>(a: T, b: T) =
 	a.release_date! > b.release_date! ? 1 : -1;
 
 // export const getHistory = ()
+
+export const getRecentTracks = async (spotify: SpotifyType, runs = 10) => {
+	let run = true;
+	let output: SpotifyApi.PlayHistoryObject[] = [];
+	let before: string | undefined = undefined;
+	let i = 0;
+	while (run)
+		output = output.concat(
+			await spotify
+				.getMyRecentlyPlayedTracks({ limit: 50, ...(before ? { before } : {}) })
+				.then(({ items, cursors }) => {
+					if (i++ > runs) run = false;
+					if (cursors) before = cursors.before;
+					else run = false;
+					return items;
+				})
+		);
+	return output;
+};
