@@ -69,11 +69,11 @@ class Spotify extends SpotifyWebApi {
 		}
 	}
 
-	login = () => {
+	login = (url = hostname) => {
 		const params = new URLSearchParams({
 			client_id: this.client_id,
 			response_type: 'token',
-			redirect_uri: hostname,
+			redirect_uri: url,
 			state: this.state,
 			scope: [
 				'user-read-recently-played',
