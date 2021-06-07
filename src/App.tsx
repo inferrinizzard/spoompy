@@ -7,6 +7,7 @@ import { ThemeProvider } from 'styled-components';
 
 import PlaylistExplorer from './Components/PlaylistExplorer';
 import ListeningExplorer from './Components/ListeningExplorer';
+import Drawer from './Components/Drawer';
 
 const spotify = wrapObj(new Spotify('104889eeeb724a9ca5efa673f527f38f'));
 export const SpotifyContext = React.createContext(spotify);
@@ -40,35 +41,38 @@ const App: React.FC = () => {
 		<div className="App">
 			<SpotifyContext.Provider value={spotify}>
 				<ThemeProvider theme={theme}>
-					<Router>
-						<Switch>
-							<Route path="/home">
-								{!Storage.accessToken && (
-									<button onClick={() => spotify.login(hostname + '/redirect')}>login</button>
-								)}
-								<button onClick={() => (Storage.removeToken(), Storage.removeState())}>
-									Reset
-								</button>
-							</Route>
-							<Route path="/login"></Route>
-							<Route path="/user">
-								<div>test</div>
-							</Route>
-							<Route path="/listening">
-								<ListeningExplorer />
-							</Route>
-							<Route path="/playlists">
-								<PlaylistExplorer />
-							</Route>
-							<Route path="/redirect">
-								<div>this is the redirect page</div>
-								<div>you will be redirected in 3 seconds</div>
-							</Route>
-							<Route>
-								<Redirect push to={'home'} />
-							</Route>
-						</Switch>
-					</Router>
+					<div className="base" style={{ backgroundColor: theme.dark }}>
+						<Router>
+							<Switch>
+								<Drawer />
+								<Route path="/home">
+									{!Storage.accessToken && (
+										<button onClick={() => spotify.login(hostname + '/redirect')}>login</button>
+									)}
+									<button onClick={() => (Storage.removeToken(), Storage.removeState())}>
+										Reset
+									</button>
+								</Route>
+								<Route path="/login"></Route>
+								<Route path="/user">
+									<div>test</div>
+								</Route>
+								<Route path="/listening">
+									<ListeningExplorer />
+								</Route>
+								<Route path="/playlists">
+									<PlaylistExplorer />
+								</Route>
+								<Route path="/redirect">
+									<div>this is the redirect page</div>
+									<div>you will be redirected in 3 seconds</div>
+								</Route>
+								<Route>
+									<Redirect push to={'home'} />
+								</Route>
+							</Switch>
+						</Router>
+					</div>
 				</ThemeProvider>
 			</SpotifyContext.Provider>
 		</div>
