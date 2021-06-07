@@ -75,7 +75,7 @@ const App: React.FC = () => {
 										<div>you will be redirected in 3 seconds</div>
 									</Route>
 									<Route>
-										<Redirect push to={'home'} />
+										<Redirect push to={'/home'} />
 									</Route>
 								</div>
 							</Switch>

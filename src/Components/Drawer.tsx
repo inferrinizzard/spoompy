@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+
+import { LinkButton } from './Buttons';
 
 const DrawerBase = styled.div`
 	position: fixed;
@@ -11,11 +12,19 @@ const DrawerBase = styled.div`
 	background-color: ${p => p.theme.black};
 `;
 
-const TextButton = styled.button``;
-
 export interface DrawerProps {}
 
 const Drawer: React.FC<DrawerProps> = () => {
+	return (
+		<DrawerBase>
+			<LinkButton text="Home" to="/home"></LinkButton>
+			<LinkButton text="Top Tracks" to="/top/tracks"></LinkButton>
+			<LinkButton text="Top Artists" to="/top/artists"></LinkButton>
+			<LinkButton text="Playlist Analysis" to="/playlists"></LinkButton>
+			<LinkButton text="Listening History" to="/listening"></LinkButton>
+			<LinkButton text="Info" to="/info"></LinkButton>
+		</DrawerBase>
+	);
 };
 
 export default Drawer;
