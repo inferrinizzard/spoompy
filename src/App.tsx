@@ -5,6 +5,7 @@ import './App.css';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 
 import PlaylistExplorer from './Components/PlaylistExplorer';
+import ListeningExplorer from './Components/ListeningExplorer';
 
 const spotify = wrapObj(new Spotify('104889eeeb724a9ca5efa673f527f38f'));
 export const SpotifyContext = React.createContext(spotify);
@@ -40,7 +41,9 @@ const App: React.FC = () => {
 						<Route path="/user">
 							<div>test</div>
 						</Route>
-						<Route path="/listening"></Route>
+						<Route path="/listening">
+							<ListeningExplorer />
+						</Route>
 						<Route path="/playlists">
 							<PlaylistExplorer />
 						</Route>
