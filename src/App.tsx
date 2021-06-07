@@ -1,6 +1,6 @@
 import React from 'react';
 import Spotify, { Storage, wrapObj } from './Spotify';
-import './App.css';
+import './css/App.css';
 
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
@@ -45,31 +45,39 @@ const App: React.FC = () => {
 						<Router>
 							<Switch>
 								<Drawer />
-								<Route path="/home">
-									{!Storage.accessToken && (
-										<button onClick={() => spotify.login(hostname + '/redirect')}>login</button>
-									)}
-									<button onClick={() => (Storage.removeToken(), Storage.removeState())}>
-										Reset
-									</button>
-								</Route>
-								<Route path="/login"></Route>
-								<Route path="/user">
-									<div>test</div>
-								</Route>
-								<Route path="/listening">
-									<ListeningExplorer />
-								</Route>
-								<Route path="/playlists">
-									<PlaylistExplorer />
-								</Route>
-								<Route path="/redirect">
-									<div>this is the redirect page</div>
-									<div>you will be redirected in 3 seconds</div>
-								</Route>
-								<Route>
-									<Redirect push to={'home'} />
-								</Route>
+								<div style={{ marginLeft: '15%', width: '85%' }}>
+									<Route path="/home">
+										{!Storage.accessToken && (
+											<button onClick={() => spotify.login(hostname + '/redirect')}>login</button>
+										)}
+										<button onClick={() => (Storage.removeToken(), Storage.removeState())}>
+											Reset
+										</button>
+									</Route>
+									<Route path="/login"></Route>
+									<Route path="/user">
+										<div>test</div>
+									</Route>
+									<Route path="/top/artists">
+										<div>top artists</div>
+									</Route>
+									<Route path="/top/tracks">
+										<div>top tracks</div>
+									</Route>
+									<Route path="/listening">
+										<ListeningExplorer />
+									</Route>
+									<Route path="/playlists">
+										<PlaylistExplorer />
+									</Route>
+									<Route path="/redirect">
+										<div>this is the redirect page</div>
+										<div>you will be redirected in 3 seconds</div>
+									</Route>
+									<Route>
+										<Redirect push to={'home'} />
+									</Route>
+								</div>
 							</Switch>
 						</Router>
 					</div>
