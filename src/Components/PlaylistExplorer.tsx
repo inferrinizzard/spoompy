@@ -12,9 +12,8 @@ export type ActivePlaylist = {
 
 export interface PlaylistExplorerProps {}
 
-const PlaylistExplorer: React.FC<PlaylistExplorerProps> = ({}) => {
+const PlaylistExplorer: React.FC<PlaylistExplorerProps> = () => {
 	const spotify = useContext(SpotifyContext);
-
 	const [playlists, setPlaylists] = useState([] as SpotifyApi.PlaylistObjectSimplified[]);
 
 	useEffect(() => {
@@ -32,7 +31,7 @@ const PlaylistExplorer: React.FC<PlaylistExplorerProps> = ({}) => {
 		);
 
 	return (
-		<>
+		<div>
 			<PlaylistGrid playlists={playlists} setActive={loadActive} />
 			{active && <Inspect active={active} />}
 			{active && (
@@ -42,7 +41,7 @@ const PlaylistExplorer: React.FC<PlaylistExplorerProps> = ({}) => {
 					X
 				</button>
 			)}
-		</>
+		</div>
 	);
 };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
 
 const blockSize = 250; // px
@@ -11,10 +11,16 @@ export interface PlaylistGridProps {
 }
 
 const PlaylistGrid: React.FC<PlaylistGridProps> = ({ playlists, setActive }) => {
-	const numColumns = Math.floor(window.innerWidth / blockSize);
-	const blockWidth = (window.innerWidth - rem2Px(numColumns + 1)) / numColumns;
+	const gridRef = useRef<HTMLDivElement>(null);
+	const containerWidth = gridRef.current?.clientWidth;
+
+	const numColumns = containerWidth ? Math.floor(containerWidth / blockSize) : 5;
+	const blockWidth = containerWidth
+		? (containerWidth - rem2Px(numColumns + 1)) / numColumns
+		: blockSize;
 	return (
 		<div
+			ref={gridRef}
 			style={{
 				margin: '1rem',
 				display: 'grid',

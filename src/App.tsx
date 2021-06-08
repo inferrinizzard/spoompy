@@ -43,11 +43,13 @@ const App: React.FC = () => {
 				<ThemeProvider theme={theme}>
 					<div className="base" style={{ backgroundColor: theme.dark }}>
 						<Router>
-							<Switch>
-								<Drawer />
-								<div style={{ marginLeft: '15%', width: '85%' }}>
+							<Drawer />
+							<div style={{ marginLeft: '15%', width: '85%', height: '100%', overflowX: 'hidden' }}>
+								{/* overflow for scroll bar width */}
+								<div className="header"></div>
+								<Switch>
 									<Route path="/home">
-										{!Storage.accessToken && (
+										{!spotify.connected && (
 											<button onClick={() => spotify.login(hostname + '/redirect')}>login</button>
 										)}
 										<button onClick={() => (Storage.removeToken(), Storage.removeState())}>
@@ -77,8 +79,8 @@ const App: React.FC = () => {
 									<Route>
 										<Redirect push to={'/home'} />
 									</Route>
-								</div>
-							</Switch>
+								</Switch>
+							</div>
 						</Router>
 					</div>
 				</ThemeProvider>
