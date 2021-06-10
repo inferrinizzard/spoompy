@@ -55,26 +55,3 @@ const DisplayTop = <T extends {}>(props: React.PropsWithChildren<DisplayTopProps
 };
 
 export default DisplayTop;
-
-const DisplayTracks: React.FC<DisplayTopProps<any>> = () => {
-	const spotify = useContext(SpotifyContext);
-	const [timeframe, setTimeframe] = useState('short_term' as Timerange);
-	const [top, setTop] = useState([] as SpotifyApi.TrackObjectFull[]);
-	useFetchTopData<SpotifyApi.TrackObjectFull, InstanceType<typeof SpotifyWebApi>['getMyTopTracks']>(
-		timeframe,
-		spotify.getMyTopTracks,
-		setTop
-	);
-
-	return (
-		<div>
-			<button onClick={() => setTimeframe('short_term')}>Short</button>
-			<button onClick={() => setTimeframe('medium_term')}>Medium</button>
-			<button onClick={() => setTimeframe('long_term')}>Long</button>
-			<p style={{ color: 'white' }}>{timeframe}</p>
-			{top.map(a => (
-				<p style={{ color: 'white' }}>{a.name}</p>
-			))}
-		</div>
-	);
-};

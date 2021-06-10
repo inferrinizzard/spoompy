@@ -8,7 +8,9 @@ import { ThemeProvider } from 'styled-components';
 import PlaylistExplorer from './Components/PlaylistExplorer';
 import ListeningExplorer from './Components/ListeningExplorer';
 import Drawer from './Components/Drawer';
+
 import TopArtists from './Components/TopArtists';
+import TopTracks from './Components/TopTracks';
 
 const spotify = wrapObj(new Spotify('104889eeeb724a9ca5efa673f527f38f'));
 export const SpotifyContext = React.createContext(spotify);
@@ -65,7 +67,7 @@ const App: React.FC = () => {
 										<TopArtists />
 									</Route>
 									<Route path="/top/tracks">
-										<div>top tracks</div>
+										<TopTracks />
 									</Route>
 									<Route path="/listening">
 										<ListeningExplorer />
