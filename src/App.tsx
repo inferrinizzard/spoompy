@@ -74,8 +74,8 @@ const App: React.FC = () => {
 										<PlaylistExplorer />
 									</Route>
 									<Route path="/redirect">
-										<div>this is the redirect page</div>
-										<div>you will be redirected in 3 seconds</div>
+										<div style={{ color: 'white' }}>this is the redirect page</div>
+										<div style={{ color: 'white' }}>you will be redirected in 3 seconds</div>
 									</Route>
 									<Route>
 										<Redirect push to={'/home'} />
