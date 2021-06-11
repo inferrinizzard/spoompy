@@ -19,26 +19,26 @@ const TopTracks: React.FC<{}> = () => {
 				</div>
 			)}
 			tableHeader={
-				<>
+				<tr>
 					<th>Rank</th>
 					<th colSpan={2}>Name</th>
 					<th>Artists</th>
 					<th>Album</th>
 					<th>Popularity</th>
-				</>
+				</tr>
 			}
 			tableRow={(track, i) => (
 				<tr key={track.id}>
-					<td>
-						<p style={{ fontSize: '1rem' }}>{`${i + 1}.`}</p>
-					</td>
-					<td>
+					<td style={{ textAlign: 'center', fontSize: '2rem' }}>{`${i + 1}.`}</td>
+					<td style={{ fontSize: '1.25rem' }}>
 						<img src={track.album.images[0].url} alt={track.name} height={50} width={50} />
 					</td>
-					<td>{track.name}</td>
-					<td>{track.artists.map(({ name }) => name).join(', ')}</td>
-					<td>{track.album.name}</td>
-					<td>{track.popularity}</td>
+					<td style={{ fontSize: '1.25rem' }}>{track.name}</td>
+					<td style={{ fontSize: '1.25rem' }}>
+						{track.artists.map(({ name }) => name).join(', ')}
+					</td>
+					<td style={{ fontSize: '1.25rem' }}>{track.album.name}</td>
+					<td style={{ fontSize: '1.25rem' }}>{track.popularity}</td>
 					{/* <td>{track.followers.total}</td> */}
 				</tr>
 			)}

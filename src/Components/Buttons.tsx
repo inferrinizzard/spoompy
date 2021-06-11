@@ -12,7 +12,6 @@ export const ButtonBase = styled.button`
 const LinkText = styled.a`
 	color: ${p => p.theme.lightgray};
 	text-decoration: none;
-	font-family: circular;
 	font-size: 1.5rem;
 
 	&:hover,

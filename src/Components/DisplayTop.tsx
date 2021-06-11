@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react';
-import SpotifyWebApi from 'spotify-web-api-js';
+import React, { useState, useEffect, useCallback } from 'react';
+import styled from 'styled-components';
 
-import { SpotifyContext } from '../App';
+import { ButtonBase } from './Buttons';
 
 type Timerange = 'short_term' | 'medium_term' | 'long_term'; // store in route ?
 
@@ -24,6 +24,46 @@ const useFetchTopData = <
 	}, [timeframe]);
 };
 
+const Table = styled.table`
+	width: 100%;
+`;
+
+const TableHead = styled.thead`
+	th {
+		position: sticky;
+		top: 0;
+		font-size: 1.5rem;
+		color: white;
+		padding: 1rem;
+		background-color: ${p => p.theme.black};
+	}
+`;
+
+const TimeframeButton = styled(ButtonBase)`
+	color: ${p => p.theme.lightgray};
+	font-size: 2rem;
+	display: inline-block;
+	padding: 0 1rem;
+	position: relative;
+
+	&:hover {
+		color: ${p => p.theme.white};
+	}
+
+	&.active:after {
+		position: absolute;
+		content: '';
+		height: 0.25rem;
+		bottom: -0.25rem;
+
+		margin: 0 auto;
+		left: 0;
+		right: 0;
+		width: 70%;
+		background-color: ${p => p.theme.green};
+	}
+`;
+
 export interface DisplayTopProps<T> {
 	fetchFunction: (options: {}) => Promise<SpotifyApi.PagingObject<T>>;
 	topCarousel: (data: T[]) => React.ReactChild | React.ReactChildren;
@@ -38,17 +78,30 @@ const DisplayTop = <T extends {}>(props: React.PropsWithChildren<DisplayTopProps
 
 	return (
 		<div>
-			<button onClick={() => setTimeframe('short_term')}>Short</button>
-			<button onClick={() => setTimeframe('medium_term')}>Medium</button>
-			<button onClick={() => setTimeframe('long_term')}>Long</button>
-			<p style={{ color: 'white' }}>{timeframe}</p>
-			<h4>Top Ten</h4>
-			{props.topCarousel(top)}
-			<div>
-				<table style={{ color: 'white' }}>
-					<thead>{props.tableHeader}</thead>
+			<div style={{ height: '40vh' }}>
+				<div style={{ display: 'flex', justifyContent: 'center' }}>
+					{Object.entries({
+						short_term: '4 Weeks',
+						medium_term: '6 Months',
+						long_term: 'All-Time',
+					}).map(([k, v]) => (
+						<TimeframeButton
+							key={k}
+							className={timeframe === k ? 'active' : undefined}
+							onClick={() => setTimeframe(k as Timerange)}>
+							{v}
+						</TimeframeButton>
+					))}
+				</div>
+				{/* <p style={{ color: 'white' }}>{timeframe}</p> */}
+				<h1>Top Ten</h1>
+				{props.topCarousel(top)}
+			</div>
+			<div style={{ height: '60vh', overflowY: 'auto' }}>
+				<Table>
+					<TableHead>{props.tableHeader}</TableHead>
 					<tbody>{top.map(props.tableRow)}</tbody>
-				</table>
+				</Table>
 			</div>
 		</div>
 	);

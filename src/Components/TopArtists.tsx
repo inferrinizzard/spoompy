@@ -13,7 +13,20 @@ const genreKeywords = {
 const replaceKeywords = (s: string) =>
 	Object.entries(genreKeywords).reduce((str, [k, v]) => str.replace(k, v), s);
 
-const TopArtists: React.FC<{}> = () => {
+const parseFollowers = (count: string | number) =>
+	['k', 'm', 'b'].reduce(
+		(num, suffix) =>
+			typeof num === 'string'
+				? num
+				: num / 1000 > 1000
+				? num / 1000
+				: Math.floor(num / 1000) + suffix,
+		+count as string | number
+	);
+
+export interface TopArtistsProps {}
+
+const TopArtists: React.FC<TopArtistsProps> = () => {
 	const spotify = useContext(SpotifyContext);
 
 	return (
@@ -29,24 +42,22 @@ const TopArtists: React.FC<{}> = () => {
 				</div>
 			)}
 			tableHeader={
-				<>
+				<tr>
 					<th>Rank</th>
 					<th colSpan={2}>Name</th>
 					<th>Genres</th>
 					<th>Popularity</th>
 					<th>Followers</th>
-				</>
+				</tr>
 			}
 			tableRow={(artist, i) => (
 				<tr key={artist.id}>
-					<td>
-						<p style={{ fontSize: '1rem' }}>{`${i + 1}.`}</p>
-					</td>
+					<td style={{ textAlign: 'center', fontSize: '2rem' }}>{`${i + 1}.`}</td>
 					<td>
 						<img src={artist.images[0].url} alt={artist.name} height={50} width={50} />
 					</td>
-					<td>{artist.name}</td>
-					<td>
+					<td style={{ fontSize: '1.25rem' }}>{artist.name}</td>
+					<td style={{ fontSize: '1.25rem', textOverflow: 'ellipsis' }}>
 						{artist.genres
 							.map(g =>
 								replaceKeywords(g)
@@ -57,7 +68,9 @@ const TopArtists: React.FC<{}> = () => {
 							.join(', ')}
 					</td>
 					<td>{artist.popularity}</td>
-					<td>{artist.followers.total}</td>
+					<td style={{ textAlign: 'center', fontSize: '1.25rem' }}>
+						{parseFollowers(artist.followers.total)}
+					</td>
 				</tr>
 			)}
 		/>
