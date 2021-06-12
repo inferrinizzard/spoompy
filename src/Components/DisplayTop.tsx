@@ -78,7 +78,7 @@ const DisplayTop = <T extends {}>(props: React.PropsWithChildren<DisplayTopProps
 
 	return (
 		<div>
-			<div style={{ height: '40vh' }}>
+			<div style={{ height: '50vh' }}>
 				<div style={{ display: 'flex', justifyContent: 'center' }}>
 					{Object.entries({
 						short_term: '4 Weeks',
@@ -93,11 +93,10 @@ const DisplayTop = <T extends {}>(props: React.PropsWithChildren<DisplayTopProps
 						</TimeframeButton>
 					))}
 				</div>
-				{/* <p style={{ color: 'white' }}>{timeframe}</p> */}
 				<h1>Top Ten</h1>
 				{props.topCarousel(top)}
 			</div>
-			<div style={{ height: '60vh', overflowY: 'auto' }}>
+			<div style={{ height: '50vh', overflowY: 'auto' }}>
 				<Table>
 					<TableHead>{props.tableHeader}</TableHead>
 					<tbody>{top.map(props.tableRow)}</tbody>
