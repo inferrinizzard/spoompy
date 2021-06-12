@@ -2,7 +2,18 @@ import React from 'react';
 import Spotify, { Storage, wrapObj } from './Spotify';
 import './css/App.css';
 
+import { ThemeProvider } from 'styled-components';
+
 import Main from './Components/Main';
+
+const theme = {
+	green: '#1db954',
+	lightgreen: '#1ed760',
+	black: '#191414',
+	dark: '#181818',
+	lightgray: '#b2b2b2',
+	white: '#fff',
+};
 
 const spotify = wrapObj(new Spotify('104889eeeb724a9ca5efa673f527f38f'));
 export const SpotifyContext = React.createContext(spotify);
@@ -24,9 +35,11 @@ const App: React.FC = () => {
 	}
 
 	return (
-		<div className="App">
+		<div className="App" style={{ backgroundColor: theme.dark }}>
 			<SpotifyContext.Provider value={spotify}>
-				<Main />
+				<ThemeProvider theme={theme}>
+					<Main />
+				</ThemeProvider>
 			</SpotifyContext.Provider>
 		</div>
 	);
