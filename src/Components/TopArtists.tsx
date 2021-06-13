@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 
-import { SpotifyContext } from '../App';
+import { UserDataContext } from './Main';
 import DisplayTop from './DisplayTop';
 
 const genreKeywords = {
@@ -27,11 +27,11 @@ const parseFollowers = (count: string | number) =>
 export interface TopArtistsProps {}
 
 const TopArtists: React.FC<TopArtistsProps> = () => {
-	const spotify = useContext(SpotifyContext);
+	const { topArtists } = useContext(UserDataContext);
 
 	return (
 		<DisplayTop<SpotifyApi.ArtistObjectFull>
-			fetchFunction={spotify.getMyTopArtists}
+			data={topArtists}
 			topCarousel={data => (
 				<div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
 					{data.slice(0, 10).map(item => (

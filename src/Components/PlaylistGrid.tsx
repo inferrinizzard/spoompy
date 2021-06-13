@@ -1,16 +1,18 @@
-import React, { useRef } from 'react';
+import React, { useRef, useContext } from 'react';
 import styled from 'styled-components';
+
+import { UserDataContext } from './Main';
 
 const blockSize = 250; // px
 const rem2Px = (rem: number) =>
 	rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
 
 export interface PlaylistGridProps {
-	playlists: SpotifyApi.PlaylistObjectSimplified[];
 	setActive: (playlist: SpotifyApi.PlaylistObjectSimplified) => void;
 }
 
-const PlaylistGrid: React.FC<PlaylistGridProps> = ({ playlists, setActive }) => {
+const PlaylistGrid: React.FC<PlaylistGridProps> = ({ setActive }) => {
+	const { playlists } = useContext(UserDataContext);
 	const gridRef = useRef<HTMLDivElement>(null);
 	const containerWidth = gridRef.current?.clientWidth;
 

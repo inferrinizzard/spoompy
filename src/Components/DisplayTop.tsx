@@ -1,28 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React from 'react';
+import { useHistory } from 'react-router';
 import styled from 'styled-components';
 
 import { ButtonBase } from './Buttons';
-
-type Timerange = 'short_term' | 'medium_term' | 'long_term'; // store in route ?
-
-const useFetchTopData = <
-	T extends {},
-	F extends (options: {}) => Promise<SpotifyApi.PagingObject<T>>
->(
-	timeframe: Timerange,
-	fetchFunction: F,
-	setState: React.Dispatch<React.SetStateAction<T[]>>
-) => {
-	const getTop = useCallback(
-		(timeframe: Timerange) =>
-			fetchFunction({ limit: 50, time_range: timeframe }).then(({ items }) => items),
-		[timeframe]
-	);
-
-	useEffect(() => {
-		getTop(timeframe).then(setState);
-	}, [timeframe]);
-};
 
 const Table = styled.table`
 	width: 100%;
@@ -65,16 +45,14 @@ const TimeframeButton = styled(ButtonBase)`
 `;
 
 export interface DisplayTopProps<T> {
-	fetchFunction: (options: {}) => Promise<SpotifyApi.PagingObject<T>>;
+	data: T[];
 	topCarousel: (data: T[]) => React.ReactChild | React.ReactChildren;
 	tableHeader: React.ReactChild | React.ReactChildren;
 	tableRow: (item: T, i: number) => React.ReactChild | React.ReactChildren;
 }
 
 const DisplayTop = <T extends {}>(props: React.PropsWithChildren<DisplayTopProps<T>>) => {
-	const [timeframe, setTimeframe] = useState('short_term' as Timerange);
-	const [top, setTop] = useState([] as T[]);
-	useFetchTopData<T, typeof props.fetchFunction>(timeframe, props.fetchFunction, setTop);
+	const history = useHistory();
 
 	return (
 		<div>
@@ -87,19 +65,23 @@ const DisplayTop = <T extends {}>(props: React.PropsWithChildren<DisplayTopProps
 					}).map(([k, v]) => (
 						<TimeframeButton
 							key={k}
-							className={timeframe === k ? 'active' : undefined}
-							onClick={() => setTimeframe(k as Timerange)}>
+							className={
+								new URLSearchParams(history.location.search).get('timeframe') === k
+									? 'active'
+									: undefined
+							}
+							onClick={() => history.push({ ...history.location, search: `?timeframe=${k}` })}>
 							{v}
 						</TimeframeButton>
 					))}
 				</div>
 				<h1>Top Ten</h1>
-				{props.topCarousel(top)}
+				{props.topCarousel(props.data)}
 			</div>
 			<div style={{ height: '50vh', overflowY: 'auto' }}>
 				<Table>
 					<TableHead>{props.tableHeader}</TableHead>
-					<tbody>{top.map(props.tableRow)}</tbody>
+					<tbody>{props.data.map(props.tableRow)}</tbody>
 				</Table>
 			</div>
 		</div>

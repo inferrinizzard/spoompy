@@ -3,6 +3,7 @@ import Spotify, { Storage, wrapObj } from './Spotify';
 import './css/App.css';
 
 import { ThemeProvider } from 'styled-components';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import Main from './Components/Main';
 
@@ -38,7 +39,9 @@ const App: React.FC = () => {
 		<div className="App" style={{ backgroundColor: theme.dark }}>
 			<SpotifyContext.Provider value={spotify}>
 				<ThemeProvider theme={theme}>
-					<Main />
+					<Router>
+						<Main />
+					</Router>
 				</ThemeProvider>
 			</SpotifyContext.Provider>
 		</div>

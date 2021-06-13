@@ -14,15 +14,6 @@ export interface PlaylistExplorerProps {}
 
 const PlaylistExplorer: React.FC<PlaylistExplorerProps> = () => {
 	const spotify = useContext(SpotifyContext);
-	const [playlists, setPlaylists] = useState([] as SpotifyApi.PlaylistObjectSimplified[]);
-
-	useEffect(() => {
-		spotify.connected &&
-			spotify
-				.getMe()
-				.then(({ id }) => loop(spotify.getUserPlaylists)(id))
-				.then(({ items }) => setPlaylists(items));
-	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	const [active, setActive] = useState(null as ActivePlaylist);
 	const loadActive = (playlist: SpotifyApi.PlaylistObjectSimplified) =>
@@ -32,7 +23,7 @@ const PlaylistExplorer: React.FC<PlaylistExplorerProps> = () => {
 
 	return (
 		<div>
-			<PlaylistGrid playlists={playlists} setActive={loadActive} />
+			<PlaylistGrid setActive={loadActive} />
 			{active && <Inspect active={active} />}
 			{active && (
 				<button

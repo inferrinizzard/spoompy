@@ -1,14 +1,15 @@
 import React, { useContext } from 'react';
 
 import { SpotifyContext } from '../App';
+import { UserDataContext } from './Main';
 import DisplayTop from './DisplayTop';
 
 const TopTracks: React.FC<{}> = () => {
-	const spotify = useContext(SpotifyContext);
+	const { topTracks } = useContext(UserDataContext);
 
 	return (
 		<DisplayTop<SpotifyApi.TrackObjectFull>
-			fetchFunction={spotify.getMyTopTracks}
+			data={topTracks}
 			topCarousel={data => (
 				<div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
 					{data.slice(0, 10).map(item => (
