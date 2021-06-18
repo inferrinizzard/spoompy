@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
 import { UserDataContext } from './Main';
-import DisplayTop from './DisplayTop';
+import DisplayTop, { HighlightItem } from './DisplayTop';
 
 const genreKeywords = {
 	'edm': 'EDM',
@@ -27,17 +27,22 @@ const parseFollowers = (count: string | number) =>
 export interface TopArtistsProps {}
 
 const TopArtists: React.FC<TopArtistsProps> = () => {
-	const { topArtists } = useContext(UserDataContext);
+	const { saved, topArtists } = useContext(UserDataContext);
 
 	return (
 		<DisplayTop<SpotifyApi.ArtistObjectFull>
 			data={topArtists}
 			topCarousel={data => (
 				<div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
-					{data.slice(0, 10).map(item => (
-						<div key={item.id} style={{ display: 'inline-block' }}>
-							<img src={item.images[0].url} alt={item.name} height={250} width={250} />
-						</div>
+					{data.slice(0, 10).map(artist => (
+						<HighlightItem key={artist.id}>
+							<img src={artist.images[0].url} alt={artist.name} height={250} width={250} />
+							<h2>{artist.name}</h2>
+							{(count =>
+								count ? <div>{`${count} Saved Track${count === 1 ? '' : 's'}`}</div> : null)(
+								saved.filter(({ track }) => track.artists.some(({ id }) => id === artist.id)).length
+							)}
+						</HighlightItem>
 					))}
 				</div>
 			)}

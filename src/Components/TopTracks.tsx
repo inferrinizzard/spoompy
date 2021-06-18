@@ -1,21 +1,26 @@
 import React, { useContext } from 'react';
 
-import { SpotifyContext } from '../App';
 import { UserDataContext } from './Main';
-import DisplayTop from './DisplayTop';
+import DisplayTop, { HighlightItem } from './DisplayTop';
 
 const TopTracks: React.FC<{}> = () => {
-	const { topTracks } = useContext(UserDataContext);
+	const { saved, topTracks } = useContext(UserDataContext);
 
 	return (
 		<DisplayTop<SpotifyApi.TrackObjectFull>
 			data={topTracks}
 			topCarousel={data => (
 				<div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
-					{data.slice(0, 10).map(item => (
-						<div key={item.id} style={{ display: 'inline-block' }}>
-							<img src={item.album.images[0].url} alt={item.name} height={250} width={250} />
-						</div>
+					{data.slice(0, 10).map(track => (
+						<HighlightItem key={track.id}>
+							<img src={track.album.images[0].url} alt={track.name} height={250} width={250} />
+							<h2>{track.name}</h2>
+							<div>{track.artists.map(({ name }) => name).join(', ')}</div>
+							<div>{track.album.name}</div>
+							{(fave => (fave ? <div>{'In your saved songs'}</div> : null))(
+								saved.some(t => t.track.id === track.id)
+							)}
+						</HighlightItem>
 					))}
 				</div>
 			)}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { Storage } from '../Spotify';
-import { loop } from '../SpotifyScripts';
+import { loop, loopSolo } from '../SpotifyScripts';
 
 import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 
@@ -60,7 +60,7 @@ const Main: React.FC<MainProps> = () => {
 			spotify
 				.getMe()
 				.then(({ id }) =>
-					Promise.all([loop(spotify.getUserPlaylists)(id), spotify.getMySavedTracks()])
+					Promise.all([loop(spotify.getUserPlaylists)(id), loopSolo(spotify.getMySavedTracks)()])
 				)
 				.then(([_playlists, _saved]) => (setPlaylists(_playlists.items), setSaved(_saved.items)));
 		updateTimeframe();

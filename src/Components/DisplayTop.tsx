@@ -44,6 +44,20 @@ const TimeframeButton = styled(ButtonBase)`
 	}
 `;
 
+export const HighlightItem = styled.div`
+	display: inline-block;
+	vertical-align: top;
+	text-align: center;
+	max-width: 250px;
+
+	h2 {
+		white-space: break-spaces;
+		color: ${p => p.theme.white};
+		font-size: 1.25rem;
+		margin: 0.5rem 0;
+	}
+`;
+
 export interface DisplayTopProps<T> {
 	data: T[];
 	topCarousel: (data: T[]) => React.ReactChild | React.ReactChildren;
@@ -79,6 +93,7 @@ const DisplayTop = <T extends {}>(props: React.PropsWithChildren<DisplayTopProps
 				{props.topCarousel(props.data)}
 			</div>
 			<div style={{ height: '50vh', overflowY: 'auto' }}>
+				{/* <h1 style={{ margin: 0 }}>Full List</h1> */}
 				<Table>
 					<TableHead>{props.tableHeader}</TableHead>
 					<tbody>{props.data.map(props.tableRow)}</tbody>
