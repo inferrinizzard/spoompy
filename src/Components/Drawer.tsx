@@ -25,12 +25,20 @@ export interface DrawerProps {}
 const Drawer: React.FC<DrawerProps> = () => {
 	return (
 		<DrawerBase>
-			<LinkButton text="Home" to="/home" icon={Home} />
+			<LinkButton text="Home" to={{ pathname: '/home', search: '' }} icon={Home} />
 			<LinkButton text="Top Tracks" to="/top/tracks" icon={Track} />
 			<LinkButton text="Top Artists" to="/top/artists" icon={Profile} />
-			<LinkButton text="Playlist Analysis" to="/playlists" icon={Library} />
-			<LinkButton text="Listening History" to="/listening" icon={Duration} />
-			<LinkButton text="Info" to="/info" icon={Edit} />
+			<LinkButton
+				text="Playlist Analysis"
+				to={{ pathname: '/playlists', search: '' }}
+				icon={Library}
+			/>
+			<LinkButton
+				text="Listening History"
+				to={{ pathname: '/listening', search: '' }}
+				icon={Duration}
+			/>
+			<LinkButton text="Info" to={{ pathname: '/info', search: '' }} icon={Edit} />
 		</DrawerBase>
 	);
 };

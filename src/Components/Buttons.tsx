@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, LinkProps } from 'react-router-dom';
 
 export const ButtonBase = styled.button`
 	display: block;
@@ -31,7 +31,7 @@ const LinkText = styled.a`
 
 interface LinkButtonProps {
 	text: string;
-	to: string;
+	to: LinkProps['to'];
 	icon?: React.FunctionComponent<
 		React.SVGProps<SVGSVGElement> & {
 			title?: string | undefined;

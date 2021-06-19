@@ -15,14 +15,15 @@ import TopTracks from './TopTracks';
 type Timeframe = 'short_term' | 'medium_term' | 'long_term';
 const getTimeframe = (history: ReturnType<typeof useHistory>) =>
 	new URLSearchParams(history.location.search).get('timeframe') || 'short_term';
-export const UserDataContext = React.createContext(
-	{} as {
-		playlists: SpotifyApi.PlaylistObjectSimplified[];
-		saved: SpotifyApi.SavedTrackObject[];
-		topArtists: SpotifyApi.ArtistObjectFull[];
-		topTracks: SpotifyApi.TrackObjectFull[];
-	}
-);
+
+interface UserData {
+	user: SpotifyApi.CurrentUsersProfileResponse;
+	playlists: SpotifyApi.PlaylistObjectSimplified[];
+	saved: SpotifyApi.SavedTrackObject[];
+	topArtists: SpotifyApi.ArtistObjectFull[];
+	topTracks: SpotifyApi.TrackObjectFull[];
+}
+export const UserDataContext = React.createContext({} as UserData);
 
 export interface MainProps {}
 
@@ -31,10 +32,11 @@ const Main: React.FC<MainProps> = () => {
 	const history = useHistory();
 	let timeframe = getTimeframe(history);
 
-	const [playlists, setPlaylists] = useState([] as SpotifyApi.PlaylistObjectSimplified[]);
-	const [saved, setSaved] = useState([] as SpotifyApi.SavedTrackObject[]);
-	const [topArtists, setTopArtists] = useState([] as SpotifyApi.ArtistObjectFull[]);
-	const [topTracks, setTopTracks] = useState([] as SpotifyApi.TrackObjectFull[]);
+	const [user, setUser] = useState({} as UserData['user']);
+	const [playlists, setPlaylists] = useState([] as UserData['playlists']);
+	const [saved, setSaved] = useState([] as UserData['saved']);
+	const [topArtists, setTopArtists] = useState([] as UserData['topArtists']);
+	const [topTracks, setTopTracks] = useState([] as UserData['topTracks']);
 
 	const getTopData = useCallback(
 		(timeframe: Timeframe) =>
@@ -59,17 +61,19 @@ const Main: React.FC<MainProps> = () => {
 		spotify.connected &&
 			spotify
 				.getMe()
+				.then(res => (setUser(res), res))
 				.then(({ id }) =>
 					Promise.all([loop(spotify.getUserPlaylists)(id), loopSolo(spotify.getMySavedTracks)()])
 				)
 				.then(([_playlists, _saved]) => (setPlaylists(_playlists.items), setSaved(_saved.items)));
 		updateTimeframe();
-		history.push({ ...history.location, search: `?timeframe=${timeframe}` });
+		history.location.pathname.includes('top') &&
+			history.push({ ...history.location, search: `?timeframe=${timeframe}` });
 		history.listen(updateTimeframe);
 	}, []);
 
 	return (
-		<UserDataContext.Provider value={{ playlists, saved, topArtists, topTracks }}>
+		<UserDataContext.Provider value={{ user, playlists, saved, topArtists, topTracks }}>
 			<Drawer />
 			<div style={{ marginLeft: '15%', width: '85%', height: '100%', overflowX: 'hidden' }}>
 				{/* overflow for scroll bar width */}
