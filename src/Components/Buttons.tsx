@@ -14,17 +14,46 @@ const LinkText = styled.a`
 	text-decoration: none;
 	font-size: 1.5rem;
 
+	p {
+		display: inline-block;
+		margin: 0 0.25rem;
+		vertical-align: super;
+	}
+
 	&:hover,
 	&:active {
 		color: ${p => p.theme.white};
+		svg {
+			fill: ${p => p.theme.white};
+		}
 	}
 `;
 
-export const LinkButton = ({ text, to }: { text: string; to: string }) => (
+interface LinkButtonProps {
+	text: string;
+	to: string;
+	icon?: React.FunctionComponent<
+		React.SVGProps<SVGSVGElement> & {
+			title?: string | undefined;
+		}
+	>;
+}
+
+const LinkIcon = styled(
+	({ icon, children, ...props }: React.PropsWithChildren<Pick<LinkButtonProps, 'icon'>>) =>
+		icon ? React.createElement(icon, props, children) : null
+)`
+	fill: ${p => p.theme.lightgray};
+	height: 32px;
+	width: 32px;
+	padding: 0.25rem;
+`;
+
+export const LinkButton: React.FC<LinkButtonProps> = ({ text, to, icon }) => (
 	<ButtonBase>
-		{/* Icon here */}
 		<Link to={to} component={LinkText}>
-			{text}
+			<LinkIcon icon={icon} />
+			<p>{text}</p>
 		</Link>
 	</ButtonBase>
 );

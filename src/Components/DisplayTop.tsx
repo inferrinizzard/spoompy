@@ -89,7 +89,7 @@ const DisplayTop = <T extends {}>(props: React.PropsWithChildren<DisplayTopProps
 						</TimeframeButton>
 					))}
 				</div>
-				<h1>Top Ten</h1>
+				<h1 style={{ margin: '0.5rem' }}>Top Ten</h1>
 				{props.topCarousel(props.data)}
 			</div>
 			<div style={{ height: '50vh', overflowY: 'auto' }}>

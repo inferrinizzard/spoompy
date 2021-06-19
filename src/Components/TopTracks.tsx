@@ -1,7 +1,32 @@
 import React, { useContext } from 'react';
+import styled from 'styled-components';
 
 import { UserDataContext } from './Main';
 import DisplayTop, { HighlightItem } from './DisplayTop';
+
+import { ReactComponent as Heart } from '../icons/heart.svg';
+
+const SavedMarker = styled.div`
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	height: 48px;
+	width: 48px;
+	border-radius: 24px;
+	margin: 8px;
+	background-color: ${p => p.theme.green};
+	box-shadow: 0 4px 4px ${p => p.theme.black}88;
+
+	svg {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		height: 32px;
+		width: 32px;
+		fill: ${p => p.theme.white};
+	}
+`;
 
 const TopTracks: React.FC<{}> = () => {
 	const { saved, topTracks } = useContext(UserDataContext);
@@ -13,13 +38,17 @@ const TopTracks: React.FC<{}> = () => {
 				<div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
 					{data.slice(0, 10).map(track => (
 						<HighlightItem key={track.id}>
-							<img src={track.album.images[0].url} alt={track.name} height={250} width={250} />
+							<div style={{ position: 'relative', height: 250, width: 250 }}>
+								{saved.some(t => t.track.id === track.id) ? (
+									<SavedMarker>
+										<Heart />
+									</SavedMarker>
+								) : undefined}
+								<img src={track.album.images[0].url} alt={track.name} height={250} width={250} />
+							</div>
 							<h2>{track.name}</h2>
 							<div>{track.artists.map(({ name }) => name).join(', ')}</div>
 							<div>{track.album.name}</div>
-							{(fave => (fave ? <div>{'In your saved songs'}</div> : null))(
-								saved.some(t => t.track.id === track.id)
-							)}
 						</HighlightItem>
 					))}
 				</div>

@@ -1,6 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { ReactComponent as Home } from '../icons/home.svg';
+import { ReactComponent as Track } from '../icons/track.svg';
+import { ReactComponent as Album } from '../icons/album.svg';
+import { ReactComponent as Profile } from '../icons/profile.svg';
+import { ReactComponent as Library } from '../icons/library.svg';
+import { ReactComponent as Duration } from '../icons/duration.svg';
+import { ReactComponent as Edit } from '../icons/edit.svg';
+
 import { LinkButton } from './Buttons';
 
 const DrawerBase = styled.div`
@@ -17,12 +25,12 @@ export interface DrawerProps {}
 const Drawer: React.FC<DrawerProps> = () => {
 	return (
 		<DrawerBase>
-			<LinkButton text="Home" to="/home"></LinkButton>
-			<LinkButton text="Top Tracks" to="/top/tracks"></LinkButton>
-			<LinkButton text="Top Artists" to="/top/artists"></LinkButton>
-			<LinkButton text="Playlist Analysis" to="/playlists"></LinkButton>
-			<LinkButton text="Listening History" to="/listening"></LinkButton>
-			<LinkButton text="Info" to="/info"></LinkButton>
+			<LinkButton text="Home" to="/home" icon={Home} />
+			<LinkButton text="Top Tracks" to="/top/tracks" icon={Track} />
+			<LinkButton text="Top Artists" to="/top/artists" icon={Profile} />
+			<LinkButton text="Playlist Analysis" to="/playlists" icon={Library} />
+			<LinkButton text="Listening History" to="/listening" icon={Duration} />
+			<LinkButton text="Info" to="/info" icon={Edit} />
 		</DrawerBase>
 	);
 };

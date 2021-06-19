@@ -38,6 +38,7 @@ const PlaylistGrid: React.FC<PlaylistGridProps> = ({ setActive }) => {
 };
 
 const ImageBlock = styled.div`
+	position: relative;
 	&:after,
 	&:before {
 		position: absolute;
@@ -74,10 +75,8 @@ export interface PlaylistBlockProps {
 
 const PlaylistBlock: React.FC<PlaylistBlockProps> = ({ data, setActive }) => {
 	return (
-		<ImageBlock
-			data-content={data.name}
-			onClick={() => setActive(data)}
-			style={{ position: 'relative' }}>
+		<ImageBlock data-content={data.name} onClick={() => setActive(data)}>
+			{/* https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png saved songs image */}
 			<img
 				src={data.images[0]?.url ?? ''}
 				alt={data.name}
