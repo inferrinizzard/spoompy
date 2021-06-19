@@ -1,10 +1,11 @@
 import React, { useState, useContext } from 'react';
-
 import { loop } from '../SpotifyScripts';
+
 import { SpotifyContext } from '../App';
+import { UserDataContext } from './Main';
+
 import Inspect from './Inspect';
 import PlaylistGrid from './PlaylistGrid';
-import { UserDataContext } from './Main';
 
 export type ActivePlaylist = {
 	playlist: SpotifyApi.PlaylistBaseObject;

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
 import { UserDataContext } from './Main';
-import DisplayTop, { HighlightItem } from './DisplayTop';
+import DisplayTop, { DisplayTopProps, HighlightItem } from './DisplayTop';
 
 const genreKeywords = {
 	'edm': 'EDM',
@@ -24,6 +24,27 @@ const parseFollowers = (count: string | number) =>
 		+count as string | number
 	);
 
+export const ArtistHighlights =
+	(
+		saved: SpotifyApi.SavedTrackObject[],
+		size = 250
+	): DisplayTopProps<SpotifyApi.ArtistObjectFull>['topCarousel'] =>
+	data =>
+		(
+			<div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
+				{data.slice(0, 10).map(artist => (
+					<HighlightItem key={artist.id} size={size}>
+						<img src={artist.images[0].url} alt={artist.name} height={size} width={size} />
+						<h2>{artist.name}</h2>
+						{(count =>
+							count ? <div>{`${count} Saved Track${count === 1 ? '' : 's'}`}</div> : null)(
+							saved.filter(({ track }) => track.artists.some(({ id }) => id === artist.id)).length
+						)}
+					</HighlightItem>
+				))}
+			</div>
+		);
+
 export interface TopArtistsProps {}
 
 const TopArtists: React.FC<TopArtistsProps> = () => {
@@ -32,20 +53,7 @@ const TopArtists: React.FC<TopArtistsProps> = () => {
 	return (
 		<DisplayTop<SpotifyApi.ArtistObjectFull>
 			data={topArtists}
-			topCarousel={data => (
-				<div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
-					{data.slice(0, 10).map(artist => (
-						<HighlightItem key={artist.id}>
-							<img src={artist.images[0].url} alt={artist.name} height={250} width={250} />
-							<h2>{artist.name}</h2>
-							{(count =>
-								count ? <div>{`${count} Saved Track${count === 1 ? '' : 's'}`}</div> : null)(
-								saved.filter(({ track }) => track.artists.some(({ id }) => id === artist.id)).length
-							)}
-						</HighlightItem>
-					))}
-				</div>
-			)}
+			topCarousel={ArtistHighlights(saved)}
 			tableHeader={
 				<tr>
 					<th>Rank</th>

@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { Storage } from '../Spotify';
 import { loop, loopSolo } from '../SpotifyScripts';
 
 import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 
 import { SpotifyContext } from '../App';
-import PlaylistExplorer from './PlaylistExplorer';
-import ListeningExplorer from './ListeningExplorer';
+import Home from './Home';
 import Drawer from './Drawer';
 
 import TopArtists from './TopArtists';
 import TopTracks from './TopTracks';
+import PlaylistExplorer from './PlaylistExplorer';
+import ListeningExplorer from './ListeningExplorer';
 
 type Timeframe = 'short_term' | 'medium_term' | 'long_term';
 const getTimeframe = (history: ReturnType<typeof useHistory>) =>
@@ -80,12 +80,7 @@ const Main: React.FC<MainProps> = () => {
 				<div className="header"></div>
 				<Switch>
 					<Route path="/home">
-						{!spotify.connected && (
-							<button onClick={() => spotify.login(window.location.origin + '/redirect')}>
-								login
-							</button>
-						)}
-						<button onClick={() => (Storage.removeToken(), Storage.removeState())}>Reset</button>
+						<Home />
 					</Route>
 					<Route path="/login"></Route>
 					<Route path="/user">

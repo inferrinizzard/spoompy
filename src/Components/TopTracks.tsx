@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 
 import { UserDataContext } from './Main';
-import DisplayTop, { HighlightItem } from './DisplayTop';
+import DisplayTop, { DisplayTopProps, HighlightItem } from './DisplayTop';
 
 import { ReactComponent as Heart } from '../icons/heart.svg';
 
@@ -28,31 +28,41 @@ const SavedMarker = styled.div`
 	}
 `;
 
-const TopTracks: React.FC<{}> = () => {
+export const TrackHighlights =
+	(
+		saved: SpotifyApi.SavedTrackObject[],
+		size = 250
+	): DisplayTopProps<SpotifyApi.TrackObjectFull>['topCarousel'] =>
+	data =>
+		(
+			<div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
+				{data.slice(0, 10).map(track => (
+					<HighlightItem key={track.id} size={size}>
+						<div style={{ position: 'relative', height: size, width: size }}>
+							{saved.some(t => t.track.id === track.id) ? (
+								<SavedMarker>
+									<Heart />
+								</SavedMarker>
+							) : undefined}
+							<img src={track.album.images[0].url} alt={track.name} height={size} width={size} />
+						</div>
+						<h2>{track.name}</h2>
+						<div>{track.artists.map(({ name }) => name).join(', ')}</div>
+						<div>{track.album.name}</div>
+					</HighlightItem>
+				))}
+			</div>
+		);
+
+interface TopTracksProps {}
+
+const TopTracks: React.FC<TopTracksProps> = () => {
 	const { saved, topTracks } = useContext(UserDataContext);
 
 	return (
 		<DisplayTop<SpotifyApi.TrackObjectFull>
 			data={topTracks}
-			topCarousel={data => (
-				<div style={{ overflowX: 'auto', whiteSpace: 'nowrap' }}>
-					{data.slice(0, 10).map(track => (
-						<HighlightItem key={track.id}>
-							<div style={{ position: 'relative', height: 250, width: 250 }}>
-								{saved.some(t => t.track.id === track.id) ? (
-									<SavedMarker>
-										<Heart />
-									</SavedMarker>
-								) : undefined}
-								<img src={track.album.images[0].url} alt={track.name} height={250} width={250} />
-							</div>
-							<h2>{track.name}</h2>
-							<div>{track.artists.map(({ name }) => name).join(', ')}</div>
-							<div>{track.album.name}</div>
-						</HighlightItem>
-					))}
-				</div>
-			)}
+			topCarousel={TrackHighlights(saved)}
 			tableHeader={
 				<tr>
 					<th>Rank</th>

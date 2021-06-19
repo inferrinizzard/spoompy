@@ -44,19 +44,23 @@ const TimeframeButton = styled(ButtonBase)`
 	}
 `;
 
-export const HighlightItem = styled.div`
+export const HighlightItem = styled.div<{ size: number }>(
+	p => `
 	display: inline-block;
 	vertical-align: top;
 	text-align: center;
-	max-width: 250px;
+	max-width: ${p.size}px;
 
-	h2 {
+	* {
 		white-space: break-spaces;
-		color: ${p => p.theme.white};
+	}
+	h2 {
+		color: ${p.theme.white};
 		font-size: 1.25rem;
 		margin: 0.5rem 0;
 	}
-`;
+`
+);
 
 export interface DisplayTopProps<T> {
 	data: T[];
