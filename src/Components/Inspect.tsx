@@ -5,9 +5,10 @@ import { ActivePlaylist } from './PlaylistExplorer';
 import ContributionGraph from './Charts/ContributionGraph';
 import CumulativeGraph from './Charts/CumulativeGraph';
 import GenrePie from './Charts/GenrePie';
+import styled from 'styled-components';
 
 export interface InspectProps {
-	active: ActivePlaylist;
+	active: Exclude<ActivePlaylist, null>;
 }
 
 export type Frequency = { [leaf: string]: number };
@@ -40,10 +41,19 @@ const trim = <T extends any>(data: T[], accessor: (item: T) => number): T[] =>
 		: data;
 const msToDate = (ms: number) => new Date(ms).toISOString().split('T')[0];
 
+const InspectContainer = styled.div`
+	position: fixed;
+	bottom: 0;
+	zindex: 1;
+	width: 100%;
+	height: 100%;
+	background-color: ${p => p.theme.dark};
+`;
+
 const Inspect: React.FC<InspectProps> = ({ active }) => {
 	const spotify = useContext(SpotifyContext);
 
-	const artistList = active!.tracks.reduce(
+	const artistList = active.tracks.reduce(
 		(artists, { track }) => [
 			...artists,
 			...(track as SpotifyApi.TrackObjectFull).artists.map(({ id }) => id),
@@ -75,7 +85,7 @@ const Inspect: React.FC<InspectProps> = ({ active }) => {
 		});
 	}, [active]); // eslint-disable-line react-hooks/exhaustive-deps
 
-	const addedFrequency = frequency(active!.tracks.map(track => track.added_at.split('T')[0]));
+	const addedFrequency = frequency(active.tracks.map(track => track.added_at.split('T')[0]));
 	const keys = Object.keys(addedFrequency).sort();
 	const rawFreqData = generateDates(keys[0], keys[keys.length - 1]).map(d =>
 		(date => ({ raw: d, date, value: addedFrequency[date] ?? 0 }))(msToDate(d))
@@ -83,28 +93,41 @@ const Inspect: React.FC<InspectProps> = ({ active }) => {
 	const freqData = trim(rawFreqData, d => d.value);
 
 	return (
-		<div
-			style={{
-				position: 'fixed',
-				bottom: 0,
-				zIndex: 1,
-				width: '100%',
-				height: '100%',
-				backgroundColor: 'white',
-			}}>
-			<div>{active?.playlist.name}</div>
-			<div style={{ display: 'inline-block' }}>
-				<ContributionGraph frequency={freqData} />
-				<CumulativeGraph frequency={freqData} />
+		<InspectContainer>
+			<div
+				style={{
+					position: 'absolute',
+					top: '1rem',
+					left: '1rem',
+					display: 'flex',
+					alignItems: 'center',
+				}}>
+				<img
+					src={active.playlist.images[0].url}
+					alt={active.playlist.name}
+					height={64}
+					width={64}
+				/>
+				<h1 style={{ display: 'inline', fontSize: '2rem', margin: '0 1rem' }}>
+					{active.playlist.name}
+				</h1>
 			</div>
-			<div>
-				{artistData.length && Object.keys(genreData).length && <GenrePie data={genreData} />}
+			<div style={{ marginTop: '64px' }}>
+				<div style={{ display: 'inline-block', width: '50%' }}>
+					<ContributionGraph frequency={freqData} />
+					<CumulativeGraph frequency={freqData} />
+				</div>
+				{artistData.length && Object.keys(genreData).length && (
+					<div style={{ display: 'inline-block' }}>
+						<GenrePie data={genreData} />
+					</div>
+				)}
 			</div>
-		</div>
+		</InspectContainer>
 	);
 };
 
 export default React.memo(
 	Inspect,
-	(prev, next) => prev.active?.playlist.id === next.active?.playlist.id
+	(prev, next) => prev.active.playlist.id === next.active.playlist.id
 );

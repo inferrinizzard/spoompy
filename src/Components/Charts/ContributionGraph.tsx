@@ -46,7 +46,7 @@ const ContributionGraph: React.FC<ContributionGraphProps> = ({ frequency }) => {
 							width={xMax / data.length}
 							x={xScale(raw)}
 							y={yScale(value)}
-							fill={'red'}
+							fill="red"
 						/>
 					) : null
 				)}
@@ -57,9 +57,22 @@ const ContributionGraph: React.FC<ContributionGraphProps> = ({ frequency }) => {
 					top={0}
 					left={0}
 					label={'Tracks Added'}
-					stroke={'#1b1a1e'}
+					labelOffset={24}
+					tickLabelProps={() => ({ fill: '#fff', fontSize: '0.75rem', textAnchor: 'end' })}
+					stroke={'#fff'}
+					tickStroke={'#fff'}
+					labelProps={{ fill: '#fff' }}
 				/>
-				<AxisBottom scale={xScale} top={yMax} label={'Time'} stroke={'#1b1a1e'} />
+				<AxisBottom
+					scale={xScale}
+					top={yMax}
+					label={'Time'}
+					labelOffset={24}
+					tickLabelProps={() => ({ fill: '#fff', fontSize: '0.75rem', textAnchor: 'middle' })}
+					stroke={'#fff'}
+					tickStroke={'#fff'}
+					labelProps={{ fill: '#fff' }}
+				/>
 			</Group>
 		</svg>
 	);

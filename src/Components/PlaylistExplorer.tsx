@@ -6,6 +6,9 @@ import { UserDataContext } from './Main';
 
 import Inspect from './Inspect';
 import PlaylistGrid from './PlaylistGrid';
+import { ButtonBase, SVGIcon } from './Buttons';
+
+import { ReactComponent as Close } from '../icons/close.svg';
 
 export type ActivePlaylist = {
 	playlist: SpotifyApi.PlaylistBaseObject;
@@ -35,15 +38,15 @@ const PlaylistExplorer: React.FC<PlaylistExplorerProps> = () => {
 			  );
 
 	return (
-		<div>
+		<div style={{ position: 'relative' }}>
 			<PlaylistGrid setActive={loadActive} />
 			{active && <Inspect active={active} />}
 			{active && (
-				<button
-					style={{ position: 'fixed', top: '1rem', left: '1rem', zIndex: 1 }}
+				<ButtonBase
+					style={{ position: 'absolute', top: '1rem', right: '1rem', zIndex: 2 }}
 					onClick={() => setActive(null)}>
-					X
-				</button>
+					<SVGIcon icon={Close} />
+				</ButtonBase>
 			)}
 		</div>
 	);

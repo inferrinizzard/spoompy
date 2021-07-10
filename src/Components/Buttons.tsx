@@ -39,7 +39,7 @@ interface LinkButtonProps {
 	>;
 }
 
-const LinkIcon = styled(
+export const SVGIcon = styled(
 	({ icon, children, ...props }: React.PropsWithChildren<Pick<LinkButtonProps, 'icon'>>) =>
 		icon ? React.createElement(icon, props, children) : null
 )`
@@ -47,12 +47,16 @@ const LinkIcon = styled(
 	height: 32px;
 	width: 32px;
 	padding: 0.25rem;
+
+	&:hover {
+		fill: ${p => p.theme.white};
+	}
 `;
 
 export const LinkButton: React.FC<LinkButtonProps> = ({ text, to, icon }) => (
 	<ButtonBase>
 		<Link to={to} component={LinkText}>
-			<LinkIcon icon={icon} />
+			<SVGIcon icon={icon} />
 			<p>{text}</p>
 		</Link>
 	</ButtonBase>

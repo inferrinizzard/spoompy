@@ -95,7 +95,7 @@ export interface PlaylistBlockProps {
 
 const PlaylistBlock: React.FC<PlaylistBlockProps> = ({ data, setActive }) => {
 	return (
-		<ImageBlock data-content={data.name} onClick={() => setActive(data)}>
+		<ImageBlock data-content={data.name} onClick={() => data.images.length && setActive(data)}>
 			<img
 				src={data.images[0]?.url ?? Track}
 				alt={data.name}

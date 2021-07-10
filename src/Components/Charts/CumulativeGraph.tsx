@@ -47,8 +47,8 @@ const CumulativeGraph: React.FC<CumulativeGraphProps> = ({ frequency }) => {
 					yScale={yScale}
 					x={d => xScale(x(d))}
 					y={d => yScale(y(d))}
-					stroke="#333"
-					fill={'aliceblue'}
+					stroke="#fff"
+					fill="aliceblue"
 				/>
 				<AxisLeft
 					numTicks={(([a, b]) => Math.min(10, b - a))(yScale.domain())}
@@ -57,9 +57,22 @@ const CumulativeGraph: React.FC<CumulativeGraphProps> = ({ frequency }) => {
 					top={0}
 					left={0}
 					label={'Tracks Added'}
-					stroke={'#1b1a1e'}
+					labelOffset={24}
+					tickLabelProps={() => ({ fill: '#fff', fontSize: '0.75rem', textAnchor: 'end' })}
+					stroke={'#fff'}
+					tickStroke={'#fff'}
+					labelProps={{ fill: '#fff' }}
 				/>
-				<AxisBottom scale={xScale} top={yMax} label={'Time'} stroke={'#1b1a1e'} />
+				<AxisBottom
+					scale={xScale}
+					top={yMax}
+					label={'Time'}
+					labelOffset={24}
+					tickLabelProps={() => ({ fill: '#fff', fontSize: '0.75rem', textAnchor: 'middle' })}
+					stroke={'#fff'}
+					tickStroke={'#fff'}
+					labelProps={{ fill: '#fff' }}
+				/>
 			</Group>
 		</svg>
 	);
