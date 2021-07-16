@@ -1,9 +1,9 @@
 import React, { useRef, useContext } from 'react';
 import styled from 'styled-components';
 
-import { UserDataContext } from './Main';
+import { UserDataContext } from 'Components/Main';
 
-import Track from '../icons/track.svg';
+import Track from 'icons/track.svg';
 
 const blockSize = 250; // px
 const rem2Px = (rem: number) =>

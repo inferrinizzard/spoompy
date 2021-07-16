@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { loop, loopSolo } from '../SpotifyScripts';
+import { loop, loopSolo } from 'SpotifyScripts';
 
 import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 
-import { SpotifyContext } from '../App';
-import Home from './Home';
-import Drawer from './Drawer';
+import { SpotifyContext } from 'App';
+import Home from './Pages/Home';
+import Drawer from './Elements/Drawer';
 
-import TopArtists from './TopArtists';
-import TopTracks from './TopTracks';
-import PlaylistExplorer from './PlaylistExplorer';
-import ListeningExplorer from './ListeningExplorer';
+import TopArtists from './Pages/TopArtists';
+import TopTracks from './Pages/TopTracks';
+import PlaylistExplorer from './Pages/PlaylistExplorer';
+import ListeningExplorer from './Pages/ListeningExplorer';
 
 type Timeframe = 'short_term' | 'medium_term' | 'long_term';
 const getTimeframe = (history: ReturnType<typeof useHistory>) =>

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
-import { UserDataContext } from './Main';
-import DisplayTop, { DisplayTopProps, HighlightItem } from './DisplayTop';
+import { UserDataContext } from 'Components/Main';
+import DisplayTop, { DisplayTopProps, HighlightItem } from 'Components/Elements/DisplayTop';
 
 const genreKeywords = {
 	'edm': 'EDM',

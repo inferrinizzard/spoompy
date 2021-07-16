@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { ReactComponent as Home } from '../icons/home.svg';
-import { ReactComponent as Track } from '../icons/track.svg';
-import { ReactComponent as Album } from '../icons/album.svg';
-import { ReactComponent as Profile } from '../icons/profile.svg';
-import { ReactComponent as Library } from '../icons/library.svg';
-import { ReactComponent as Duration } from '../icons/duration.svg';
-import { ReactComponent as Edit } from '../icons/edit.svg';
+import { ReactComponent as Home } from 'icons/home.svg';
+import { ReactComponent as Track } from 'icons/track.svg';
+import { ReactComponent as Album } from 'icons/album.svg';
+import { ReactComponent as Profile } from 'icons/profile.svg';
+import { ReactComponent as Library } from 'icons/library.svg';
+import { ReactComponent as Duration } from 'icons/duration.svg';
+import { ReactComponent as Edit } from 'icons/edit.svg';
 
 import { LinkButton } from './Buttons';
 

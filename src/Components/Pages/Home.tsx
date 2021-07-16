@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import { Storage } from '../Spotify';
+import { Storage } from 'Spotify';
 
-import { SpotifyContext } from '../App';
-import { UserDataContext } from './Main';
+import { SpotifyContext } from 'App';
+import { UserDataContext } from 'Components/Main';
 import { TrackHighlights } from './TopTracks';
 import { ArtistHighlights } from './TopArtists';
 

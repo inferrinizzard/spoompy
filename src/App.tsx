@@ -1,12 +1,12 @@
 import React from 'react';
-import Spotify, { Storage, wrapObj } from './Spotify';
-import './css/App.scss';
-import theme from './css/colours.module.scss';
+import Spotify, { Storage, wrapObj } from 'Spotify';
+import 'css/App.scss';
+import theme from 'css/colours.module.scss';
 
 import { ThemeProvider } from 'styled-components';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import Main from './Components/Main';
+import Main from 'Components/Main';
 
 const spotify = wrapObj(new Spotify('104889eeeb724a9ca5efa673f527f38f'));
 export const SpotifyContext = React.createContext(spotify);

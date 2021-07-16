@@ -7,7 +7,7 @@ import { curveBasis } from '@visx/curve';
 import { AxisLeft, AxisBottom } from '@visx/axis';
 import { max, extent } from 'd3-array';
 
-import { DateFreqList } from '../Inspect';
+import { DateFreqList } from '../Elements/Inspect';
 export interface CumulativeGraphProps {
 	frequency: DateFreqList;
 }

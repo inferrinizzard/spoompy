@@ -1,14 +1,14 @@
 import React, { useState, useContext } from 'react';
-import { loop } from '../SpotifyScripts';
+import { loop } from 'SpotifyScripts';
 
-import { SpotifyContext } from '../App';
-import { UserDataContext } from './Main';
+import { SpotifyContext } from 'App';
+import { UserDataContext } from 'Components/Main';
 
-import Inspect from './Inspect';
+import Inspect from 'Components/Elements/Inspect';
 import PlaylistGrid from './PlaylistGrid';
-import { ButtonBase, SVGIcon } from './Buttons';
+import { ButtonBase, SVGIcon } from 'Components/Elements/Buttons';
 
-import { ReactComponent as Close } from '../icons/close.svg';
+import { ReactComponent as Close } from 'icons/close.svg';
 
 export type ActivePlaylist = {
 	playlist: SpotifyApi.PlaylistBaseObject;

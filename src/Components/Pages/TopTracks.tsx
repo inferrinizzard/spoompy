@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 
-import { UserDataContext } from './Main';
-import DisplayTop, { DisplayTopProps, HighlightItem } from './DisplayTop';
+import { UserDataContext } from 'Components/Main';
+import DisplayTop, { DisplayTopProps, HighlightItem } from 'Components/Elements/DisplayTop';
 
-import { ReactComponent as Heart } from '../icons/heart.svg';
+import { ReactComponent as Heart } from 'icons/heart.svg';
 
 const SavedMarker = styled.div`
 	position: absolute;
@@ -15,7 +15,7 @@ const SavedMarker = styled.div`
 	border-radius: 24px;
 	margin: 8px;
 	background-color: ${p => p.theme.green};
-	box-shadow: 0 4px 4px ${p => p.theme.black}88;
+	box-shadow: 0 4px 4px ${p => p.theme.black};
 
 	svg {
 		position: absolute;

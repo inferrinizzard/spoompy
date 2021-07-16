@@ -2,8 +2,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 // equalizer: https://open.scdn.co/cdn/images/equaliser-animated-green.73b73928.gif
 
-import { SpotifyContext } from '../App';
-import { loop } from '../SpotifyScripts';
+import { SpotifyContext } from 'App';
+import { loop } from 'SpotifyScripts';
 
 export interface ListeningExplorerProps {}
 

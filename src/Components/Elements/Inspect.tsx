@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 
-import { SpotifyContext } from '../App';
-import { ActivePlaylist } from './PlaylistExplorer';
-import ContributionGraph from './Charts/ContributionGraph';
-import CumulativeGraph from './Charts/CumulativeGraph';
-import GenrePie from './Charts/GenrePie';
+import { SpotifyContext } from 'App';
+import { ActivePlaylist } from 'Components/Pages/PlaylistExplorer';
+import ContributionGraph from 'Components/Charts/ContributionGraph';
+import CumulativeGraph from 'Components/Charts/CumulativeGraph';
+import GenrePie from 'Components/Charts/GenrePie';
 import styled from 'styled-components';
 
 export interface InspectProps {

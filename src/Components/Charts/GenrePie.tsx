@@ -3,7 +3,7 @@ import React from 'react';
 import { Group } from '@visx/group';
 import { Pie } from '@visx/shape';
 
-import { GenreData } from '../Inspect';
+import { GenreData } from '../Elements/Inspect';
 
 export interface GenrePieProps {
 	data: GenreData;

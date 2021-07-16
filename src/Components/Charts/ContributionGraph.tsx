@@ -6,7 +6,7 @@ import { Bar } from '@visx/shape';
 import { AxisLeft, AxisBottom } from '@visx/axis';
 import { max, extent } from 'd3-array';
 
-import { DateFreqList } from '../Inspect';
+import { DateFreqList } from '../Elements/Inspect';
 
 export interface ContributionGraphProps {
 	frequency: DateFreqList;
