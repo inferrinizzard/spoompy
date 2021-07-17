@@ -11,6 +11,7 @@ import TopArtists from './Pages/TopArtists';
 import TopTracks from './Pages/TopTracks';
 import PlaylistExplorer from './Pages/PlaylistExplorer';
 import ListeningExplorer from './Pages/ListeningExplorer';
+import ArtistExplorer from './Pages/ArtistExplorer';
 
 type Timeframe = 'short_term' | 'medium_term' | 'long_term';
 const getTimeframe = (history: ReturnType<typeof useHistory>) =>
@@ -92,11 +93,14 @@ const Main: React.FC<MainProps> = () => {
 					<Route path="/top/tracks">
 						<TopTracks />
 					</Route>
+					<Route path="/playlists">
+						<PlaylistExplorer />
+					</Route>
 					<Route path="/listening">
 						<ListeningExplorer />
 					</Route>
-					<Route path="/playlists">
-						<PlaylistExplorer />
+					<Route path="/artist-graph">
+						<ArtistExplorer />
 					</Route>
 					<Route path="/redirect">
 						<div style={{ color: 'white' }}>this is the redirect page</div>

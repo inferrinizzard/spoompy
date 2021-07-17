@@ -38,6 +38,11 @@ const Drawer: React.FC<DrawerProps> = () => {
 				to={{ pathname: '/listening', search: '' }}
 				icon={Duration}
 			/>
+			<LinkButton
+				text="Artist Graph"
+				to={{ pathname: '/artist-graph', search: '' }}
+				icon={Profile}
+			/>
 			<LinkButton text="Info" to={{ pathname: '/info', search: '' }} icon={Edit} />
 		</DrawerBase>
 	);
