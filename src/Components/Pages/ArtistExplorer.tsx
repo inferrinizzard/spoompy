@@ -79,7 +79,22 @@ const ArtistExplorer: React.FC<ArtistExplorerProps> = () => {
 			<ForceGraph
 				graphData={{ nodes: artists, links }}
 				linkColor={() => 'white'}
-				// nodeCanvasObject={}
+				nodeCanvasObject={(node, ctx) => {
+					ctx.arc(node.x ?? 0, node.y ?? 0, 10, 0, 2 * Math.PI, false);
+					ctx.fillStyle = 'white';
+					ctx.fill();
+					ctx.fillStyle = '';
+					let img = new Image();
+					img.src = (node as SpotifyApi.ArtistObjectFull).images[0]?.url ?? '';
+					img.addEventListener('load', () => {
+						ctx.save();
+						ctx.beginPath();
+						ctx.arc(node.x ?? 0, node.y ?? 0, 8, 0, 2 * Math.PI, true);
+						ctx.clip();
+						ctx.drawImage(img, (node.x ?? 0) - 8, (node.y ?? 0) - 8, 16, 16);
+						ctx.restore();
+					});
+				}}
 			/>
 		</div>
 	);
