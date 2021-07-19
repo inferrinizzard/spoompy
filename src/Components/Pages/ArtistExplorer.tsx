@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 
-import ForceGraph from 'react-force-graph-2d';
+import ForceGraph, { NodeObject } from 'react-force-graph-3d';
+import { Sprite, SpriteMaterial, TextureLoader } from 'three';
 
 import Profile from 'icons/profile.svg';
 
@@ -77,23 +78,17 @@ const ArtistExplorer: React.FC<ArtistExplorerProps> = () => {
 				</div>
 			</div>
 			<ForceGraph
+				numDimensions={2}
 				graphData={{ nodes: artists, links }}
 				linkColor={() => 'white'}
-				nodeCanvasObject={(node, ctx) => {
-					ctx.arc(node.x ?? 0, node.y ?? 0, 10, 0, 2 * Math.PI, false);
-					ctx.fillStyle = 'white';
-					ctx.fill();
-					ctx.fillStyle = '';
-					let img = new Image();
-					img.src = (node as SpotifyApi.ArtistObjectFull).images[0]?.url ?? '';
-					img.addEventListener('load', () => {
-						ctx.save();
-						ctx.beginPath();
-						ctx.arc(node.x ?? 0, node.y ?? 0, 8, 0, 2 * Math.PI, true);
-						ctx.clip();
-						ctx.drawImage(img, (node.x ?? 0) - 8, (node.y ?? 0) - 8, 16, 16);
-						ctx.restore();
-					});
+				nodeThreeObject={(node: NodeObject) => {
+					const imgTexture = new TextureLoader().load(
+						(node as SpotifyApi.ArtistObjectFull).images[0]?.url
+					);
+					const sprite = new Sprite(new SpriteMaterial({ map: imgTexture }));
+					sprite.scale.set(12, 12, 1);
+
+					return sprite;
 				}}
 			/>
 		</div>
