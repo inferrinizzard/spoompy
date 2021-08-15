@@ -1,5 +1,5 @@
 import React from 'react';
-import Spotify, { Storage, wrapObj } from 'Spotify';
+import Spotify, { Storage } from 'Spotify';
 import 'css/App.scss';
 import theme from 'css/colours.module.scss';
 
@@ -8,7 +8,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 import Main from 'Components/Main';
 
-const spotify = wrapObj(new Spotify('104889eeeb724a9ca5efa673f527f38f'));
+const spotify = Spotify('104889eeeb724a9ca5efa673f527f38f');
 export const SpotifyContext = React.createContext(spotify);
 
 const App: React.FC = () => {
@@ -17,13 +17,13 @@ const App: React.FC = () => {
 		const params = new URLSearchParams(window.location.hash);
 		if (params.get('state') === Storage.state) {
 			Storage.removeState();
-			spotify.access_token = params.get('#access_token') ?? '';
-			Storage.assignToken(spotify.access_token);
-			spotify.setAccessToken(spotify.access_token);
-			setTimeout(() => window.location.replace(hostname), 3000);
+			spotify.accessToken = params.get('#access_token') ?? '';
+			Storage.assignToken(spotify.accessToken);
+			spotify.setAccessToken(spotify.accessToken);
+			window.location.replace(hostname);
 		} else if (Storage.state) {
 			Storage.removeState();
-			setTimeout(() => window.location.replace(hostname), 3000);
+			window.location.replace(hostname);
 		}
 	}
 

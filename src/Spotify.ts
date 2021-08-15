@@ -2,11 +2,13 @@ import SpotifyWebApi from 'spotify-web-api-js';
 // docs: https://github.com/JMPerez/spotify-web-api-js
 // Spotify API: https://developer.spotify.com/documentation/web-api/
 
+import { ClassFunction, wrapClassFunctions } from './classWrapper';
+
 export const hostname = 'http://localhost:3000';
 
 export class Storage {
 	static readonly stateName = 'spoompy-state';
-	static readonly accessTokenName = 'spoompy-access_token';
+	static readonly accessTokenName = 'spoompy-accessToken';
 
 	static get state() {
 		return sessionStorage.getItem(Storage.stateName);
@@ -43,14 +45,14 @@ export class Storage {
 }
 
 class Spotify extends SpotifyWebApi {
-	client_id: string;
+	clientId: string;
 	state: string;
-	access_token!: string;
+	accessToken!: string;
 	connected = false;
 
-	constructor(client_id: string) {
+	constructor(clientId: string) {
 		super();
-		this.client_id = client_id;
+		this.clientId = clientId;
 		this.state = [...Array(30)].map(() => Math.random().toString(36)[2]).join('');
 		if (+new Date() - Storage.stateTime > 1000 * 60 * 60) Storage.removeState();
 		if (!Storage.state) Storage.assignState(this.state);
@@ -62,8 +64,8 @@ class Spotify extends SpotifyWebApi {
 				this.connected = false;
 				return;
 			}
-			this.access_token = Storage.accessToken ?? '';
-			this.setAccessToken(this.access_token);
+			this.accessToken = Storage.accessToken ?? '';
+			this.setAccessToken(this.accessToken);
 			this.connected = true;
 			console.log('Connected:', this.connected);
 			setTimeout(() => alert('Your access token has expired, please refresh.'), 1000 * 60 * 60);
@@ -72,7 +74,7 @@ class Spotify extends SpotifyWebApi {
 
 	login = (url = hostname) => {
 		const params = new URLSearchParams({
-			client_id: this.client_id,
+			client_id: this.clientId,
 			response_type: 'token',
 			redirect_uri: url,
 			state: this.state,
@@ -85,40 +87,21 @@ class Spotify extends SpotifyWebApi {
 			].join(' '),
 		});
 
-		const auth_url = `https://accounts.spotify.com/authorize?${params.toString()}`;
-		window.location.replace(auth_url);
+		const authUrl = `https://accounts.spotify.com/authorize?${params.toString()}`;
+		window.location.replace(authUrl);
 	};
 }
 
-type Class = { [key: string]: any };
-const wrap =
-	<T extends Class, Func extends (...args: any[]) => any>(_class: T, fn: Func) =>
-	(...args: Parameters<Func>): ReturnType<Func> | Promise<ReturnType<Func>> | void => {
-		try {
-			const res = fn.apply(_class, args); // needs `this` reference
-			Promise.resolve(res).then(
-				null,
-				err => (
-					console.log('err', err.status, err),
-					err.status === 401 && (Storage.removeState(), Storage.removeToken())
-				)
-			);
-			return res;
-		} catch (e) {
-			console.log(e);
-		}
-	};
+const checkForExpiredToken = (res: ReturnType<ClassFunction<Spotify>>) => {
+	Promise.resolve(res).then(
+		null,
+		err => (
+			console.log('err', err.status, err),
+			err.status === 401 && (Storage.removeState(), Storage.removeToken())
+		)
+	);
+};
 
-export function wrapObj<T extends Class>(_class: T, blacklist = ['login']): T {
-	for (let fn in _class) {
-		let member = _class[fn];
-		if (typeof member === 'function' && !blacklist.includes(member))
-			Object.defineProperty(_class, fn, {
-				...Object.getOwnPropertyDescriptor(_class, fn),
-				value: wrap(_class, member),
-			});
-	}
-	return _class;
-}
-
-export default Spotify;
+const wrapSpotify = (clientId: string) =>
+	wrapClassFunctions(new Spotify(clientId), ['login'], checkForExpiredToken);
+export default wrapSpotify;
