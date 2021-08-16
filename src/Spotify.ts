@@ -9,6 +9,8 @@ export const hostname = 'http://localhost:3000';
 export class Storage {
 	static readonly stateName = 'spoompy-state';
 	static readonly accessTokenName = 'spoompy-accessToken';
+	static readonly redirectName = 'spoompy-redirect';
+	static readonly restoreName = 'spoompy-restore';
 
 	static get state() {
 		return sessionStorage.getItem(Storage.stateName);
@@ -42,42 +44,64 @@ export class Storage {
 		sessionStorage.removeItem(Storage.accessTokenName),
 		sessionStorage.removeItem(Storage.accessTokenName + '=time')
 	);
+
+	static storeItem = (name: string, item: string) => sessionStorage.setItem(name, item);
+	static getItem = (name: string) => sessionStorage.getItem(name);
+	static removeItem = (name: string) => sessionStorage.removeItem(name);
 }
 
 class Spotify extends SpotifyWebApi {
 	clientId: string;
 	state: string;
-	accessToken!: string;
+	accessToken?: string;
 	connected = false;
+	refreshTimer?: ReturnType<typeof setTimeout>;
 
 	constructor(clientId: string) {
 		super();
+
+		const generateStateHash = () =>
+			[...Array(30)].map(() => Math.random().toString(36)[2]).join('');
 		this.clientId = clientId;
-		this.state = [...Array(30)].map(() => Math.random().toString(36)[2]).join('');
+		this.state = generateStateHash();
+
 		if (+new Date() - Storage.stateTime > 1000 * 60 * 60) Storage.removeState();
 		if (!Storage.state) Storage.assignState(this.state);
 		if (Storage.accessToken) {
 			Storage.removeState();
+
 			// greater than 1 hr = expired
-			if (+new Date() - Storage.accessTokenTime > 1000 * 60 * 60) {
+			const tokenExpiryTime = +Storage.accessTokenTime + 60 * 60 * 1000;
+			if (+new Date() > tokenExpiryTime) {
 				Storage.removeToken();
 				this.connected = false;
 				return;
 			}
-			this.accessToken = Storage.accessToken ?? '';
+
+			this.accessToken = Storage.accessToken;
 			this.setAccessToken(this.accessToken);
 			this.connected = true;
-			console.log('Connected:', this.connected);
-			setTimeout(() => alert('Your access token has expired, please refresh.'), 1000 * 60 * 60);
+			// console.log('Connected:', this.connected);
+
+			this.refreshTimer = setTimeout(() => {
+				Storage.storeItem(Storage.restoreName, document.location.href);
+				this.reset();
+
+				this.state = generateStateHash();
+				Storage.assignState(this.state);
+				this.login(Storage.getItem(Storage.redirectName) ?? hostname, this.state);
+				// alert('Your access token has expired, please refresh.');
+			}, tokenExpiryTime - +new Date());
 		}
 	}
 
-	login = (url = hostname) => {
+	login = (url = hostname, state = this.state) => {
+		Storage.storeItem(Storage.redirectName, url);
 		const params = new URLSearchParams({
 			client_id: this.clientId,
 			response_type: 'token',
 			redirect_uri: url,
-			state: this.state,
+			state,
 			scope: [
 				'user-read-recently-played',
 				'playlist-read-private',
@@ -89,6 +113,12 @@ class Spotify extends SpotifyWebApi {
 
 		const authUrl = `https://accounts.spotify.com/authorize?${params.toString()}`;
 		window.location.replace(authUrl);
+	};
+
+	reset = () => {
+		Storage.removeToken();
+		Storage.removeState();
+		this.refreshTimer = undefined;
 	};
 }
 

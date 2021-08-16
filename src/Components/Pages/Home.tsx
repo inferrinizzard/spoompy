@@ -18,7 +18,7 @@ const Home: React.FC<HomeProps> = () => {
 				{!spotify.connected && (
 					<button onClick={() => spotify.login(window.location.origin + '/redirect')}>login</button>
 				)}
-				<button onClick={() => (Storage.removeToken(), Storage.removeState())}>Reset</button>
+				<button onClick={() => (spotify.reset(), document.location.reload())}>Reset</button>
 			</div>
 			{TrackHighlights(saved, 200)(topTracks)}
 			{ArtistHighlights(saved, 200)(topArtists)}

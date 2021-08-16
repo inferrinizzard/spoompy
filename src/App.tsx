@@ -15,15 +15,19 @@ const App: React.FC = () => {
 	const hostname = window.location.origin;
 	if (window.location.hash && window.location.href.includes('redirect')) {
 		const params = new URLSearchParams(window.location.hash);
-		if (params.get('state') === Storage.state) {
+		if (Storage.state) {
+			if (params.get('state') === Storage.state) {
+				spotify.accessToken = params.get('#access_token') ?? '';
+				Storage.assignToken(spotify.accessToken);
+				spotify.setAccessToken(spotify.accessToken);
+			}
 			Storage.removeState();
-			spotify.accessToken = params.get('#access_token') ?? '';
-			Storage.assignToken(spotify.accessToken);
-			spotify.setAccessToken(spotify.accessToken);
-			window.location.replace(hostname);
-		} else if (Storage.state) {
-			Storage.removeState();
-			window.location.replace(hostname);
+
+			const restoreUri = Storage.getItem(Storage.restoreName);
+			if (restoreUri) {
+				Storage.removeItem(Storage.restoreName);
+				window.location.replace(restoreUri);
+			} else window.location.replace(hostname);
 		}
 	}
 
