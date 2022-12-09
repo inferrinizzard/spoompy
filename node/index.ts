@@ -31,7 +31,18 @@ spotify
 		).then(lists => lists.reduce((arr, list) => [...arr, ...list], []));
 		allPlaylists = allPlaylists.filter(playlist => playlist.owner.id === userId);
 
-		for (const playlist of allPlaylists) {
+		const missing = [
+			'6TCDIbwJ2riDAzBZvPQemA',
+			'5S1Z6XNm6vcmg1XjVmMTs8',
+			'59eqoXLSr70895rmC39KRM',
+			'3LSNpPkGf8x28X860VHyFJ',
+		];
+
+		const missingPlaylists = await Promise.all(
+			missing.map(id => spotify.getPlaylist(id).then(({ body }) => body))
+		);
+
+		for (const playlist of [...allPlaylists, ...missingPlaylists]) {
 			await new Promise(resolve => setTimeout(resolve, 5000));
 			await spotify
 				.getPlaylistTracks(playlist.id, { limit: 1 })
@@ -61,7 +72,7 @@ spotify
 						};
 					});
 					writeFile(
-						`archive/2022-12-09/${playlist.name.replace(/ /g, '_')}.json`,
+						`archive/2022-12-09/${playlist.name.replace(/ /g, '_').replace(':', '.')}.json`,
 						JSON.stringify(trackData),
 						() => console.log(`Archived "${playlist.name}" with ${trackData.length} items`)
 					);
