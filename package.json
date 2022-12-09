@@ -24,6 +24,7 @@
 		"@visx/scale": "^1.11.1",
 		"@visx/shape": "^1.11.1",
 		"child_process": "^1.0.2",
+		"dotenv": "^16.0.3",
 		"node-fetch": "^2.6.1",
 		"node-sass": "<6.0.0",
 		"open": "^7.3.0",
