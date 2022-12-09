@@ -21,11 +21,11 @@ spotify
 			.then(({ body }) => body.total);
 
 		let allPlaylists = await Promise.all(
-			new Array(Math.ceil(numPlaylists / 20))
+			new Array(Math.ceil(numPlaylists / 50))
 				.fill(0)
 				.map((_, i) =>
 					spotify
-						.getUserPlaylists(userId, { limit: 20, offset: 20 * i })
+						.getUserPlaylists(userId, { limit: 50, offset: 50 * i })
 						.then(({ body }) => body.items)
 				)
 		).then(lists => lists.reduce((arr, list) => [...arr, ...list], []));
@@ -38,11 +38,11 @@ spotify
 				.then(({ body }) => body.total)
 				.then(numTracks =>
 					Promise.all(
-						new Array(Math.ceil(numTracks / 20))
+						new Array(Math.ceil(numTracks / 50))
 							.fill(0)
 							.map((_, i) =>
 								spotify
-									.getPlaylistTracks(playlist.id, { limit: 20, offset: 20 * i })
+									.getPlaylistTracks(playlist.id, { limit: 50, offset: 50 * i })
 									.then(({ body }) => body.items)
 							)
 					)
