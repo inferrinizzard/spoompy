@@ -3,6 +3,7 @@
 import SpotifyWebApiNode from 'spotify-web-api-node';
 
 import { archivePlaylists } from './playlist';
+import { archiveSaved } from './saved';
 
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
@@ -15,3 +16,5 @@ const spotify = new SpotifyWebApiNode({
 });
 
 archivePlaylists(spotify)(userId);
+
+archiveSaved(spotify);
