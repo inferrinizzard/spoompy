@@ -5,7 +5,7 @@ import { createServer } from 'http';
 import { writeFile } from 'fs';
 import open from 'open';
 
-export const archiveSaved = (spotify: SpotifyWebApiNode) => {
+export const archiveSaved = (spotify: SpotifyWebApiNode) => (date: string) => {
 	const scopes = ['user-library-read'];
 	const authorizeURL = spotify.createAuthorizeURL(scopes, 'state', true);
 	open(authorizeURL);
@@ -27,7 +27,7 @@ export const archiveSaved = (spotify: SpotifyWebApiNode) => {
 			id: item.track.id,
 			time: item.added_at,
 		}));
-		writeFile('archive/saved.json', JSON.stringify(tracks), () => {
+		writeFile(`archive/${date}/saved.json`, JSON.stringify(tracks), () => {
 			console.log(`Archived saved songs with ${numTracks} tracks`);
 			server.close();
 			exit(0);
