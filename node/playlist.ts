@@ -2,7 +2,7 @@
 import SpotifyWebApiNode from 'spotify-web-api-node';
 
 import { writeFile } from 'fs';
-import { chunkedArray, mergeArrays, stripTrack } from './util';
+import { chunkedArray, mergeArrays, stripTrack } from './util.js';
 
 export const archivePlaylists = (spotify: SpotifyWebApiNode) => (userId: string) =>
 	spotify
@@ -55,7 +55,7 @@ export const archivePlaylists = (spotify: SpotifyWebApiNode) => (userId: string)
 							addedBy: item.added_by.id,
 						}));
 						writeFile(
-							`archive/2022-12-09/${playlist.name.replace(/ /g, '_').replace(':', '.')}.json`,
+							`archive/2023-03-22/${playlist.name.replace(/ /g, '_').replace(':', '.')}.json`,
 							JSON.stringify(trackData),
 							() => console.log(`Archived "${playlist.name}" with ${trackData.length} items`)
 						);
