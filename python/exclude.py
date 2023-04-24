@@ -46,7 +46,11 @@ def main(kwargs):
 
     remaining = [
         track for track in source_list if not mask_map.get(track['id']) and not mask_map.get(track['name'])]
-    print(remaining)
+
+    remaining = sorted(remaining, key=lambda track: track['name'].lower())
+
+    with open(f'{kwargs.source}.json', 'w+', encoding='utf8') as f:
+        json.dump(remaining, f)
 
 
 if __name__ == '__main__':
