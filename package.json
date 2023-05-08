@@ -1,49 +1,47 @@
 {
-	"name": "spotify-vis",
-	"version": "0.0.1",
-	"description": "",
-	"private": true,
-	"main": "src/savePlaylists.js",
-	"scripts": {
-		"save_playlists": "node --experimental-modules node_save_playlists/src/savePlaylists.js",
-		"archive": "ts-node --esm node/index.ts",
-		"dev": "next dev",
-		"build": "next build",
-		"start": "next start",
-		"lint": "next lint"
-	},
-	"dependencies": {
-		"dotenv": "^16.0.3",
-		"open": "^7.3.0",
-		"spotify-web-api-js": "^1.5.1",
-		"spotify-web-api-node": "^5.0.2",
-		"styled-components": "^5.3.0",
-		"ts-node": "^10.9.1",
-		"eslint": "8.40.0",
-		"eslint-config-next": "13.4.1",
-		"next": "13.4.1",
-		"react": "18.2.0",
-		"react-dom": "18.2.0",
-		"typescript": "5.0.4"
-	},
-	"devDependencies": {
-		"@types/node": "20.1.0",
-		"@types/react": "18.2.6",
-		"@types/react-dom": "18.2.4",
-		"@types/spotify-api": "^0.0.19",
-		"@types/spotify-web-api-node": "^5.0.7",
-		"@types/styled-components": "^5.1.9"
-	},
-	"browserslist": {
-		"production": [
-			">0.2%",
-			"not dead",
-			"not op_mini all"
-		],
-		"development": [
-			"last 1 chrome version",
-			"last 1 firefox version",
-			"last 1 safari version"
-		]
-	}
+  "name": "spotify-vis",
+  "version": "0.0.1",
+  "description": "",
+  "private": true,
+  "scripts": {
+    "archive": "ts-node --esm node/index.ts",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "open": "^7.3.0",
+    "spotify-web-api-js": "^1.5.1",
+    "spotify-web-api-node": "^5.0.2",
+    "styled-components": "^5.3.0",
+    "ts-node": "^10.9.1",
+    "eslint": "8.40.0",
+    "eslint-config-next": "13.4.1",
+    "next": "13.4.1",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "typescript": "5.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "20.1.0",
+    "@types/react": "18.2.6",
+    "@types/react-dom": "18.2.4",
+    "@types/spotify-api": "^0.0.19",
+    "@types/spotify-web-api-node": "^5.0.7",
+    "@types/styled-components": "^5.1.9"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }
