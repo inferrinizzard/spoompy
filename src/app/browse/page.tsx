@@ -1,13 +1,13 @@
 import { getPlaylists } from '@/api';
 
+import Display from './Display';
+
 export const Browse = async () => {
   const playlists = getPlaylists();
 
   return (
     <main>
-      {playlists.map((playlist, i) => (
-        <div key={i}>{JSON.stringify(playlist).slice(0, 100)}</div>
-      ))}
+      <Display playlists={playlists} />
     </main>
   );
 };
