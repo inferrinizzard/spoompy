@@ -2,7 +2,12 @@
 
 import React, { useState } from 'react';
 
-import { PlaylistTrack } from '@/types/common';
+import { type PlaylistTrack } from '@/types/common';
+
+import Search from './Search';
+import Filter from './Filter';
+import PlaylistTable from './PlaylistTable';
+import Stepper from './Stepper';
 
 export interface DisplayProps {
   playlists: Record<string, PlaylistTrack[]>;
@@ -10,9 +15,14 @@ export interface DisplayProps {
 
 const Display: React.FC<DisplayProps> = ({ playlists }) => {
   const [search, setSearch] = useState('');
-  const [playlist, setPlaylist] = useState('');
+  const [playlistFilter, setPlaylistFilter] = useState('');
+  const [index, setIndex] = useState(0);
+  const sliceLength = 50;
 
-  const handleSearch = (str: string) => setSearch(str.trim().toLowerCase());
+  const handleSearch = (str: string) => {
+    setSearch(str.trim().toLowerCase());
+    setIndex(0);
+  };
 
   const tracksWithPlaylist = Object.entries(playlists).reduce(
     (acc, [playlist, tracks]) =>
@@ -24,47 +34,31 @@ const Display: React.FC<DisplayProps> = ({ playlists }) => {
     tracks.filter(
       track =>
         [track.name, track.artists, track.album].some(key => key.toLowerCase().includes(search)) &&
-        (playlist ? track.playlist === playlist : true)
+        (playlistFilter ? track.playlist === playlistFilter : true)
     );
 
   return (
     <section>
-      <input type="search" onChange={e => handleSearch(e.target.value)} />
-      <select name="playlist-select" onChange={e => setPlaylist(e.target.value)}>
-        <option value={''}>{'All'}</option>
-        {Object.keys(playlists).map(playlist => (
-          <option key={playlist} value={playlist}>
-            {playlist}
-          </option>
-        ))}
-      </select>
+      <Search handleSearch={handleSearch} />
+      <Filter
+        options={Object.keys(playlists)}
+        setOption={option => {
+          setPlaylistFilter(option);
+          setIndex(0);
+        }}
+      />
+      <Stepper
+        index={index}
+        setIndex={setIndex}
+        stepSize={sliceLength}
+        totalLength={tracksWithPlaylist.length}
+      />
       <div>
-        <table>
-          <thead>
-            <tr>
-              <th>{'Playlist'}</th>
-              <th>{'Name'}</th>
-              <th>{'Artists'}</th>
-              <th>{'Album'}</th>
-              <th>{'Time'}</th>
-              <th>{'ID'}</th>
-              <th>{'Added by'}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filterTracks(tracksWithPlaylist.slice(0, 100)).map(track => (
-              <tr key={track.playlist + track.id}>
-                <td>{track.playlist}</td>
-                <td>{track.name}</td>
-                <td>{track.artists}</td>
-                <td>{track.album}</td>
-                <td>{track.time}</td>
-                <td>{track.id}</td>
-                <td>{track.addedBy}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <PlaylistTable
+          playlists={filterTracks(
+            tracksWithPlaylist.slice(index * sliceLength, (index + 1) * sliceLength)
+          )}
+        />
       </div>
     </section>
   );
