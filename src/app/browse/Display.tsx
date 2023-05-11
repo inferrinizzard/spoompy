@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { type PlaylistTrack } from '@/types/common';
 
@@ -18,24 +18,41 @@ const Display: React.FC<DisplayProps> = ({ playlists }) => {
   const [playlistFilter, setPlaylistFilter] = useState('');
   const [index, setIndex] = useState(0);
   const sliceLength = 50;
+  const [sort, setSort] = useState<{ column: keyof typeof playlists; asc: boolean } | null>(null);
 
   const handleSearch = (str: string) => {
     setSearch(str.trim().toLowerCase());
     setIndex(0);
   };
 
-  const tracksWithPlaylist = Object.entries(playlists).reduce(
-    (acc, [playlist, tracks]) =>
-      acc.concat(tracks.map(track => Object.assign(track, { playlist }))),
-    [] as ({ playlist: string } & PlaylistTrack)[]
+  const tracksWithPlaylist = useMemo(
+    () =>
+      Object.entries(playlists).reduce(
+        (acc, [playlist, tracks]) =>
+          acc.concat(tracks.map(track => Object.assign(track, { playlist }))),
+        [] as ({ playlist: string } & PlaylistTrack)[]
+      ),
+    [playlists]
   );
 
-  const filterTracks = (tracks: typeof tracksWithPlaylist) =>
-    tracks.filter(
-      track =>
-        [track.name, track.artists, track.album].some(key => key.toLowerCase().includes(search)) &&
-        (playlistFilter ? track.playlist === playlistFilter : true)
-    );
+  const transformedTracks = useMemo(
+    () =>
+      tracksWithPlaylist
+        .filter(
+          track =>
+            [track.name, track.artists, track.album].some(key =>
+              key.toLowerCase().includes(search)
+            ) && (playlistFilter ? track.playlist === playlistFilter : true)
+        )
+        .sort(
+          !sort
+            ? undefined
+            : (a, b) =>
+                (a[sort.column as keyof typeof a]! > b[sort.column as keyof typeof b]! ? 1 : -1) *
+                (sort.asc ? 1 : -1)
+        ),
+    [tracksWithPlaylist, playlistFilter, search, sort]
+  );
 
   return (
     <section>
@@ -51,13 +68,12 @@ const Display: React.FC<DisplayProps> = ({ playlists }) => {
         index={index}
         setIndex={setIndex}
         stepSize={sliceLength}
-        totalLength={tracksWithPlaylist.length}
+        totalLength={transformedTracks.length}
       />
       <div>
         <PlaylistTable
-          playlists={filterTracks(
-            tracksWithPlaylist.slice(index * sliceLength, (index + 1) * sliceLength)
-          )}
+          playlists={transformedTracks.slice(index * sliceLength, (index + 1) * sliceLength)}
+          setSort={setSort}
         />
       </div>
     </section>
