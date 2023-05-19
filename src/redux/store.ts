@@ -2,10 +2,12 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import { useDispatch, type TypedUseSelectorHook, useSelector } from 'react-redux';
 
 import searchReducer from './slices/searchSlice';
+import dateReducer from './slices/dateSlice';
 
 export const makeStore = () =>
   configureStore({
     reducer: {
+      date: dateReducer,
       search: searchReducer,
     },
   });
