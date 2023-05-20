@@ -4,6 +4,7 @@ import { type PlaylistTrackWithName } from '@/types/common';
 
 import Count from '@/components/data/Count';
 import BarChart from '@/components/charts/BarChart';
+import LineChart from '@/components/charts/LineChart';
 
 export interface AnalysisMainProps {
   playlists: PlaylistTrackWithName[];
@@ -22,6 +23,7 @@ export const AnalysisMain: React.FC<AnalysisMainProps> = ({ playlists }) => {
           {}
         )}
       />
+      <LineChart data={{ a: 1, b: 2, c: 3, d: 3, e: 2 }} />
     </div>
   );
 };
