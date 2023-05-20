@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 
-import { type PlaylistTrack } from '@/types/common';
+import { type PlaylistTrackWithName } from '@/types/common';
 
 import Search from '../../components/Search';
 import Filter from './Filter';
@@ -10,7 +10,7 @@ import PlaylistTable from './PlaylistTable';
 import Stepper from './Stepper';
 
 export interface DisplayProps {
-  playlists: Record<string, PlaylistTrack[]>;
+  playlists: PlaylistTrackWithName[];
 }
 
 const Display: React.FC<DisplayProps> = ({ playlists }) => {
@@ -18,26 +18,16 @@ const Display: React.FC<DisplayProps> = ({ playlists }) => {
   const [playlistFilter, setPlaylistFilter] = useState('');
   const [index, setIndex] = useState(0);
   const sliceLength = 50;
-  const [sort, setSort] = useState<{ column: keyof typeof playlists; asc: boolean } | null>(null);
+  const [sort, setSort] = useState<{ column: string; asc: boolean } | null>(null);
 
   const handleSearch = (str: string) => {
     setSearch(str.trim().toLowerCase());
     setIndex(0);
   };
 
-  const tracksWithPlaylist = useMemo(
-    () =>
-      Object.entries(playlists).reduce(
-        (acc, [playlist, tracks]) =>
-          acc.concat(tracks.map(track => Object.assign(track, { playlist }))),
-        [] as ({ playlist: string } & PlaylistTrack)[]
-      ),
-    [playlists]
-  );
-
   const transformedTracks = useMemo(
     () =>
-      tracksWithPlaylist
+      playlists
         .filter(
           track =>
             [track.name, track.artists, track.album].some(key =>
@@ -51,7 +41,7 @@ const Display: React.FC<DisplayProps> = ({ playlists }) => {
                 (a[sort.column as keyof typeof a]! > b[sort.column as keyof typeof b]! ? 1 : -1) *
                 (sort.asc ? 1 : -1)
         ),
-    [tracksWithPlaylist, playlistFilter, search, sort]
+    [playlists, playlistFilter, search, sort]
   );
 
   return (
