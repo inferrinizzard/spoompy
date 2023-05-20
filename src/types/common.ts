@@ -6,3 +6,7 @@ export interface PlaylistTrack {
   time: string;
   addedBy?: number;
 }
+
+export interface PlaylistTrackWithName extends PlaylistTrack {
+  playlist: string;
+}
