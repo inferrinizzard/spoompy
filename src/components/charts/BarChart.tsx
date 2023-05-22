@@ -15,7 +15,7 @@ export const BarChart: React.FC<BarChartProps> = ({ data }) => {
         <VictoryBar
           style={{ data: { fill: '#c43a31' } }}
           data={victoryData}
-          labels={({ datum }) => datum.x}
+          labels={({ datum }) => datum.y}
         />
       </VictoryChart>
     </Block>

@@ -1,3 +1,8 @@
+export interface PointLabelMap<Map extends Record<string, unknown> = Record<string, unknown>> {
+  x: keyof Map;
+  y: keyof Map;
+}
+
 export interface PlaylistTrack {
   name: string;
   artists: string;
