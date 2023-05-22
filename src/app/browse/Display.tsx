@@ -2,20 +2,24 @@
 
 import React, { useMemo, useState } from 'react';
 
+import { useAppSelector } from '@/redux/store';
+import { selectPlaylistFilter } from '@/redux/slices/filterSlice';
 import { type PlaylistTrackWithName } from '@/types/common';
 
 import Search from '../../components/Search';
 import Filter from './Filter';
 import PlaylistTable from './PlaylistTable';
 import Stepper from './Stepper';
+import { distinctBy } from '@/utils/query';
 
 export interface DisplayProps {
   playlists: PlaylistTrackWithName[];
 }
 
 const Display: React.FC<DisplayProps> = ({ playlists }) => {
+  const playlistFilter = useAppSelector(selectPlaylistFilter);
+
   const [search, setSearch] = useState('');
-  const [playlistFilter, setPlaylistFilter] = useState('');
   const [index, setIndex] = useState(0);
   const sliceLength = 50;
   const [sort, setSort] = useState<{ column: string; asc: boolean } | null>(null);
@@ -47,13 +51,7 @@ const Display: React.FC<DisplayProps> = ({ playlists }) => {
   return (
     <section>
       <Search handleSearch={handleSearch} />
-      <Filter
-        options={Object.keys(playlists)}
-        setOption={option => {
-          setPlaylistFilter(option);
-          setIndex(0);
-        }}
-      />
+      <Filter options={distinctBy(playlists, 'playlist') as string[]} />
       <Stepper
         index={index}
         setIndex={setIndex}
