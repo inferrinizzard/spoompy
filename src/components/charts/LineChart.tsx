@@ -1,26 +1,15 @@
 import { VictoryChart, VictoryTheme, VictoryLine } from 'victory';
-import { type ValueOf } from 'next/dist/shared/lib/constants';
-
-import { type PointLabelMap } from '@/types/common';
 
 import Block from '../Block';
 
-export interface LineChartProps<Datum extends Record<string, unknown>> {
+export interface LineChartProps<Datum> {
   datasets: Record<string, Datum[]>;
-  labelMap: PointLabelMap<Datum>;
+  x: keyof Datum & string;
+  y: keyof Datum & string;
 }
 
-export const LineChart = <Datum extends Record<string, unknown>>({
-  datasets,
-  labelMap,
-}: LineChartProps<Datum>) => {
-  const victoryDatasets = Object.entries(datasets).map(
-    ([label, dataset]) =>
-      [label, dataset.map(datum => ({ x: datum[labelMap.x], y: datum[labelMap.y] }))] as [
-        string,
-        { x: ValueOf<Datum>; y: ValueOf<Datum> }[]
-      ]
-  );
+export const LineChart = <Datum,>({ datasets, x, y }: LineChartProps<Datum>) => {
+  const victoryDatasets = Object.entries(datasets);
 
   return (
     <Block height={3} width={5}>
@@ -33,6 +22,8 @@ export const LineChart = <Datum extends Record<string, unknown>>({
               parent: { border: '1px solid #ccc' },
             }}
             data={dataset}
+            x={x}
+            y={y}
           />
         ))}
       </VictoryChart>

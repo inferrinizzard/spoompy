@@ -33,7 +33,8 @@ export const AnalysisMain: React.FC<AnalysisMainProps> = ({ playlists }) => {
       />
       <LineChart<CountAggregation>
         datasets={getRollingSumOfPlaylists(playlistSlice)}
-        labelMap={{ x: 'time', y: 'count' }}
+        x="time"
+        y="count"
       />
     </div>
   );
