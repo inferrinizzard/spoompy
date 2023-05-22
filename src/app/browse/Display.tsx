@@ -4,7 +4,7 @@ import React, { useMemo, useState } from 'react';
 
 import { type PlaylistTrackWithName } from '@/types/common';
 
-import Search from './Search';
+import Search from '../../components/Search';
 import Filter from './Filter';
 import PlaylistTable from './PlaylistTable';
 import Stepper from './Stepper';
