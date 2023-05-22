@@ -1,4 +1,4 @@
-import { VictoryChart, VictoryTheme, VictoryLine } from 'victory';
+import { VictoryChart, VictoryTheme, VictoryLine, VictoryAxis } from 'victory';
 
 import Block from '../Block';
 
@@ -13,12 +13,18 @@ export const LineChart = <Datum,>({ datasets, x, y }: LineChartProps<Datum>) => 
 
   return (
     <Block height={3} width={5}>
-      <VictoryChart theme={VictoryTheme.material} domainPadding={10} height={450} width={750}>
+      <VictoryChart
+        theme={VictoryTheme.material}
+        domainPadding={10}
+        height={450}
+        width={750}
+        scale={{ x: 'time' }}>
+        <VictoryAxis label="Date" />
         {victoryDatasets.map(([label, dataset]) => (
           <VictoryLine
             key={label}
             style={{
-              data: { stroke: '#c43a31', strokeWidth: '8px' },
+              data: { stroke: '#c43a31', strokeWidth: '4px' },
               parent: { border: '1px solid #ccc' },
             }}
             data={dataset}

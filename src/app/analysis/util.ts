@@ -2,8 +2,8 @@ import dayjs from 'dayjs';
 
 import { type PlaylistTrackWithName } from '@/types/common';
 
-export interface CountAggregation extends Record<string, unknown> {
-  time: string;
+export interface CountAggregation {
+  time: Date;
   count: number;
 }
 
@@ -27,9 +27,9 @@ export const getRollingSumOfPlaylists = (
     const rollingSum = Object.entries(frequency)
       .sort()
       .reduce(
-        ({ sum, data }, [key, count]) => ({
+        ({ sum, data }, [time, count]) => ({
           sum: sum + count,
-          data: data.concat([{ time: key, count: sum + count }]),
+          data: data.concat([{ time: new Date(time), count: sum + count }]),
         }),
         { sum: 0, data: [] as CountAggregation[] }
       );
