@@ -3,11 +3,14 @@ import { useDispatch, type TypedUseSelectorHook, useSelector } from 'react-redux
 
 import dateReducer from './slices/dateSlice';
 import filterReducer from './slices/filterSlice';
+import playlistReducer from './slices/playlistSlice';
 import searchReducer from './slices/searchSlice';
 
 export const makeStore = () =>
   configureStore({
     reducer: {
+      playlist: playlistReducer,
+
       date: dateReducer,
       filter: filterReducer,
       search: searchReducer,
