@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { type PlaylistTrackWithName } from '@/types/common';
 
 import type { AppState } from '../store';
-import { PlaylistTrack, PlaylistTrackWithName } from '@/types/common';
 
 export interface PlaylistState {
   tracks: PlaylistTrackWithName[];

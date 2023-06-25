@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useRef } from 'react';
+
+import { type PlaylistTrackWithName } from '@/types/common';
+
 import store from '../store';
 import { setTracks } from '../slices/playlistSlice';
-import { PlaylistTrackWithName } from '@/types/common';
 
 export interface PreloaderProps {
   tracks: PlaylistTrackWithName[];

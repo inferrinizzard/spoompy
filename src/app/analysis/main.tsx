@@ -2,7 +2,8 @@
 
 import dayjs from 'dayjs';
 
-import { type PlaylistTrackWithName } from '@/types/common';
+import { useAppSelector } from '@/redux/client';
+import { selectPlaylists } from '@/redux/slices/playlistSlice';
 
 import Count from '@/components/data/Count';
 import BarChart from '@/components/charts/BarChart';
@@ -10,11 +11,11 @@ import LineChart from '@/components/charts/LineChart';
 
 import { CountAggregation, getRollingSumOfPlaylists } from './util';
 
-export interface AnalysisMainProps {
-  playlists: PlaylistTrackWithName[];
-}
+export interface AnalysisMainProps {}
 
-export const AnalysisMain: React.FC<AnalysisMainProps> = ({ playlists }) => {
+export const AnalysisMain: React.FC<AnalysisMainProps> = () => {
+  const playlists = useAppSelector(selectPlaylists);
+
   const startDate = dayjs().subtract(90, 'days').toISOString();
 
   const playlistSlice = playlists.filter(track => track.time > startDate);
