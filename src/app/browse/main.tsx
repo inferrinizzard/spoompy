@@ -2,33 +2,35 @@
 
 import React, { useMemo, useState } from 'react';
 
-import { useAppSelector } from '@/redux/client';
-import { selectPlaylistFilter } from '@/redux/slices/filterSlice';
-
-import Search from '@/components/Search';
-import { distinctBy } from '@/utils/query';
-import { type PlaylistTrackWithName } from '@/types/common';
-
-import Filter from './Filter';
-import PlaylistTable from './PlaylistTable';
-import Stepper from './Stepper';
+import { useAppDispatch, useAppSelector } from '@/redux/client';
+import {
+  selectPlaylistFilter,
+  selectSearch,
+  selectSort,
+  setSearch,
+} from '@/redux/slices/browseSlice';
 import { selectPlaylists } from '@/redux/slices/playlistSlice';
+
+import { distinctBy } from '@/utils/query';
+
+import Filter from './components/Filter';
+import PlaylistTable from './components/PlaylistTable';
+import Stepper from './components/Stepper';
+import Search from './components/Search';
 
 export interface DisplayProps {}
 
-const Display: React.FC<DisplayProps> = () => {
+const BrowseMain: React.FC<DisplayProps> = () => {
+  const dispatch = useAppDispatch();
+
   const playlists = useAppSelector(selectPlaylists);
   const playlistFilter = useAppSelector(selectPlaylistFilter);
 
-  const [search, setSearch] = useState('');
+  const search = useAppSelector(selectSearch);
+  const sort = useAppSelector(selectSort);
+
   const [index, setIndex] = useState(0);
   const sliceLength = 50;
-  const [sort, setSort] = useState<{ column: string; asc: boolean } | null>(null);
-
-  const handleSearch = (str: string) => {
-    setSearch(str.trim().toLowerCase());
-    setIndex(0);
-  };
 
   const transformedTracks = useMemo(
     () =>
@@ -51,8 +53,8 @@ const Display: React.FC<DisplayProps> = () => {
 
   return (
     <section>
-      <Search handleSearch={handleSearch} />
-      <Filter options={distinctBy(playlists, 'playlist') as string[]} />
+      <Search handleSearch={query => dispatch(setSearch(query))} />
+      <Filter options={distinctBy(playlists, 'playlist')} />
       <Stepper
         index={index}
         setIndex={setIndex}
@@ -62,11 +64,10 @@ const Display: React.FC<DisplayProps> = () => {
       <div>
         <PlaylistTable
           playlists={transformedTracks.slice(index * sliceLength, (index + 1) * sliceLength)}
-          setSort={setSort}
         />
       </div>
     </section>
   );
 };
 
-export default Display;
+export default BrowseMain;
