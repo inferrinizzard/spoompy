@@ -5,7 +5,7 @@ export interface SearchProps {
 }
 
 const Search: React.FC<SearchProps> = ({ handleSearch }) => {
-  return <input type="search" onChange={e => handleSearch(e.target.value)} />;
+  return <input type="search" placeholder="Search" onChange={e => handleSearch(e.target.value)} />;
 };
 
 export default Search;
