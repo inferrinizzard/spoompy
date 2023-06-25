@@ -1,15 +1,13 @@
-import { getPlaylists } from '@/api';
+import ReduxMain from '@/redux/components/ReduxMain';
 
 import AnalysisMain from './main';
 
 export const Analysis = async () => {
-  const playlists = getPlaylists();
-
   return (
-    <main>
+    <ReduxMain>
       {'Analysis page'}
-      <AnalysisMain playlists={playlists} />
-    </main>
+      <AnalysisMain />
+    </ReduxMain>
   );
 };
 

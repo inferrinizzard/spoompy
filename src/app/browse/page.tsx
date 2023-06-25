@@ -1,14 +1,12 @@
-import { getPlaylists } from '@/api';
+import ReduxMain from '@/redux/components/ReduxMain';
 
 import Display from './Display';
 
 export const Browse = async () => {
-  const playlists = getPlaylists();
-
   return (
-    <main>
-      <Display playlists={playlists} />
-    </main>
+    <ReduxMain>
+      <Display />
+    </ReduxMain>
   );
 };
 
