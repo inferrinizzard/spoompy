@@ -13,14 +13,14 @@ import { selectPlaylists } from '@/redux/slices/playlistSlice';
 
 import { distinctBy } from '@/utils/query';
 
-import Filter from './Filter';
-import PlaylistTable from './PlaylistTable';
-import Stepper from './Stepper';
-import Search from './Search';
+import Filter from './components/Filter';
+import PlaylistTable from './components/PlaylistTable';
+import Stepper from './components/Stepper';
+import Search from './components/Search';
 
 export interface DisplayProps {}
 
-const Display: React.FC<DisplayProps> = () => {
+const BrowseMain: React.FC<DisplayProps> = () => {
   const dispatch = useAppDispatch();
 
   const playlists = useAppSelector(selectPlaylists);
@@ -70,4 +70,4 @@ const Display: React.FC<DisplayProps> = () => {
   );
 };
 
-export default Display;
+export default BrowseMain;

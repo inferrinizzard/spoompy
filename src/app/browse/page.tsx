@@ -1,11 +1,11 @@
 import ReduxMain from '@/redux/components/ReduxMain';
 
-import Display from './Display';
+import BrowseMain from './main';
 
 export const Browse = async () => {
   return (
     <ReduxMain>
-      <Display />
+      <BrowseMain />
     </ReduxMain>
   );
 };
