@@ -2,15 +2,16 @@
 
 import React, { useMemo, useState } from 'react';
 
-import { useAppSelector } from '@/redux/store';
+import { useAppSelector } from '@/redux/client';
 import { selectPlaylistFilter } from '@/redux/slices/filterSlice';
+
+import Search from '@/components/Search';
+import { distinctBy } from '@/utils/query';
 import { type PlaylistTrackWithName } from '@/types/common';
 
-import Search from '../../components/Search';
 import Filter from './Filter';
 import PlaylistTable from './PlaylistTable';
 import Stepper from './Stepper';
-import { distinctBy } from '@/utils/query';
 
 export interface DisplayProps {
   playlists: PlaylistTrackWithName[];

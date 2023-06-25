@@ -1,6 +1,6 @@
 'use client';
 
-import { useAppDispatch } from '@/redux/store';
+import { useAppDispatch } from '@/redux/client';
 import { setPlaylistFilter } from '@/redux/slices/filterSlice';
 
 export interface FilterProps {

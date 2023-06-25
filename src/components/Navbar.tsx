@@ -2,7 +2,7 @@
 
 import styled from 'styled-components';
 
-import { useAppDispatch } from '@/redux/store';
+import { useAppDispatch } from '@/redux/client';
 import { setSearch } from '@/redux/slices/searchSlice';
 
 import Search from './Search';
