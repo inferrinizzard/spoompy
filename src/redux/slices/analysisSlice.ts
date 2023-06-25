@@ -1,9 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { DateRange } from '@/types/common';
+import { type DateRange, type TimeStep } from '@/types/common';
 
 import type { AppState } from '../store';
-
-type TimeStep = 'year' | 'month' | 'day';
 
 export interface AnalysisState {
   dateRange: DateRange;

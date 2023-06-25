@@ -15,3 +15,5 @@ export interface DateRange {
   start?: string;
   end?: string;
 }
+
+export type TimeStep = 'year' | 'month' | 'day';

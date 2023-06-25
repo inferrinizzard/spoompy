@@ -1,17 +1,15 @@
 import dayjs from 'dayjs';
 
-import { type PlaylistTrackWithName } from '@/types/common';
+import { type TimeStep, type PlaylistTrackWithName } from '@/types/common';
 
 export interface CountAggregation {
   time: Date;
   count: number;
 }
 
-type TimeResolution = 'day' | 'month' | 'year';
-
 export const getRollingSumOfPlaylists = (
   slice: PlaylistTrackWithName[],
-  timeResolution: TimeResolution = 'day'
+  timeResolution: TimeStep = 'day'
 ) => {
   const trimmedDate = slice.map(track => ({
     ...track,
@@ -40,7 +38,7 @@ export const getRollingSumOfPlaylists = (
   return seriesData;
 };
 
-export const trimDate = (dateString: string, timeResolution: TimeResolution) =>
+export const trimDate = (dateString: string, timeResolution: TimeStep) =>
   dayjs(dateString).startOf(timeResolution).toISOString();
 
 export const groupBy = <T extends Record<PropertyKey, PropertyKey>>(tracks: T[], key: keyof T) =>
