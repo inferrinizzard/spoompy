@@ -2,7 +2,7 @@
 
 import { useAppSelector } from '@/redux/client';
 import { selectPlaylists } from '@/redux/slices/playlistSlice';
-import { selectEndDate, selectStartDate } from '@/redux/slices/analysisSlice';
+import { selectEndDate, selectStartDate, selectTimeStep } from '@/redux/slices/analysisSlice';
 
 import Count from '@/components/data/Count';
 import BarChart from '@/components/charts/BarChart';
@@ -18,6 +18,7 @@ export const AnalysisMain: React.FC<AnalysisMainProps> = () => {
 
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
+  const timeStep = useAppSelector(selectTimeStep);
 
   let loggedNum = 0;
 
@@ -49,7 +50,7 @@ export const AnalysisMain: React.FC<AnalysisMainProps> = () => {
         )}
       />
       <LineChart<CountAggregation>
-        datasets={getRollingSumOfPlaylists(playlistSlice)}
+        datasets={getRollingSumOfPlaylists(playlistSlice, timeStep)}
         x="time"
         y="count"
       />
