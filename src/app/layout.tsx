@@ -1,6 +1,6 @@
 import { Inter } from 'next/font/google';
 
-import ReduxProvider from '@/redux/Provider';
+import ReduxProvider from '@/redux/components/Provider';
 
 import Navbar from '@/components/Navbar';
 import ReturnButton from '@/components/ReturnButton';

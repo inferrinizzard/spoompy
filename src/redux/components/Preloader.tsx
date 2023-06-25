@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useRef } from 'react';
-import store from './store';
-import { setTracks } from './slices/playlistSlice';
+import store from '../store';
+import { setTracks } from '../slices/playlistSlice';
 import { PlaylistTrackWithName } from '@/types/common';
 
 export interface PreloaderProps {

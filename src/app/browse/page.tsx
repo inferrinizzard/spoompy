@@ -1,5 +1,5 @@
 import { initTracks } from '@/redux/actions/init';
-import Preloader from '@/redux/Preloader';
+import Preloader from '@/redux/components/Preloader';
 import store from '@/redux/store';
 
 import Display from './Display';
