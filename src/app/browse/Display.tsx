@@ -4,15 +4,14 @@ import React, { useMemo, useState } from 'react';
 
 import { useAppSelector } from '@/redux/client';
 import { selectPlaylistFilter } from '@/redux/slices/filterSlice';
+import { selectPlaylists } from '@/redux/slices/playlistSlice';
+import { selectQuery } from '@/redux/slices/searchSlice';
 
-import Search from '@/components/Search';
 import { distinctBy } from '@/utils/query';
-import { type PlaylistTrackWithName } from '@/types/common';
 
 import Filter from './Filter';
 import PlaylistTable from './PlaylistTable';
 import Stepper from './Stepper';
-import { selectPlaylists } from '@/redux/slices/playlistSlice';
 
 export interface DisplayProps {}
 
@@ -20,15 +19,11 @@ const Display: React.FC<DisplayProps> = () => {
   const playlists = useAppSelector(selectPlaylists);
   const playlistFilter = useAppSelector(selectPlaylistFilter);
 
-  const [search, setSearch] = useState('');
+  const search = useAppSelector(selectQuery);
+
   const [index, setIndex] = useState(0);
   const sliceLength = 50;
   const [sort, setSort] = useState<{ column: string; asc: boolean } | null>(null);
-
-  const handleSearch = (str: string) => {
-    setSearch(str.trim().toLowerCase());
-    setIndex(0);
-  };
 
   const transformedTracks = useMemo(
     () =>
@@ -51,8 +46,7 @@ const Display: React.FC<DisplayProps> = () => {
 
   return (
     <section>
-      <Search handleSearch={handleSearch} />
-      <Filter options={distinctBy(playlists, 'playlist') as string[]} />
+      <Filter options={distinctBy(playlists, 'playlist')} />
       <Stepper
         index={index}
         setIndex={setIndex}
