@@ -1,4 +1,5 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { DateRange } from '@/types/common';
 
 import type { AppState } from '../store';
 
@@ -11,16 +12,11 @@ interface BrowseSort {
   asc: boolean;
 }
 
-interface BrowseDateRange {
-  start?: string;
-  end?: string;
-}
-
 export interface BrowseState {
   search: string;
   filters: BrowseFilters;
   sort?: BrowseSort;
-  dateRange: BrowseDateRange;
+  dateRange: DateRange;
 }
 
 const initialState: BrowseState = {

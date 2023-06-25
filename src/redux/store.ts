@@ -1,5 +1,6 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 
+import analysisReducer from './slices/analysisSlice';
 import browseReducer from './slices/browseSlice';
 import playlistReducer from './slices/playlistSlice';
 
@@ -8,6 +9,7 @@ export const makeStore = () =>
     reducer: {
       playlist: playlistReducer,
 
+      analysis: analysisReducer,
       browse: browseReducer,
     },
   });
