@@ -1,27 +1,43 @@
 'use client';
 
-import dayjs from 'dayjs';
-
 import { useAppSelector } from '@/redux/client';
 import { selectPlaylists } from '@/redux/slices/playlistSlice';
+import { selectEndDate, selectStartDate } from '@/redux/slices/analysisSlice';
 
 import Count from '@/components/data/Count';
 import BarChart from '@/components/charts/BarChart';
 import LineChart from '@/components/charts/LineChart';
 
-import { CountAggregation, getRollingSumOfPlaylists } from './util';
+import TimeControls from './components/TimeControls';
+import { type CountAggregation, getRollingSumOfPlaylists } from './util';
 
 export interface AnalysisMainProps {}
 
 export const AnalysisMain: React.FC<AnalysisMainProps> = () => {
   const playlists = useAppSelector(selectPlaylists);
 
-  const startDate = dayjs().subtract(90, 'days').toISOString();
+  const startDate = useAppSelector(selectStartDate);
+  const endDate = useAppSelector(selectEndDate);
 
-  const playlistSlice = playlists.filter(track => track.time > startDate);
+  let loggedNum = 0;
+
+  const playlistSlice = playlists.filter(track => {
+    let include = true;
+    if (startDate && track.time < startDate) {
+      include = false;
+    }
+    if (endDate && track.time > endDate) {
+      include = false;
+    }
+
+    if (loggedNum++ < 10) {
+    }
+    return include;
+  });
 
   return (
     <div>
+      <TimeControls />
       <Count value={playlistSlice.length} caption={`Total Tracks`} />
       <BarChart
         data={playlistSlice.reduce(

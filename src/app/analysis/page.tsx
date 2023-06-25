@@ -5,7 +5,6 @@ import AnalysisMain from './main';
 export const Analysis = async () => {
   return (
     <ReduxMain>
-      {'Analysis page'}
       <AnalysisMain />
     </ReduxMain>
   );
