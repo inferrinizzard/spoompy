@@ -1,18 +1,14 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 
-import dateReducer from './slices/dateSlice';
-import filterReducer from './slices/filterSlice';
+import browseReducer from './slices/browseSlice';
 import playlistReducer from './slices/playlistSlice';
-import searchReducer from './slices/searchSlice';
 
 export const makeStore = () =>
   configureStore({
     reducer: {
       playlist: playlistReducer,
 
-      date: dateReducer,
-      filter: filterReducer,
-      search: searchReducer,
+      browse: browseReducer,
     },
   });
 
