@@ -3,7 +3,7 @@
 import React, { useMemo, useState } from 'react';
 
 import { useAppSelector } from '@/redux/client';
-import { selectPlaylistFilter, selectSearch } from '@/redux/slices/browseSlice';
+import { selectPlaylistFilter, selectSearch, selectSort } from '@/redux/slices/browseSlice';
 import { selectPlaylists } from '@/redux/slices/playlistSlice';
 
 import { distinctBy } from '@/utils/query';
@@ -19,10 +19,10 @@ const Display: React.FC<DisplayProps> = () => {
   const playlistFilter = useAppSelector(selectPlaylistFilter);
 
   const search = useAppSelector(selectSearch);
+  const sort = useAppSelector(selectSort);
 
   const [index, setIndex] = useState(0);
   const sliceLength = 50;
-  const [sort, setSort] = useState<{ column: string; asc: boolean } | null>(null);
 
   const transformedTracks = useMemo(
     () =>
@@ -55,7 +55,6 @@ const Display: React.FC<DisplayProps> = () => {
       <div>
         <PlaylistTable
           playlists={transformedTracks.slice(index * sliceLength, (index + 1) * sliceLength)}
-          setSort={setSort}
         />
       </div>
     </section>

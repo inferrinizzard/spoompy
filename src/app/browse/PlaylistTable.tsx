@@ -1,28 +1,32 @@
 'use client';
 
+import { useAppDispatch, useAppSelector } from '@/redux/client';
+import { selectSort, setSort } from '@/redux/slices/browseSlice';
+
 import { type PlaylistTrack } from '@/types/common';
 
 export interface PlaylistTableProps {
   playlists: (PlaylistTrack & { playlist: string })[];
-  setSort: React.Dispatch<
-    React.SetStateAction<{
-      column: string;
-      asc: boolean;
-    } | null>
-  >;
 }
 
-const PlaylistTable: React.FC<PlaylistTableProps> = ({ playlists, setSort }) => {
-  const handleSort = (column: string) =>
-    setSort(prev => {
-      if (prev?.column === column) {
-        if (prev.asc) {
+const PlaylistTable: React.FC<PlaylistTableProps> = ({ playlists }) => {
+  const dispatch = useAppDispatch();
+
+  const sort = useAppSelector(selectSort);
+
+  const handleSort = (column: string) => {
+    const nextSort = () => {
+      if (sort?.column === column) {
+        if (sort.asc) {
           return { column, asc: false };
         }
-        return null;
+        return undefined;
       }
       return { column, asc: true };
-    });
+    };
+
+    dispatch(setSort(nextSort()));
+  };
 
   return (
     <table>
