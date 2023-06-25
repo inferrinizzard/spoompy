@@ -12,12 +12,12 @@ import { type PlaylistTrackWithName } from '@/types/common';
 import Filter from './Filter';
 import PlaylistTable from './PlaylistTable';
 import Stepper from './Stepper';
+import { selectPlaylists } from '@/redux/slices/playlistSlice';
 
-export interface DisplayProps {
-  playlists: PlaylistTrackWithName[];
-}
+export interface DisplayProps {}
 
-const Display: React.FC<DisplayProps> = ({ playlists }) => {
+const Display: React.FC<DisplayProps> = () => {
+  const playlists = useAppSelector(selectPlaylists);
   const playlistFilter = useAppSelector(selectPlaylistFilter);
 
   const [search, setSearch] = useState('');

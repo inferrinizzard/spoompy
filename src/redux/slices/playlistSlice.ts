@@ -1,10 +1,10 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 import type { AppState } from '../store';
-import { PlaylistTrack } from '@/types/common';
+import { PlaylistTrack, PlaylistTrackWithName } from '@/types/common';
 
 export interface PlaylistState {
-  tracks: PlaylistTrack[];
+  tracks: PlaylistTrackWithName[];
 }
 
 const initialState: PlaylistState = {
@@ -15,7 +15,7 @@ export const playlistSlice = createSlice({
   name: 'playlist',
   initialState,
   reducers: {
-    setTracks: (state, action: PayloadAction<PlaylistTrack[]>) => {
+    setTracks: (state, action: PayloadAction<PlaylistTrackWithName[]>) => {
       state.tracks = action.payload;
     },
   },

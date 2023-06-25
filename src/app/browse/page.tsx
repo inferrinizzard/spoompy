@@ -1,13 +1,16 @@
-import { getPlaylists } from '@/api';
+import { initTracks } from '@/redux/actions/init';
+import Preloader from '@/redux/Preloader';
+import store from '@/redux/store';
 
 import Display from './Display';
 
 export const Browse = async () => {
-  const playlists = getPlaylists();
+  initTracks();
 
   return (
     <main>
-      <Display playlists={playlists} />
+      <Preloader tracks={store.getState().playlist.tracks} />
+      <Display />
     </main>
   );
 };
