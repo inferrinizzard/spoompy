@@ -18,3 +18,13 @@ export const getPlaylists = () => {
     []
   ) as PlaylistTrackWithName[];
 };
+
+export const getPlaylist = (playlist: string) => {
+  const basePath = 'archive/2023-03-22/redux';
+
+  const tracks = JSON.parse(readFileSync(basePath + '/' + playlist, 'utf-8')) as PlaylistTrack[];
+
+  const image = ''; // url to image
+
+  return { name: playlist, image, tracks };
+};
