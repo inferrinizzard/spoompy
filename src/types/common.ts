@@ -10,3 +10,10 @@ export interface PlaylistTrack {
 export interface PlaylistTrackWithName extends PlaylistTrack {
   playlist: string;
 }
+
+export interface DateRange {
+  start?: string;
+  end?: string;
+}
+
+export type TimeStep = 'year' | 'month' | 'day';
