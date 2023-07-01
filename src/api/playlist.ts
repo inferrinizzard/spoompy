@@ -19,12 +19,16 @@ export const getPlaylists = () => {
   ) as PlaylistTrackWithName[];
 };
 
-export const getPlaylist = (playlist: string) => {
-  const basePath = 'archive/2023-03-22/redux';
+export const getPlaylist = (
+  playlist: string = 'getPlaylist'
+): Promise<SpotifyApi.PlaylistObjectFull> => {
+  const basePath = 'mock';
 
-  const tracks = JSON.parse(readFileSync(basePath + '/' + playlist, 'utf-8')) as PlaylistTrack[];
+  const data = JSON.parse(
+    readFileSync(`${basePath}/${playlist}.json`, 'utf-8')
+  ) as SpotifyApi.PlaylistObjectFull;
 
   const image = ''; // url to image
 
-  return { name: playlist, image, tracks };
+  return Promise.resolve(data);
 };
