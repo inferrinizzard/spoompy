@@ -1,17 +1,18 @@
-import { initTracks } from '@/redux/actions/init';
+import { type PropsWithChildren } from 'react';
+
+import { initPlaylists, initTracks } from '@/redux/actions/init';
 import Preloader from '@/redux/components/Preloader';
 import store from '@/redux/store';
 
-export interface ReduxMainProps {
-  children: React.ReactNode;
-}
+export interface ReduxMainProps extends PropsWithChildren {}
 
-export const ReduxMain: React.FC<ReduxMainProps> = ({ children }) => {
+export const ReduxMain = async ({ children }: ReduxMainProps) => {
   initTracks();
+  await initPlaylists();
 
   return (
     <main>
-      <Preloader tracks={store.getState().playlist.tracks} />
+      <Preloader playlist={store.getState().playlist} />
       {children}
     </main>
   );
