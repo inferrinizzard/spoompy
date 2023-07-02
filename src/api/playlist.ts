@@ -28,7 +28,15 @@ export const getPlaylist = (
     readFileSync(`${basePath}/${playlist}.json`, 'utf-8')
   ) as SpotifyApi.PlaylistObjectFull;
 
-  const image = ''; // url to image
-
   return Promise.resolve(data);
+};
+
+export const getPlaylists = (userId?: string) => {
+  const basePath = 'mock';
+
+  const data = JSON.parse(
+    readFileSync(`${basePath}/getPlaylist.json`, 'utf-8')
+  ) as SpotifyApi.PlaylistObjectFull;
+
+  return Promise.resolve([data]);
 };
