@@ -9,7 +9,7 @@ import {
   selectSort,
   setSearch,
 } from '@/redux/slices/browseSlice';
-import { selectPlaylists } from '@/redux/slices/playlistSlice';
+import { selectTracks } from '@/redux/slices/playlistSlice';
 
 import { distinctBy } from '@/utils/query';
 
@@ -23,7 +23,7 @@ export interface DisplayProps {}
 const BrowseMain: React.FC<DisplayProps> = () => {
   const dispatch = useAppDispatch();
 
-  const playlists = useAppSelector(selectPlaylists);
+  const playlists = useAppSelector(selectTracks);
   const playlistFilter = useAppSelector(selectPlaylistFilter);
 
   const search = useAppSelector(selectSearch);

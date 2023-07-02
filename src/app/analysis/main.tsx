@@ -1,7 +1,7 @@
 'use client';
 
 import { useAppSelector } from '@/redux/client';
-import { selectPlaylists } from '@/redux/slices/playlistSlice';
+import { selectTracks } from '@/redux/slices/playlistSlice';
 import { selectEndDate, selectStartDate, selectTimeStep } from '@/redux/slices/analysisSlice';
 
 import Count from '@/components/data/Count';
@@ -14,7 +14,7 @@ import { type CountAggregation, getRollingSumOfPlaylists } from './util';
 export interface AnalysisMainProps {}
 
 export const AnalysisMain: React.FC<AnalysisMainProps> = () => {
-  const playlists = useAppSelector(selectPlaylists);
+  const playlists = useAppSelector(selectTracks);
 
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
