@@ -2,7 +2,7 @@ import { readFileSync, readdirSync } from 'fs';
 
 import { type PlaylistTrackWithName, type PlaylistTrack } from '@/types/common';
 
-export const getPlaylists = () => {
+export const getTracks = () => {
   const basePath = 'archive/2023-03-22/redux';
 
   const files = readdirSync(basePath);
