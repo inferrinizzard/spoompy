@@ -26,3 +26,8 @@ export const download = (data: unknown, filename: string) => {
 
   window.URL.revokeObjectURL(url);
 };
+
+export const simplifyPlaylist = (playlist: SpotifyApi.PlaylistObjectSimplified) => {
+  // TODO: simplification fn, with options ?
+  return playlist;
+};

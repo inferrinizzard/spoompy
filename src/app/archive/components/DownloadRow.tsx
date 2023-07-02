@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 
-import { download } from '../util/download';
+import { download, simplifyPlaylist } from '../util/download';
 
 export interface DownloadRowProps {
   playlist: SpotifyApi.PlaylistObjectSimplified;
@@ -15,7 +15,12 @@ export const DownloadRow: React.FC<DownloadRowProps> = ({ playlist }) => (
       <h3>{playlist.name}</h3>
       <h6>{`Num tracks: ${playlist.tracks.total}`}</h6>
     </span>
-    <button onClick={() => download(playlist, `${playlist.name}.json`)}>{'Download'}</button>
+    <span>
+      <button onClick={() => download(playlist, `${playlist.name}.json`)}>{'Download'}</button>
+      <button onClick={() => download(simplifyPlaylist(playlist), `${playlist.name}.json`)}>
+        {'Download Simplified'}
+      </button>
+    </span>
   </div>
 );
 
