@@ -1,4 +1,13 @@
-import { VictoryChart, VictoryTheme, VictoryBar } from 'victory';
+import {
+  Bar,
+  BarChart as RechartBarChart,
+  CartesianGrid,
+  Legend,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 
 import Block from '../Block';
 
@@ -7,17 +16,20 @@ export interface BarChartProps {
 }
 
 export const BarChart: React.FC<BarChartProps> = ({ data }) => {
-  const victoryData = Object.entries(data).map(([label, value]) => ({ x: label, y: value }));
+  const chartData = Object.entries(data).map(([name, value]) => ({ name, value }));
 
   return (
     <Block height={3} width={5}>
-      <VictoryChart theme={VictoryTheme.material} domainPadding={10} height={450} width={750}>
-        <VictoryBar
-          style={{ data: { fill: '#c43a31' } }}
-          data={victoryData}
-          labels={({ datum }) => datum.y}
-        />
-      </VictoryChart>
+      <ResponsiveContainer width="100%" height="100%">
+        <RechartBarChart data={chartData}>
+          <CartesianGrid strokeDasharray="1 1" />
+          <XAxis dataKey="name" angle={45} />
+          <YAxis dataKey="value" />
+          <Tooltip labelStyle={{ color: 'black' }} />
+          <Legend />
+          <Bar dataKey="value" label fill="#82ca9d" />
+        </RechartBarChart>
+      </ResponsiveContainer>
     </Block>
   );
 };

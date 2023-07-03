@@ -49,11 +49,11 @@ export const AnalysisMain: React.FC<AnalysisMainProps> = () => {
           {}
         )}
       />
-      <LineChart<CountAggregation>
+      {/* <LineChart<CountAggregation>
         datasets={getRollingSumOfPlaylists(playlistSlice, timeStep)}
         x="time"
         y="count"
-      />
+      /> */}
     </div>
   );
 };
