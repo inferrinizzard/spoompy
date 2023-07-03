@@ -1,10 +1,11 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import { nextReduxCookieMiddleware, wrapMakeStore } from 'next-redux-cookie-wrapper';
 
 import analysisReducer from './slices/analysisSlice';
 import browseReducer from './slices/browseSlice';
 import playlistReducer from './slices/playlistSlice';
 
-export const makeStore = () =>
+export const makeStore = wrapMakeStore(() =>
   configureStore({
     reducer: {
       playlist: playlistReducer,
@@ -12,9 +13,16 @@ export const makeStore = () =>
       analysis: analysisReducer,
       browse: browseReducer,
     },
-  });
+    middleware: getDefaultMiddleware =>
+      getDefaultMiddleware().prepend(
+        nextReduxCookieMiddleware({
+          subtrees: ['playlist'],
+        })
+      ),
+  })
+);
 
-const store = makeStore();
+const store = makeStore({});
 
 export type AppState = ReturnType<typeof store.getState>;
 
