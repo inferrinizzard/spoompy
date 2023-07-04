@@ -2,40 +2,33 @@ import dayjs from 'dayjs';
 
 import { type TimeStep, type PlaylistTrackWithName } from '@/types/common';
 
-export interface CountAggregation {
-  time: Date;
-  count: number;
-}
-
 export const getRollingSumOfPlaylists = (
   slice: PlaylistTrackWithName[],
   timeResolution: TimeStep = 'day'
 ) => {
-  const trimmedDate = slice.map(track => ({
-    ...track,
-    time: trimDate(track.time, timeResolution),
-  }));
+  let playlistCounters: Record<string, number> = {};
+  let seriesData = [];
+  let lastDateItem: Record<string, string | number> = {};
 
-  const groupedByPlaylists = groupBy(trimmedDate, 'playlist');
+  for (const track of slice) {
+    playlistCounters[track.playlist] = (playlistCounters[track.playlist] ?? 0) + 1;
+    const trimmedDate = trimDate(track.time, 'day');
 
-  const seriesData: Record<string, CountAggregation[]> = {};
-  Object.entries(groupedByPlaylists).forEach(([playlist, tracks]) => {
-    const frequency = countBy(tracks, 'time');
+    if (!lastDateItem.date) {
+      lastDateItem = { date: trimmedDate };
+    }
 
-    const rollingSum = Object.entries(frequency)
-      .sort()
-      .reduce(
-        ({ sum, data }, [time, count]) => ({
-          sum: sum + count,
-          data: data.concat([{ time: new Date(time), count: sum + count }]),
-        }),
-        { sum: 0, data: [] as CountAggregation[] }
-      );
+    if (trimmedDate > lastDateItem.date) {
+      lastDateItem.count = Object.values(playlistCounters).reduce((max, cur) => Math.max(max, cur));
+      seriesData.push(lastDateItem);
+      lastDateItem = { date: trimmedDate };
+    }
+    lastDateItem[track.playlist] = playlistCounters[track.playlist];
+  }
+  lastDateItem.count = Object.values(playlistCounters).reduce((max, cur) => Math.max(max, cur), 0);
+  seriesData.push(lastDateItem);
 
-    seriesData[playlist] = rollingSum.data;
-  });
-
-  return seriesData;
+  return { data: seriesData, keys: Object.keys(playlistCounters) };
 };
 
 export const trimDate = (dateString: string, timeResolution: TimeStep) =>
