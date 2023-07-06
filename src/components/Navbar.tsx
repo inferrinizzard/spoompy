@@ -1,22 +1,17 @@
-'use client';
-
 import Link from 'next/link';
-import styled from 'styled-components';
-
-const StyledNav = styled.nav`
-  height: 2rem;
-  width: 100%;
-  margin: 0.5rem;
-
-  display: flex;
-  gap: 1rem;
-`;
 
 export interface NavbarProps {}
 
 export const Navbar: React.FC<NavbarProps> = () => {
   return (
-    <StyledNav>
+    <nav
+      style={{
+        height: '2rem',
+        width: '100%',
+        margin: '0.5rem',
+        display: 'flex',
+        gap: '1rem',
+      }}>
       <Link href="/">
         <h1>{'Home'}</h1>
       </Link>
@@ -29,7 +24,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
       <Link href="/archive">
         <h1>{'Archive'}</h1>
       </Link>
-    </StyledNav>
+    </nav>
   );
 };
 
