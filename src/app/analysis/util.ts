@@ -6,11 +6,13 @@ export const getRollingSumOfPlaylists = (
   slice: PlaylistTrackWithName[],
   timeResolution: TimeStep = 'day'
 ) => {
+  const sortedSlice = slice.sort((a, b) => (a.time > b.time ? 1 : -1));
+
   let playlistCounters: Record<string, number> = {};
   let seriesData = [];
   let lastDateItem: Record<string, string | number> = {};
 
-  for (const track of slice) {
+  for (const track of sortedSlice) {
     playlistCounters[track.playlist] = (playlistCounters[track.playlist] ?? 0) + 1;
     const trimmedDate = trimDate(track.time, 'day');
 

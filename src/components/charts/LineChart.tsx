@@ -29,7 +29,7 @@ export const LineChart = <Datum extends Record<string, string | number>>({
           <Tooltip labelStyle={{ color: 'black' }} />
           <Legend />
           {keys.map(key => (
-            <Line key={key} type="monotone" dataKey={key} label fill="#82ca9d" />
+            <Line key={key} dataKey={key} connectNulls fill="#82ca9d" />
           ))}
         </RechartLineChart>
       </ResponsiveContainer>
