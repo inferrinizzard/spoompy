@@ -6,8 +6,6 @@ import { useAppSelector } from '@/redux/client';
 import { selectPlaylistFilter, selectSearch, selectSort } from '@/redux/slices/browseSlice';
 import { selectTracks } from '@/redux/slices/playlistSlice';
 
-import { distinctBy } from '@/utils/query';
-
 import Filter from './components/Filter';
 import PlaylistTable from './components/PlaylistTable';
 import Stepper from './components/Stepper';
@@ -47,7 +45,7 @@ const BrowseMain: React.FC<DisplayProps> = () => {
   return (
     <section>
       <Search />
-      <Filter options={distinctBy(playlists, 'playlist')} />
+      <Filter />
       <Stepper
         index={index}
         setIndex={setIndex}

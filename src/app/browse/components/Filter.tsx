@@ -1,21 +1,23 @@
 'use client';
 
-import { useAppDispatch } from '@/redux/client';
+import { useAppDispatch, useAppSelector } from '@/redux/client';
 import { setPlaylistFilter } from '@/redux/slices/browseSlice';
+import { selectPlaylists } from '@/redux/slices/playlistSlice';
 
-export interface FilterProps {
-  options: string[];
-}
+export interface FilterProps {}
 
-const Filter: React.FC<FilterProps> = ({ options }) => {
+const Filter: React.FC<FilterProps> = () => {
   const dispatch = useAppDispatch();
+
+  const playlists = useAppSelector(selectPlaylists);
 
   return (
     <select onChange={e => dispatch(setPlaylistFilter(e.target.value))}>
       <option value={''}>{'All'}</option>
-      {options.map(option => (
-        <option key={option} value={option}>
-          {option}
+      {playlists.map(playlist => (
+        <option key={playlist.id} value={playlist.name}>
+          {/* // TODO: use id as value in case of duplicate names */}
+          {playlist.name}
         </option>
       ))}
     </select>
