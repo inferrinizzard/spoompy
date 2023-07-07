@@ -1,11 +1,16 @@
 'use client';
 
-export interface SearchProps {
-  handleSearch: (str: string) => void;
-}
+import { useAppDispatch } from '@/redux/client';
+import { setSearch } from '@/redux/slices/browseSlice';
 
-const Search: React.FC<SearchProps> = ({ handleSearch }) => {
-  return <input type="search" placeholder="Search" onChange={e => handleSearch(e.target.value)} />;
+export interface SearchProps {}
+
+const Search: React.FC<SearchProps> = () => {
+  const dispatch = useAppDispatch();
+
+  return (
+    <input type="search" placeholder="Search" onChange={e => dispatch(setSearch(e.target.value))} />
+  );
 };
 
 export default Search;

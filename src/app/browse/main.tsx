@@ -2,13 +2,8 @@
 
 import React, { useMemo, useState } from 'react';
 
-import { useAppDispatch, useAppSelector } from '@/redux/client';
-import {
-  selectPlaylistFilter,
-  selectSearch,
-  selectSort,
-  setSearch,
-} from '@/redux/slices/browseSlice';
+import { useAppSelector } from '@/redux/client';
+import { selectPlaylistFilter, selectSearch, selectSort } from '@/redux/slices/browseSlice';
 import { selectTracks } from '@/redux/slices/playlistSlice';
 
 import { distinctBy } from '@/utils/query';
@@ -21,8 +16,6 @@ import Search from './components/Search';
 export interface DisplayProps {}
 
 const BrowseMain: React.FC<DisplayProps> = () => {
-  const dispatch = useAppDispatch();
-
   const playlists = useAppSelector(selectTracks);
   const playlistFilter = useAppSelector(selectPlaylistFilter);
 
@@ -53,7 +46,7 @@ const BrowseMain: React.FC<DisplayProps> = () => {
 
   return (
     <section>
-      <Search handleSearch={query => dispatch(setSearch(query))} />
+      <Search />
       <Filter options={distinctBy(playlists, 'playlist')} />
       <Stepper
         index={index}
