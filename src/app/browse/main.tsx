@@ -1,9 +1,14 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import { useAppSelector } from '@/redux/client';
-import { selectPlaylistFilter, selectSearch, selectSort } from '@/redux/slices/browseSlice';
+import {
+  selectPlaylistFilter,
+  selectSearch,
+  selectSlice,
+  selectSort,
+} from '@/redux/slices/browseSlice';
 import { selectTracks } from '@/redux/slices/playlistSlice';
 
 import Filter from './components/Filter';
@@ -19,9 +24,7 @@ const BrowseMain: React.FC<DisplayProps> = () => {
 
   const search = useAppSelector(selectSearch);
   const sort = useAppSelector(selectSort);
-
-  const [index, setIndex] = useState(0);
-  const sliceLength = 50;
+  const slice = useAppSelector(selectSlice);
 
   const transformedTracks = useMemo(
     () =>
@@ -46,15 +49,13 @@ const BrowseMain: React.FC<DisplayProps> = () => {
     <section>
       <Search />
       <Filter />
-      <Stepper
-        index={index}
-        setIndex={setIndex}
-        stepSize={sliceLength}
-        totalLength={transformedTracks.length}
-      />
+      <Stepper totalLength={transformedTracks.length} />
       <div>
         <PlaylistTable
-          playlists={transformedTracks.slice(index * sliceLength, (index + 1) * sliceLength)}
+          playlists={transformedTracks.slice(
+            slice.index * slice.size,
+            (slice.index + 1) * slice.size
+          )}
         />
       </div>
     </section>
