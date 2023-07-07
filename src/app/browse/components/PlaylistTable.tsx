@@ -1,18 +1,19 @@
 'use client';
 
 import { useAppDispatch, useAppSelector } from '@/redux/client';
-import { selectSort, setSort } from '@/redux/slices/browseSlice';
+import { selectSlice, selectSort, setSort } from '@/redux/slices/browseSlice';
 
-import { type PlaylistTrack } from '@/types/common';
+import { type PlaylistTrackWithName } from '@/types/common';
 
 export interface PlaylistTableProps {
-  playlists: (PlaylistTrack & { playlist: string })[];
+  playlists: PlaylistTrackWithName[];
 }
 
 const PlaylistTable: React.FC<PlaylistTableProps> = ({ playlists }) => {
   const dispatch = useAppDispatch();
 
   const sort = useAppSelector(selectSort);
+  const slice = useAppSelector(selectSlice);
 
   const handleSort = (column: string) => {
     const nextSort = () => {
@@ -28,6 +29,8 @@ const PlaylistTable: React.FC<PlaylistTableProps> = ({ playlists }) => {
     dispatch(setSort(nextSort()));
   };
 
+  const playlistSlice = playlists.slice(slice.index * slice.size, (slice.index + 1) * slice.size);
+
   return (
     <table>
       <thead>
@@ -42,7 +45,7 @@ const PlaylistTable: React.FC<PlaylistTableProps> = ({ playlists }) => {
         </tr>
       </thead>
       <tbody>
-        {playlists.map(track => (
+        {playlistSlice.map(track => (
           <tr key={track.playlist + track.id}>
             <td>{track.playlist}</td>
             <td>{track.name}</td>

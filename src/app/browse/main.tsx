@@ -11,10 +11,7 @@ import {
 } from '@/redux/slices/browseSlice';
 import { selectTracks } from '@/redux/slices/playlistSlice';
 
-import Filter from './components/Filter';
-import PlaylistTable from './components/PlaylistTable';
-import Stepper from './components/Stepper';
-import Search from './components/Search';
+import TabularView from './TabularView';
 
 export interface DisplayProps {}
 
@@ -24,7 +21,6 @@ const BrowseMain: React.FC<DisplayProps> = () => {
 
   const search = useAppSelector(selectSearch);
   const sort = useAppSelector(selectSort);
-  const slice = useAppSelector(selectSlice);
 
   const transformedTracks = useMemo(
     () =>
@@ -45,21 +41,7 @@ const BrowseMain: React.FC<DisplayProps> = () => {
     [playlists, playlistFilter, search, sort]
   );
 
-  return (
-    <section>
-      <Search />
-      <Filter />
-      <Stepper totalLength={transformedTracks.length} />
-      <div>
-        <PlaylistTable
-          playlists={transformedTracks.slice(
-            slice.index * slice.size,
-            (slice.index + 1) * slice.size
-          )}
-        />
-      </div>
-    </section>
-  );
+  return <TabularView playlists={transformedTracks} />;
 };
 
 export default BrowseMain;
