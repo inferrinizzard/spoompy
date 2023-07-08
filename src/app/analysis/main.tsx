@@ -9,7 +9,7 @@ import BarChart from '@/components/charts/BarChart';
 import LineChart from '@/components/charts/LineChart';
 
 import TimeControls from './components/TimeControls';
-import { type CountAggregation, getRollingSumOfPlaylists } from './util';
+import { getRollingSumOfPlaylists } from './util';
 
 export interface AnalysisMainProps {}
 
@@ -49,11 +49,7 @@ export const AnalysisMain: React.FC<AnalysisMainProps> = () => {
           {}
         )}
       />
-      {/* <LineChart<CountAggregation>
-        datasets={getRollingSumOfPlaylists(playlistSlice, timeStep)}
-        x="time"
-        y="count"
-      /> */}
+      <LineChart datasets={getRollingSumOfPlaylists(playlistSlice, timeStep)} />
     </div>
   );
 };
