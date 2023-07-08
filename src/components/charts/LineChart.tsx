@@ -10,7 +10,7 @@ export const LineChart = ({ datasets }: LineChartProps) => {
   const chartData = Object.entries(datasets).map(([id, data]) => ({ id, data }));
 
   return (
-    <Block height={3} width={5} style={{ color: 'black' }}>
+    <Block height={2} width={3} style={{ color: 'black' }}>
       <ResponsiveLine
         data={chartData}
         margin={{ top: 10, right: 80, bottom: 20, left: 30 }}

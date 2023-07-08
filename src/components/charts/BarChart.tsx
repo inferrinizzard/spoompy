@@ -10,7 +10,7 @@ export const BarChart: React.FC<BarChartProps> = ({ data }) => {
   const chartData = Object.entries(data).map(([id, tracks]) => ({ id, tracks }));
 
   return (
-    <Block height={3} width={5} style={{ color: 'black' }}>
+    <Block height={2} width={3} style={{ color: 'black' }}>
       <ResponsiveBar
         data={chartData}
         keys={['tracks']}
