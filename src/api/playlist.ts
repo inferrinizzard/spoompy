@@ -21,12 +21,12 @@ export const getTracks = () => {
 
 export const getPlaylist = (
   playlist: string = 'getPlaylist'
-): Promise<SpotifyApi.PlaylistObjectFull> => {
+): Promise<SpotifyApi.PlaylistObjectSimplified> => {
   const basePath = 'mock';
 
   const data = JSON.parse(
     readFileSync(`${basePath}/${playlist}.json`, 'utf-8')
-  ) as SpotifyApi.PlaylistObjectFull;
+  ) as SpotifyApi.PlaylistObjectSimplified;
 
   return Promise.resolve(data);
 };
@@ -35,8 +35,8 @@ export const getPlaylists = (userId?: string) => {
   const basePath = 'mock';
 
   const data = JSON.parse(
-    readFileSync(`${basePath}/getPlaylist.json`, 'utf-8')
-  ) as SpotifyApi.PlaylistObjectFull;
+    readFileSync(`${basePath}/reduxPlaylists.json`, 'utf-8')
+  ) as SpotifyApi.PlaylistObjectSimplified[];
 
-  return Promise.resolve([data]);
+  return Promise.resolve(data);
 };
