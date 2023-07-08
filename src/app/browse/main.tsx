@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { useAppSelector } from '@/redux/client';
 import {
@@ -12,6 +12,7 @@ import {
 import { selectTracks } from '@/redux/slices/playlistSlice';
 
 import TabularView from './TabularView';
+import PlaylistView from './PlaylistView';
 
 export interface DisplayProps {}
 
@@ -21,6 +22,8 @@ const BrowseMain: React.FC<DisplayProps> = () => {
 
   const search = useAppSelector(selectSearch);
   const sort = useAppSelector(selectSort);
+
+  const [view, setView] = useState<'tabular' | 'playlist'>('tabular');
 
   const transformedTracks = useMemo(
     () =>
@@ -41,7 +44,18 @@ const BrowseMain: React.FC<DisplayProps> = () => {
     [playlists, playlistFilter, search, sort]
   );
 
-  return <TabularView playlists={transformedTracks} />;
+  return (
+    <>
+      <button
+        onClick={() => {
+          view === 'playlist' ? setView('tabular') : setView('playlist');
+        }}>
+        {'Switch View'}
+      </button>
+      {view === 'playlist' && <PlaylistView />}
+      {view === 'tabular' && <TabularView playlists={transformedTracks} />}
+    </>
+  );
 };
 
 export default BrowseMain;

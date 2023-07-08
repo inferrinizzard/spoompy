@@ -6,7 +6,7 @@ import { selectSlice, selectSort, setSort } from '@/redux/slices/browseSlice';
 import { type PlaylistTrackWithName } from '@/types/common';
 
 export interface PlaylistTableProps {
-  playlists: PlaylistTrackWithName[];
+  playlists: PlaylistTrackWithName[]; // TODO: replace with redux state
 }
 
 const PlaylistTable: React.FC<PlaylistTableProps> = ({ playlists }) => {

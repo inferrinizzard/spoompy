@@ -6,19 +6,21 @@ import Stepper from './components/Stepper';
 import PlaylistTable from './components/PlaylistTable';
 
 export interface TabularViewProps {
-  playlists: PlaylistTrackWithName[];
+  playlists: PlaylistTrackWithName[]; // TODO: remove prop drilling
 }
 
 export const TabularView = ({ playlists }: TabularViewProps) => {
   return (
-    <section>
-      <Search />
-      <Filter />
-      <Stepper totalLength={playlists.length} />
+    <>
       <div>
-        <PlaylistTable playlists={playlists} />
+        <Search />
+        <Filter />
+        <Stepper totalLength={playlists.length} />
       </div>
-    </section>
+      <section>
+        <PlaylistTable playlists={playlists} />
+      </section>
+    </>
   );
 };
 
