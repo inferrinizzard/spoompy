@@ -1,4 +1,4 @@
-import { VictoryChart, VictoryTheme, VictoryBar } from 'victory';
+import { ResponsiveBar } from '@nivo/bar';
 
 import Block from '../Block';
 
@@ -7,17 +7,19 @@ export interface BarChartProps {
 }
 
 export const BarChart: React.FC<BarChartProps> = ({ data }) => {
-  const victoryData = Object.entries(data).map(([label, value]) => ({ x: label, y: value }));
+  const chartData = Object.entries(data).map(([id, tracks]) => ({ id, tracks }));
 
   return (
-    <Block height={3} width={5}>
-      <VictoryChart theme={VictoryTheme.material} domainPadding={10} height={450} width={750}>
-        <VictoryBar
-          style={{ data: { fill: '#c43a31' } }}
-          data={victoryData}
-          labels={({ datum }) => datum.y}
-        />
-      </VictoryChart>
+    <Block height={3} width={5} style={{ color: 'black' }}>
+      <ResponsiveBar
+        data={chartData}
+        keys={['tracks']}
+        margin={{ top: 10, right: 10, bottom: 20, left: 30 }}
+        padding={0.3}
+        colors={{ scheme: 'nivo' }}
+        valueScale={{ type: 'linear' }}
+        // tooltip={} // TODO: custom tooltip label
+      />
     </Block>
   );
 };

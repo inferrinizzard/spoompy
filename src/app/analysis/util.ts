@@ -3,18 +3,20 @@ import dayjs from 'dayjs';
 import { type TimeStep, type PlaylistTrackWithName } from '@/types/common';
 
 export interface CountAggregation {
-  time: Date;
-  count: number;
+  x: Date;
+  y: number;
 }
 
 export const getRollingSumOfPlaylists = (
   slice: PlaylistTrackWithName[],
   timeResolution: TimeStep = 'day'
 ) => {
-  const trimmedDate = slice.map(track => ({
-    ...track,
-    time: trimDate(track.time, timeResolution),
-  }));
+  const trimmedDate = slice
+    .sort((a, b) => (a.time > b.time ? 1 : -1))
+    .map(track => ({
+      ...track,
+      time: trimDate(track.time, timeResolution),
+    }));
 
   const groupedByPlaylists = groupBy(trimmedDate, 'playlist');
 
@@ -27,7 +29,7 @@ export const getRollingSumOfPlaylists = (
       .reduce(
         ({ sum, data }, [time, count]) => ({
           sum: sum + count,
-          data: data.concat([{ time: new Date(time), count: sum + count }]),
+          data: data.concat([{ x: new Date(time), y: sum + count }]),
         }),
         { sum: 0, data: [] as CountAggregation[] }
       );

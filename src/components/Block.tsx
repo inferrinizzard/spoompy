@@ -1,9 +1,12 @@
-export interface BlockProps extends React.PropsWithChildren<unknown> {
+import { type CSSProperties } from 'react';
+
+export interface BlockProps extends React.PropsWithChildren {
   height?: number;
   width?: number;
+  style?: CSSProperties;
 }
 
-export const Block: React.FC<BlockProps> = ({ height = 1, width = 1, children }) => {
+export const Block: React.FC<BlockProps> = ({ height = 1, width = 1, style, children }) => {
   return (
     <div
       style={{
@@ -14,6 +17,7 @@ export const Block: React.FC<BlockProps> = ({ height = 1, width = 1, children })
         width: `${width * 8}rem`,
         padding: '0.5rem',
         borderRadius: '0.75rem',
+        ...style,
       }}>
       {children}
     </div>
