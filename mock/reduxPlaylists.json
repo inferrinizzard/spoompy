@@ -1,0 +1,340 @@
+[
+  {
+    "collaborative": false,
+    "description": "",
+    "external_urls": { "spotify": "https://open.spotify.com/playlist/4NZZc1YKZhAwLZFPOWku65" },
+    "href": "https://api.spotify.com/v1/playlists/4NZZc1YKZhAwLZFPOWku65",
+    "id": "4NZZc1YKZhAwLZFPOWku65",
+    "images": [
+      {
+        "height": 640,
+        "url": "https://i.scdn.co/image/ab67616d0000b273df256451f1a3cebca59969de",
+        "width": 640
+      }
+    ],
+    "name": "chops",
+    "owner": {
+      "display_name": "Sean Song",
+      "external_urls": { "spotify": "https://open.spotify.com/user/12121954989" },
+      "href": "https://api.spotify.com/v1/users/12121954989",
+      "id": "12121954989",
+      "type": "user",
+      "uri": "spotify:user:12121954989"
+    },
+    "primary_color": null,
+    "public": true,
+    "snapshot_id": "NCw0ZWM1YmMwZTNkOTIyZWVmNTJhMzYwYWU1N2Y2NTkyMjQ5NThhY2Q3",
+    "tracks": {
+      "href": "https://api.spotify.com/v1/playlists/4NZZc1YKZhAwLZFPOWku65/tracks",
+      "total": 3
+    },
+    "type": "playlist",
+    "uri": "spotify:playlist:4NZZc1YKZhAwLZFPOWku65"
+  },
+  {
+    "collaborative": false,
+    "description": "",
+    "external_urls": { "spotify": "https://open.spotify.com/playlist/2LLRqBcrtvwbJEYzmFVFig" },
+    "href": "https://api.spotify.com/v1/playlists/2LLRqBcrtvwbJEYzmFVFig",
+    "id": "2LLRqBcrtvwbJEYzmFVFig",
+    "images": [
+      {
+        "height": 640,
+        "url": "https://mosaic.scdn.co/640/ab67616d0000b273399616d3013b4822d46129dfab67616d0000b27344ca623a41d1a2d2756793c2ab67616d0000b273470d29853c6afdd28d753690ab67616d0000b273b9ebac57641a27b30f154eae",
+        "width": 640
+      },
+      {
+        "height": 300,
+        "url": "https://mosaic.scdn.co/300/ab67616d0000b273399616d3013b4822d46129dfab67616d0000b27344ca623a41d1a2d2756793c2ab67616d0000b273470d29853c6afdd28d753690ab67616d0000b273b9ebac57641a27b30f154eae",
+        "width": 300
+      },
+      {
+        "height": 60,
+        "url": "https://mosaic.scdn.co/60/ab67616d0000b273399616d3013b4822d46129dfab67616d0000b27344ca623a41d1a2d2756793c2ab67616d0000b273470d29853c6afdd28d753690ab67616d0000b273b9ebac57641a27b30f154eae",
+        "width": 60
+      }
+    ],
+    "name": "downtempo",
+    "owner": {
+      "display_name": "Sean Song",
+      "external_urls": { "spotify": "https://open.spotify.com/user/12121954989" },
+      "href": "https://api.spotify.com/v1/users/12121954989",
+      "id": "12121954989",
+      "type": "user",
+      "uri": "spotify:user:12121954989"
+    },
+    "primary_color": null,
+    "public": true,
+    "snapshot_id": "MTAyLGIyZmVhYmM1OTg3MzRkNzU0YjA5Y2VmMWI4M2RjYWMxMTU3YzdhNWE=",
+    "tracks": {
+      "href": "https://api.spotify.com/v1/playlists/2LLRqBcrtvwbJEYzmFVFig/tracks",
+      "total": 85
+    },
+    "type": "playlist",
+    "uri": "spotify:playlist:2LLRqBcrtvwbJEYzmFVFig"
+  },
+  {
+    "collaborative": false,
+    "description": "",
+    "external_urls": { "spotify": "https://open.spotify.com/playlist/6ZKbdpbwFNHZBArHWforhY" },
+    "href": "https://api.spotify.com/v1/playlists/6ZKbdpbwFNHZBArHWforhY",
+    "id": "6ZKbdpbwFNHZBArHWforhY",
+    "images": [
+      {
+        "height": null,
+        "url": "https://i.scdn.co/image/ab67706c0000bebb87a00659029b8ef361d9d29f",
+        "width": null
+      }
+    ],
+    "name": "lounge",
+    "owner": {
+      "display_name": "Sean Song",
+      "external_urls": { "spotify": "https://open.spotify.com/user/12121954989" },
+      "href": "https://api.spotify.com/v1/users/12121954989",
+      "id": "12121954989",
+      "type": "user",
+      "uri": "spotify:user:12121954989"
+    },
+    "primary_color": null,
+    "public": true,
+    "snapshot_id": "MzI1LGJlZDJkZDA5MTU0NzdiNWEwODcwYWQwN2QzNDBhMDAyMWNkZDJjMWI=",
+    "tracks": {
+      "href": "https://api.spotify.com/v1/playlists/6ZKbdpbwFNHZBArHWforhY/tracks",
+      "total": 249
+    },
+    "type": "playlist",
+    "uri": "spotify:playlist:6ZKbdpbwFNHZBArHWforhY"
+  },
+  {
+    "collaborative": false,
+    "description": "",
+    "external_urls": { "spotify": "https://open.spotify.com/playlist/4hClTrf8TV54dytBgiZOCb" },
+    "href": "https://api.spotify.com/v1/playlists/4hClTrf8TV54dytBgiZOCb",
+    "id": "4hClTrf8TV54dytBgiZOCb",
+    "images": [
+      {
+        "height": 640,
+        "url": "https://mosaic.scdn.co/640/ab67616d0000b273344cf21bb2044c5ce08b4bebab67616d0000b273600c6207f4192b69a3df5bd3ab67616d0000b273d48d2ba488f18419163154dcab67616d0000b273f3a021edfe40fdeade9045f8",
+        "width": 640
+      },
+      {
+        "height": 300,
+        "url": "https://mosaic.scdn.co/300/ab67616d0000b273344cf21bb2044c5ce08b4bebab67616d0000b273600c6207f4192b69a3df5bd3ab67616d0000b273d48d2ba488f18419163154dcab67616d0000b273f3a021edfe40fdeade9045f8",
+        "width": 300
+      },
+      {
+        "height": 60,
+        "url": "https://mosaic.scdn.co/60/ab67616d0000b273344cf21bb2044c5ce08b4bebab67616d0000b273600c6207f4192b69a3df5bd3ab67616d0000b273d48d2ba488f18419163154dcab67616d0000b273f3a021edfe40fdeade9045f8",
+        "width": 60
+      }
+    ],
+    "name": "rip",
+    "owner": {
+      "display_name": "Sean Song",
+      "external_urls": { "spotify": "https://open.spotify.com/user/12121954989" },
+      "href": "https://api.spotify.com/v1/users/12121954989",
+      "id": "12121954989",
+      "type": "user",
+      "uri": "spotify:user:12121954989"
+    },
+    "primary_color": null,
+    "public": true,
+    "snapshot_id": "Niw5Y2I5MmQ2OTY4MjUwNTY5M2YxYWFmY2I2ZmZmYzQ4MzUyMDg0ZDdh",
+    "tracks": {
+      "href": "https://api.spotify.com/v1/playlists/4hClTrf8TV54dytBgiZOCb/tracks",
+      "total": 6
+    },
+    "type": "playlist",
+    "uri": "spotify:playlist:4hClTrf8TV54dytBgiZOCb"
+  },
+  {
+    "collaborative": false,
+    "description": "",
+    "external_urls": { "spotify": "https://open.spotify.com/playlist/3i1zBIcwphHadfANKB8rzF" },
+    "href": "https://api.spotify.com/v1/playlists/3i1zBIcwphHadfANKB8rzF",
+    "id": "3i1zBIcwphHadfANKB8rzF",
+    "images": [
+      {
+        "height": null,
+        "url": "https://i.scdn.co/image/ab67706c0000bebbf0d19b68bb8184e260231ef1",
+        "width": null
+      }
+    ],
+    "name": "indigo",
+    "owner": {
+      "display_name": "Sean Song",
+      "external_urls": { "spotify": "https://open.spotify.com/user/12121954989" },
+      "href": "https://api.spotify.com/v1/users/12121954989",
+      "id": "12121954989",
+      "type": "user",
+      "uri": "spotify:user:12121954989"
+    },
+    "primary_color": null,
+    "public": true,
+    "snapshot_id": "NDk3LGY1NDI4ZTgwMTAxZDFiM2MwNzExZDMxNDI3MWNjZmJiZTAyNWIwNDY=",
+    "tracks": {
+      "href": "https://api.spotify.com/v1/playlists/3i1zBIcwphHadfANKB8rzF/tracks",
+      "total": 301
+    },
+    "type": "playlist",
+    "uri": "spotify:playlist:3i1zBIcwphHadfANKB8rzF"
+  },
+  {
+    "collaborative": false,
+    "description": "",
+    "external_urls": { "spotify": "https://open.spotify.com/playlist/0rSSTB6CZkdXmALRxD3tgb" },
+    "href": "https://api.spotify.com/v1/playlists/0rSSTB6CZkdXmALRxD3tgb",
+    "id": "0rSSTB6CZkdXmALRxD3tgb",
+    "images": [
+      {
+        "height": null,
+        "url": "https://i.scdn.co/image/ab67706c0000bebbdfd2694be7b33d59c3f4fd10",
+        "width": null
+      }
+    ],
+    "name": "kickback",
+    "owner": {
+      "display_name": "Sean Song",
+      "external_urls": { "spotify": "https://open.spotify.com/user/12121954989" },
+      "href": "https://api.spotify.com/v1/users/12121954989",
+      "id": "12121954989",
+      "type": "user",
+      "uri": "spotify:user:12121954989"
+    },
+    "primary_color": null,
+    "public": true,
+    "snapshot_id": "NDk3LGYyOWMwZGMzM2YwOWYyOWMwNmZlNjEyMGNiYjczYmJmNDZkZmZmZTM=",
+    "tracks": {
+      "href": "https://api.spotify.com/v1/playlists/0rSSTB6CZkdXmALRxD3tgb/tracks",
+      "total": 440
+    },
+    "type": "playlist",
+    "uri": "spotify:playlist:0rSSTB6CZkdXmALRxD3tgb"
+  },
+  {
+    "collaborative": false,
+    "description": "",
+    "external_urls": { "spotify": "https://open.spotify.com/playlist/0pV4Fe2q83Uc8l1zgOePgN" },
+    "href": "https://api.spotify.com/v1/playlists/0pV4Fe2q83Uc8l1zgOePgN",
+    "id": "0pV4Fe2q83Uc8l1zgOePgN",
+    "images": [
+      {
+        "height": 640,
+        "url": "https://mosaic.scdn.co/640/ab67616d0000b27364b8d376ed3e545de9634b3aab67616d0000b273abe65a8138057640579ccc06ab67616d0000b273e4c0ab33d56a3aa78084265fab67616d0000b273ef5d9e5a9efd12ea5ddd4f87",
+        "width": 640
+      },
+      {
+        "height": 300,
+        "url": "https://mosaic.scdn.co/300/ab67616d0000b27364b8d376ed3e545de9634b3aab67616d0000b273abe65a8138057640579ccc06ab67616d0000b273e4c0ab33d56a3aa78084265fab67616d0000b273ef5d9e5a9efd12ea5ddd4f87",
+        "width": 300
+      },
+      {
+        "height": 60,
+        "url": "https://mosaic.scdn.co/60/ab67616d0000b27364b8d376ed3e545de9634b3aab67616d0000b273abe65a8138057640579ccc06ab67616d0000b273e4c0ab33d56a3aa78084265fab67616d0000b273ef5d9e5a9efd12ea5ddd4f87",
+        "width": 60
+      }
+    ],
+    "name": "camel",
+    "owner": {
+      "display_name": "Sean Song",
+      "external_urls": { "spotify": "https://open.spotify.com/user/12121954989" },
+      "href": "https://api.spotify.com/v1/users/12121954989",
+      "id": "12121954989",
+      "type": "user",
+      "uri": "spotify:user:12121954989"
+    },
+    "primary_color": null,
+    "public": true,
+    "snapshot_id": "NzMsNDgwMzQyOWFlNzVmYTA0NjUxODY5MTQwODg4ZmM2YWQ2MDk3NjM5Mg==",
+    "tracks": {
+      "href": "https://api.spotify.com/v1/playlists/0pV4Fe2q83Uc8l1zgOePgN/tracks",
+      "total": 51
+    },
+    "type": "playlist",
+    "uri": "spotify:playlist:0pV4Fe2q83Uc8l1zgOePgN"
+  },
+  {
+    "collaborative": false,
+    "description": "hanging out with the moke n the boyz",
+    "external_urls": { "spotify": "https://open.spotify.com/playlist/2hRfC6mvs749t8xFVGiNGz" },
+    "href": "https://api.spotify.com/v1/playlists/2hRfC6mvs749t8xFVGiNGz",
+    "id": "2hRfC6mvs749t8xFVGiNGz",
+    "images": [
+      {
+        "height": 640,
+        "url": "https://mosaic.scdn.co/640/ab67616d0000b2731de375f9335cdc9165cf1acdab67616d0000b2734ec1e28729a954be260d0613ab67616d0000b2735d084c9ce80631cbce8d84c2ab67616d0000b273a29ece0f9368f955148d244d",
+        "width": 640
+      },
+      {
+        "height": 300,
+        "url": "https://mosaic.scdn.co/300/ab67616d0000b2731de375f9335cdc9165cf1acdab67616d0000b2734ec1e28729a954be260d0613ab67616d0000b2735d084c9ce80631cbce8d84c2ab67616d0000b273a29ece0f9368f955148d244d",
+        "width": 300
+      },
+      {
+        "height": 60,
+        "url": "https://mosaic.scdn.co/60/ab67616d0000b2731de375f9335cdc9165cf1acdab67616d0000b2734ec1e28729a954be260d0613ab67616d0000b2735d084c9ce80631cbce8d84c2ab67616d0000b273a29ece0f9368f955148d244d",
+        "width": 60
+      }
+    ],
+    "name": "so basically",
+    "owner": {
+      "display_name": "Sean Song",
+      "external_urls": { "spotify": "https://open.spotify.com/user/12121954989" },
+      "href": "https://api.spotify.com/v1/users/12121954989",
+      "id": "12121954989",
+      "type": "user",
+      "uri": "spotify:user:12121954989"
+    },
+    "primary_color": null,
+    "public": true,
+    "snapshot_id": "MjYsYTI2NDA4YzdjOTgzOTk3OTFhZDZjZWI5MjdlNTViNjlkYWExZmU3Zg==",
+    "tracks": {
+      "href": "https://api.spotify.com/v1/playlists/2hRfC6mvs749t8xFVGiNGz/tracks",
+      "total": 19
+    },
+    "type": "playlist",
+    "uri": "spotify:playlist:2hRfC6mvs749t8xFVGiNGz"
+  },
+  {
+    "collaborative": false,
+    "description": "them boiz that be grateful n shit but also simp",
+    "external_urls": { "spotify": "https://open.spotify.com/playlist/66w6CQugB1l56zEAroGIGY" },
+    "href": "https://api.spotify.com/v1/playlists/66w6CQugB1l56zEAroGIGY",
+    "id": "66w6CQugB1l56zEAroGIGY",
+    "images": [
+      {
+        "height": 640,
+        "url": "https://mosaic.scdn.co/640/ab67616d0000b2730166f8ec2db79c6161c2b24fab67616d0000b27365fe0e7c05d8a219e90a56adab67616d0000b273834f16100678d3e800fb5fb9ab67616d0000b273b359946ae6cfc81a288c4dbf",
+        "width": 640
+      },
+      {
+        "height": 300,
+        "url": "https://mosaic.scdn.co/300/ab67616d0000b2730166f8ec2db79c6161c2b24fab67616d0000b27365fe0e7c05d8a219e90a56adab67616d0000b273834f16100678d3e800fb5fb9ab67616d0000b273b359946ae6cfc81a288c4dbf",
+        "width": 300
+      },
+      {
+        "height": 60,
+        "url": "https://mosaic.scdn.co/60/ab67616d0000b2730166f8ec2db79c6161c2b24fab67616d0000b27365fe0e7c05d8a219e90a56adab67616d0000b273834f16100678d3e800fb5fb9ab67616d0000b273b359946ae6cfc81a288c4dbf",
+        "width": 60
+      }
+    ],
+    "name": "gladboiz",
+    "owner": {
+      "display_name": "Sean Song",
+      "external_urls": { "spotify": "https://open.spotify.com/user/12121954989" },
+      "href": "https://api.spotify.com/v1/users/12121954989",
+      "id": "12121954989",
+      "type": "user",
+      "uri": "spotify:user:12121954989"
+    },
+    "primary_color": null,
+    "public": true,
+    "snapshot_id": "NDQsZjBiYTM3ZjdjYmNlNmU1ZjFiOTE5NmNiNmNmMzVlNmQyYmYyNjE1ZQ==",
+    "tracks": {
+      "href": "https://api.spotify.com/v1/playlists/66w6CQugB1l56zEAroGIGY/tracks",
+      "total": 29
+    },
+    "type": "playlist",
+    "uri": "spotify:playlist:66w6CQugB1l56zEAroGIGY"
+  }
+]
