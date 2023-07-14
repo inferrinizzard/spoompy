@@ -1,11 +1,12 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import { type SpotifyPlaylist } from '@/types/api';
 import { type PlaylistTrackWithName } from '@/types/common';
 
 import type { AppState } from '../store';
 
 export interface PlaylistState {
   tracks: PlaylistTrackWithName[];
-  playlists: SpotifyApi.PlaylistObjectSimplified[];
+  playlists: SpotifyPlaylist[];
 }
 
 const initialState: PlaylistState = {
@@ -20,7 +21,7 @@ export const playlistSlice = createSlice({
     setTracks: (state, action: PayloadAction<PlaylistTrackWithName[]>) => {
       state.tracks = action.payload;
     },
-    setPlaylists: (state, action: PayloadAction<SpotifyApi.PlaylistObjectSimplified[]>) => {
+    setPlaylists: (state, action: PayloadAction<SpotifyPlaylist[]>) => {
       state.playlists = action.payload;
     },
   },
