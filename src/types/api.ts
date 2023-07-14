@@ -19,3 +19,7 @@ export interface SpotifyAlbum {
   id: string;
   image: string;
 }
+
+export interface SpotifyPlaylist extends SpotifyApi.PlaylistBaseObject {
+  tracks: SpotifyTrack[];
+}
