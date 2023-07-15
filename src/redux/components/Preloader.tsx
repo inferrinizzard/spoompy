@@ -2,11 +2,11 @@
 
 import React, { useRef } from 'react';
 
-import store, { AppState } from '../store';
-import { setEntities } from '../slices/playlistSlice';
+import store from '../store';
+import { type PlaylistState, setEntities } from '../slices/playlistSlice';
 
 export interface PreloaderProps {
-  playlist: AppState['playlist'];
+  playlist: PlaylistState;
 }
 
 const Preloader: React.FC<PreloaderProps> = ({ playlist }) => {

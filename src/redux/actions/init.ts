@@ -7,7 +7,7 @@ import { setEntities } from '../slices/playlistSlice';
 
 export const initPlaylists = async () => {
   // TODO: check if authed
-  if (!store.getState().playlist.playlists.length) {
+  if (!Object.keys(store.getState().playlist.playlists).length) {
     const rawPlaylists = await getPlaylists();
     const playlists = rawPlaylists.map(({ tracks, ...rest }) => {
       const playlistTracks = getPlaylistTracks(rest.id);
