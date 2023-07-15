@@ -1,14 +1,9 @@
-import { getPlaylistTracks, getPlaylists, getTracks } from '@/api';
+import { getPlaylistTracks, getPlaylists } from '@/api';
+import { type NormalizedPlaylists } from '@/types/schema';
+import { normalizePlaylists } from '@/utils/normalizr';
 
 import store from '../store';
-import { setPlaylists, setTracks } from '../slices/playlistSlice';
-
-export const initTracks = () => {
-  if (!store.getState().playlist.tracks.length) {
-    const tracks = getTracks();
-    store.dispatch(setTracks(tracks));
-  }
-};
+import { setEntities } from '../slices/playlistSlice';
 
 export const initPlaylists = async () => {
   // TODO: check if authed
@@ -19,6 +14,10 @@ export const initPlaylists = async () => {
       return { ...rest, tracks: playlistTracks };
     });
 
-    store.dispatch(setPlaylists(playlists));
+    const normalizedPlaylists = normalizePlaylists(playlists) as unknown as NormalizedPlaylists<
+      typeof playlists
+    >;
+
+    store.dispatch(setEntities(normalizedPlaylists.entities));
   }
 };
