@@ -39,16 +39,16 @@ export const TabularView = () => {
             albums[track.album].name,
           ].some(key => key.toLowerCase().includes(search));
 
-          const matchingPlaylist = Object.entries(track.playlists).find(
-            ([id]) => id === playlistFilter
+          const matchingPlaylists = Object.entries(track.playlists).filter(([id]) =>
+            playlistFilter ? id === playlistFilter : true
           );
 
-          if (hasSearchKey && matchingPlaylist) {
+          if (hasSearchKey && matchingPlaylists.length) {
             const { playlists, ...rest } = track;
 
-            return list.concat([
-              { ...rest, playlist: matchingPlaylist[0], ...matchingPlaylist[1] },
-            ]);
+            return list.concat(
+              matchingPlaylists.map(([id, values]) => ({ ...rest, playlist: id, ...values }))
+            );
           }
 
           return list;
@@ -73,17 +73,6 @@ export const TabularView = () => {
       <section>
         <PlaylistTable tracks={transformedTracks} />
       </section>
-
-      {/* <section>
-      <Stepper
-        totalLength={transformedTracks.length}
-      />
-      <div>
-        <PlaylistTable
-          playlists={transformedTracks.slice(index * sliceLength, (index + 1) * sliceLength)}
-        />
-      </div>
-    </section> */}
     </>
   );
 };
