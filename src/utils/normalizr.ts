@@ -5,6 +5,8 @@ const artistSchema = new schema.Entity('artists');
 
 const albumSchema = new schema.Entity('albums');
 
+type SpotifyTrackWithPlaylist = SpotifyTrack & { playlists?: Record<string, string> };
+
 const trackSchema = new schema.Entity(
   'tracks',
   {
@@ -12,8 +14,12 @@ const trackSchema = new schema.Entity(
     artists: [artistSchema],
   },
   {
+    mergeStrategy: (a: SpotifyTrackWithPlaylist, b: SpotifyTrackWithPlaylist) => ({
+      ...a,
+      playlists: { ...a.playlists, ...b.playlists },
+    }),
     processStrategy: (
-      trackWithPlaylists: SpotifyTrack & { playlists?: Record<string, string> },
+      trackWithPlaylists: SpotifyTrackWithPlaylist,
       parentPlaylist: SpotifyPlaylist
     ) => {
       const { added_at, added_by, ...rest } = trackWithPlaylists;
