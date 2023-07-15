@@ -17,7 +17,7 @@ export const playlistSlice = createSlice({
   initialState,
   reducers: {
     setEntities: (state, action: PayloadAction<PlaylistEntities>) => {
-      state = action.payload;
+      return action.payload;
     },
   },
 });
