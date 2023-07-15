@@ -15,13 +15,21 @@ export interface NormalizedPlaylists<Playlists extends SpotifyPlaylist[]> {
 export interface PlaylistEntities {
   albums: Record<string, SpotifyAlbum>;
   artists: Record<string, SpotifyArtist>;
-  tracks: Record<
-    string,
-    SpliceObject<
-      SpliceObject<Omit<SpotifyTrack, 'added_at' | 'added_by'>, 'artists', string[]>,
-      'album',
-      string[]
-    > & { playlists?: Record<string, Pick<SpotifyTrack, 'added_at' | 'added_by'>> }
-  >;
+  tracks: PlaylistTrackEntityMap;
   playlists: Record<string, SpliceObject<SpotifyPlaylist, 'tracks', string[]>>;
 }
+
+export type PlaylistTrackEntityMap = Record<
+  string,
+  Omit<PlaylistTrackEntityWithNormalizedArtistsAndAlbums, 'added_at' | 'added_by'> & {
+    playlists: Record<string, Pick<SpotifyTrack, 'added_at' | 'added_by'>>;
+  }
+>;
+
+export type PlaylistTrackEntityWithNormalizedArtistsAndAlbums = SpliceObject<
+  SpliceObject<SpotifyTrack, 'artists', string[]>,
+  'album',
+  string
+>;
+
+export type PlaylistEntityMap = Record<string, SpliceObject<SpotifyPlaylist, 'tracks', string[]>>;
