@@ -17,7 +17,11 @@ export interface PlaylistEntities {
   artists: Record<string, SpotifyArtist>;
   tracks: Record<
     string,
-    SpliceObject<SpliceObject<SpotifyTrack, 'artists', string[]>, 'album', string[]>
+    SpliceObject<
+      SpliceObject<Omit<SpotifyTrack, 'added_at' | 'added_by'>, 'artists', string[]>,
+      'album',
+      string[]
+    > & { playlists?: Record<string, Pick<SpotifyTrack, 'added_at' | 'added_by'>> }
   >;
   playlists: Record<string, SpliceObject<SpotifyPlaylist, 'tracks', string[]>>;
 }
