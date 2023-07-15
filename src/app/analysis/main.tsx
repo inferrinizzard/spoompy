@@ -14,43 +14,39 @@ import { type CountAggregation, getRollingSumOfPlaylists } from './util';
 export interface AnalysisMainProps {}
 
 export const AnalysisMain: React.FC<AnalysisMainProps> = () => {
-  const playlists = useAppSelector(selectTracks);
+  const tracks = useAppSelector(selectTracks);
 
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
   const timeStep = useAppSelector(selectTimeStep);
 
-  let loggedNum = 0;
+  const tracksSlice = Object.values(tracks).filter(track => {
+    const trackPlaylists = Object.values(track.playlists);
 
-  const playlistSlice = playlists.filter(track => {
     let include = true;
-    if (startDate && track.time < startDate) {
+    if (startDate && trackPlaylists.some(playlist => playlist.added_at < startDate)) {
       include = false;
     }
-    if (endDate && track.time > endDate) {
+    if (endDate && trackPlaylists.some(playlist => playlist.added_at > endDate)) {
       include = false;
     }
 
-    if (loggedNum++ < 10) {
-    }
     return include;
   });
 
   return (
     <div>
       <TimeControls />
-      <Count value={playlistSlice.length} caption={`Total Tracks`} />
+      <Count value={tracksSlice.length} caption={`Total Tracks`} />
       <BarChart
-        data={playlistSlice.reduce(
-          (acc, { playlist }) => ({
-            ...acc,
-            [playlist]: (acc[playlist as keyof typeof acc] ?? 0) + 1,
-          }),
-          {}
-        )}
+        data={tracksSlice.reduce((acc, { playlists }) => {
+          let newTrack = acc;
+          Object.keys(playlists).forEach(key => (newTrack[key] = (newTrack[key] ?? 0) + 1));
+          return newTrack;
+        }, {} as Record<string, number>)}
       />
       <LineChart<CountAggregation>
-        datasets={getRollingSumOfPlaylists(playlistSlice, timeStep)}
+        datasets={getRollingSumOfPlaylists(tracksSlice, timeStep)}
         x="time"
         y="count"
       />

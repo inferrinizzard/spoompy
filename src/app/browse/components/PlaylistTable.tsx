@@ -3,13 +3,13 @@
 import { useAppDispatch, useAppSelector } from '@/redux/client';
 import { selectSlice, selectSort, setSort } from '@/redux/slices/browseSlice';
 
-import { type PlaylistTrackWithName } from '@/types/common';
+import { type PlaylistTrackEntityWithPlaylist } from '../TabularView';
 
 export interface PlaylistTableProps {
-  playlists: PlaylistTrackWithName[]; // TODO: replace with redux state
+  tracks: PlaylistTrackEntityWithPlaylist[];
 }
 
-const PlaylistTable: React.FC<PlaylistTableProps> = ({ playlists }) => {
+const PlaylistTable: React.FC<PlaylistTableProps> = ({ tracks }) => {
   const dispatch = useAppDispatch();
 
   const sort = useAppSelector(selectSort);
@@ -29,7 +29,7 @@ const PlaylistTable: React.FC<PlaylistTableProps> = ({ playlists }) => {
     dispatch(setSort(nextSort()));
   };
 
-  const playlistSlice = playlists.slice(slice.index * slice.size, (slice.index + 1) * slice.size);
+  const playlistSlice = tracks.slice(slice.index * slice.size, (slice.index + 1) * slice.size);
 
   return (
     <table>
@@ -51,9 +51,9 @@ const PlaylistTable: React.FC<PlaylistTableProps> = ({ playlists }) => {
             <td>{track.name}</td>
             <td>{track.artists}</td>
             <td>{track.album}</td>
-            <td>{track.time}</td>
+            <td>{track.added_at}</td>
             <td>{track.id}</td>
-            <td>{track.addedBy}</td>
+            <td>{track.added_by}</td>
           </tr>
         ))}
       </tbody>
