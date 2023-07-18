@@ -42,21 +42,3 @@ export const getRollingSumOfPlaylists = (
 
 export const trimDate = (dateString: string, timeResolution: TimeStep) =>
   dayjs(dateString).startOf(timeResolution).toISOString();
-
-export const groupBy = <T extends Record<PropertyKey, PropertyKey>>(tracks: T[], key: keyof T) =>
-  tracks.reduce(
-    (acc, track) => ({
-      ...acc,
-      [track[key]]: (acc[track[key]] ?? []).concat([track]),
-    }),
-    {} as Record<T[typeof key], T[]>
-  );
-
-export const countBy = <T extends Record<PropertyKey, PropertyKey>>(tracks: T[], key: keyof T) =>
-  tracks.reduce(
-    (acc, track) => ({
-      ...acc,
-      [track[key]]: (acc[track[key]] ?? 0) + 1,
-    }),
-    {} as Record<T[typeof key], number>
-  );
