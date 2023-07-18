@@ -16,6 +16,7 @@ export const LineChart = ({ datasets }: LineChartProps) => {
         margin={{ top: 10, right: 80, bottom: 20, left: 30 }}
         colors={{ scheme: 'nivo' }}
         enableSlices="x"
+        xScale={{ type: 'time' }}
         // sliceTooltip={} // TODO: add date to slice tooltip
         legends={[
           {

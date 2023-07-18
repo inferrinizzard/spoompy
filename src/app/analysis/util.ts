@@ -1,43 +1,47 @@
 import dayjs from 'dayjs';
 
-import { type TimeStep, type PlaylistTrackWithName } from '@/types/common';
+import { useAppSelector } from '@/redux/client';
+import { selectTracks, type PlaylistState } from '@/redux/slices/playlistSlice';
+import { countBy } from '@/utils/query';
+import { type TimeStep } from '@/types/common';
+import { type ValueOf } from '@/types/util';
 
 export interface CountAggregation {
   x: Date;
   y: number;
 }
 
-export const getRollingSumOfPlaylists = (
-  slice: PlaylistTrackWithName[],
+export const useRollingSumOfPlaylists = (
+  slice: ValueOf<PlaylistState['playlists']>[],
   timeResolution: TimeStep = 'day'
 ) => {
-  const trimmedDate = slice
-    .sort((a, b) => (a.time > b.time ? 1 : -1))
-    .map(track => ({
-      ...track,
-      time: trimDate(track.time, timeResolution),
-    }));
+  const tracks = useAppSelector(selectTracks);
 
-  const groupedByPlaylists = groupBy(trimmedDate, 'playlist');
+  return slice.reduce((acc, playlist) => {
+    const playlistTracks = playlist.tracks
+      .map(track => {
+        const trackData = tracks[track];
+        const playlistReference = trackData.playlists[playlist.id];
+        return {
+          ...trackData,
+          added_at: trimDate(playlistReference.added_at, timeResolution),
+          added_by: playlistReference.added_by,
+        };
+      })
+      .sort((a, b) => (a.added_at > b.added_at ? 1 : -1));
 
-  const seriesData: Record<string, CountAggregation[]> = {};
-  Object.entries(groupedByPlaylists).forEach(([playlist, tracks]) => {
-    const frequency = countBy(tracks, 'time');
+    const frequency = countBy(playlistTracks, 'added_at');
 
-    const rollingSum = Object.entries(frequency)
-      .sort()
-      .reduce(
-        ({ sum, data }, [time, count]) => ({
-          sum: sum + count,
-          data: data.concat([{ x: new Date(time), y: sum + count }]),
-        }),
-        { sum: 0, data: [] as CountAggregation[] }
-      );
+    const rollingSum = Object.entries(frequency).reduce(
+      ({ sum, data }, [time, count]) => ({
+        sum: sum + count,
+        data: data.concat([{ x: new Date(time), y: sum + count }]),
+      }),
+      { sum: 0, data: [] as CountAggregation[] }
+    ).data;
 
-    seriesData[playlist] = rollingSum.data;
-  });
-
-  return seriesData;
+    return { ...acc, [playlist.id]: rollingSum };
+  }, {} as Record<string, CountAggregation[]>);
 };
 
 export const trimDate = (dateString: string, timeResolution: TimeStep) =>
