@@ -44,26 +44,6 @@ export const LineChart = ({ datasets }: LineChartProps) => {
           },
         ]}
       />
-      {/* <VictoryChart
-        theme={VictoryTheme.material}
-        domainPadding={10}
-        height={450}
-        width={750}
-        scale={{ x: 'time' }}>
-        <VictoryAxis label="Date" />
-        {victoryDatasets.map(([label, dataset]) => (
-          <VictoryLine
-            key={label}
-            style={{
-              data: { stroke: '#c43a31', strokeWidth: '4px' },
-              parent: { border: '1px solid #ccc' },
-            }}
-            data={dataset}
-            x={x}
-            y={y}
-          />
-        ))}
-      </VictoryChart> */}
     </Block>
   );
 };
