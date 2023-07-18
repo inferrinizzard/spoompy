@@ -1,5 +1,7 @@
 'use client';
 
+import { useMemo } from 'react';
+
 import { useAppSelector } from '@/redux/client';
 import { selectPlaylists, selectTracks } from '@/redux/slices/playlistSlice';
 import { selectEndDate, selectStartDate, selectTimeStep } from '@/redux/slices/analysisSlice';
@@ -24,23 +26,27 @@ export const AnalysisMain: React.FC<AnalysisMainProps> = () => {
   const endDate = useAppSelector(selectEndDate);
   const timeStep = useAppSelector(selectTimeStep);
 
-  const playlistsSlice = Object.values(playlists).map(playlist => ({
-    ...playlist,
-    tracks: [
-      ...playlist.tracks.filter(track => {
-        let include = true;
+  const playlistsSlice = useMemo(
+    () =>
+      Object.values(playlists).map(playlist => ({
+        ...playlist,
+        tracks: [
+          ...playlist.tracks.filter(track => {
+            let include = true;
 
-        if (startDate && tracks[track].playlists[playlist.id].added_at < startDate) {
-          include = false;
-        }
-        if (endDate && tracks[track].playlists[playlist.id].added_at > endDate) {
-          include = false;
-        }
+            if (startDate && tracks[track].playlists[playlist.id].added_at < startDate) {
+              include = false;
+            }
+            if (endDate && tracks[track].playlists[playlist.id].added_at > endDate) {
+              include = false;
+            }
 
-        return include;
-      }),
-    ],
-  }));
+            return include;
+          }),
+        ],
+      })),
+    [startDate, endDate, playlists, tracks]
+  );
 
   const lineChartData = useRollingSumOfPlaylists(playlistsSlice, timeStep);
 
