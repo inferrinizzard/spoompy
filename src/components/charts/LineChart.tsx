@@ -1,3 +1,4 @@
+import { useOrdinalColorScale } from '@nivo/colors';
 import { type DatumValue, ResponsiveLine } from '@nivo/line';
 
 import store from '@/redux/store';
@@ -12,11 +13,9 @@ export interface LineChartProps {
 export const LineChart = ({ datasets }: LineChartProps) => {
   const playlists = store.getState().playlist.playlists;
 
-  const chartData = Object.entries(datasets).map(([id, data]) => ({
-    id,
-    label: playlists[id].name,
-    data,
-  }));
+  const chartData = Object.entries(datasets).map(([id, data]) => ({ id, data }));
+
+  const getColor = useOrdinalColorScale({ scheme: 'nivo' }, 'id');
 
   return (
     <Block height={2} width={3} style={{ color: 'black' }}>
@@ -30,7 +29,11 @@ export const LineChart = ({ datasets }: LineChartProps) => {
         sliceTooltip={NivoSliceTooltip}
         legends={[
           {
-            data: chartData,
+            data: chartData.map(line => ({
+              ...line,
+              label: playlists[line.id].name,
+              color: getColor(line),
+            })),
             anchor: 'top',
             direction: 'row',
             justify: false,
