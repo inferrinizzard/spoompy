@@ -1,18 +1,24 @@
 'use client';
 
 import { useAppDispatch, useAppSelector } from '@/redux/client';
-import { selectSort, setSort } from '@/redux/slices/browseSlice';
+import { selectSlice, selectSort, setSort } from '@/redux/slices/browseSlice';
+import { selectAlbums, selectArtists, selectPlaylists } from '@/redux/slices/playlistSlice';
 
-import { type PlaylistTrack } from '@/types/common';
+import { type PlaylistTrackEntityWithPlaylist } from '../TabularView';
 
 export interface PlaylistTableProps {
-  playlists: (PlaylistTrack & { playlist: string })[];
+  tracks: PlaylistTrackEntityWithPlaylist[];
 }
 
-const PlaylistTable: React.FC<PlaylistTableProps> = ({ playlists }) => {
+const PlaylistTable: React.FC<PlaylistTableProps> = ({ tracks }) => {
   const dispatch = useAppDispatch();
 
+  const playlists = useAppSelector(selectPlaylists);
+  const artists = useAppSelector(selectArtists);
+  const albums = useAppSelector(selectAlbums);
+
   const sort = useAppSelector(selectSort);
+  const slice = useAppSelector(selectSlice);
 
   const handleSort = (column: string) => {
     const nextSort = () => {
@@ -28,6 +34,8 @@ const PlaylistTable: React.FC<PlaylistTableProps> = ({ playlists }) => {
     dispatch(setSort(nextSort()));
   };
 
+  const playlistSlice = tracks.slice(slice.index * slice.size, (slice.index + 1) * slice.size);
+
   return (
     <table>
       <thead>
@@ -42,15 +50,15 @@ const PlaylistTable: React.FC<PlaylistTableProps> = ({ playlists }) => {
         </tr>
       </thead>
       <tbody>
-        {playlists.map(track => (
+        {playlistSlice.map(track => (
           <tr key={track.playlist + track.id}>
-            <td>{track.playlist}</td>
+            <td>{playlists[track.playlist].name}</td>
             <td>{track.name}</td>
-            <td>{track.artists}</td>
-            <td>{track.album}</td>
-            <td>{track.time}</td>
+            <td>{track.artists.map(id => artists[id].name)}</td>
+            <td>{albums[track.album].name}</td>
+            <td>{track.added_at}</td>
             <td>{track.id}</td>
-            <td>{track.addedBy}</td>
+            <td>{track.added_by}</td>
           </tr>
         ))}
       </tbody>
