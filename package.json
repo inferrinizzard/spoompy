@@ -11,6 +11,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@nivo/bar": "^0.83.0",
+    "@nivo/core": "^0.83.0",
+    "@nivo/line": "^0.83.0",
     "@reduxjs/toolkit": "^1.9.5",
     "dayjs": "^1.11.7",
     "next": "13.4.1",
@@ -22,9 +25,7 @@
     "spotify-web-api-js": "^1.5.1",
     "spotify-web-api-node": "^5.0.2",
     "styled-components": "^5.3.0",
-    "ts-node": "^10.9.1",
-    "typescript": "5.0.4",
-    "victory": "^36.6.10"
+    "ts-node": "^10.9.1"
   },
   "devDependencies": {
     "@types/node": "20.1.0",
@@ -37,7 +38,6 @@
     "dotenv": "^16.0.3",
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.1",
-    "open": "^7.3.0",
     "ts-node": "^10.9.1",
     "typescript": "5.0.4"
   },

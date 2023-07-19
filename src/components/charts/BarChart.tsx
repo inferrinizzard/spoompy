@@ -1,23 +1,33 @@
-import { VictoryChart, VictoryTheme, VictoryBar } from 'victory';
+import { ResponsiveBar } from '@nivo/bar';
+
+import store from '@/redux/store';
+import { chartTheme } from '@/utils/chartTheme';
 
 import Block from '../Block';
+import { NivoBarTooltip } from './NivoTooltip';
 
 export interface BarChartProps {
   data: Record<string, number>;
 }
 
 export const BarChart: React.FC<BarChartProps> = ({ data }) => {
-  const victoryData = Object.entries(data).map(([label, value]) => ({ x: label, y: value }));
+  const playlists = store.getState().playlist.playlists;
+
+  const chartData = Object.entries(data).map(([id, tracks]) => ({ id, tracks }));
 
   return (
-    <Block height={3} width={5}>
-      <VictoryChart theme={VictoryTheme.material} domainPadding={10} height={450} width={750}>
-        <VictoryBar
-          style={{ data: { fill: '#c43a31' } }}
-          data={victoryData}
-          labels={({ datum }) => datum.y}
-        />
-      </VictoryChart>
+    <Block height={2} width={3} style={{ color: 'black' }}>
+      <ResponsiveBar
+        theme={chartTheme}
+        data={chartData}
+        axisBottom={{ format: id => playlists[id].name }}
+        keys={['tracks']}
+        margin={{ top: 10, right: 10, bottom: 20, left: 30 }}
+        padding={0.3}
+        colors={{ scheme: 'nivo' }}
+        valueScale={{ type: 'linear' }}
+        tooltip={NivoBarTooltip}
+      />
     </Block>
   );
 };

@@ -1,56 +1,74 @@
 'use client';
 
+import { useMemo } from 'react';
+
 import { useAppSelector } from '@/redux/client';
-import { selectTracks } from '@/redux/slices/playlistSlice';
+import { selectPlaylists, selectTracks } from '@/redux/slices/playlistSlice';
 import { selectEndDate, selectStartDate, selectTimeStep } from '@/redux/slices/analysisSlice';
 
-import Count from '@/components/data/Count';
 import BarChart from '@/components/charts/BarChart';
 import LineChart from '@/components/charts/LineChart';
+import Count from '@/components/data/Count';
+import TextBlock from '@/components/data/TextBlock';
 
 import TimeControls from './components/TimeControls';
-import { type CountAggregation, getRollingSumOfPlaylists } from './util';
+import { useRollingSumOfPlaylists } from './util';
+
+import styles from './main.module.css';
 
 export interface AnalysisMainProps {}
 
 export const AnalysisMain: React.FC<AnalysisMainProps> = () => {
+  const playlists = useAppSelector(selectPlaylists);
   const tracks = useAppSelector(selectTracks);
 
   const startDate = useAppSelector(selectStartDate);
   const endDate = useAppSelector(selectEndDate);
   const timeStep = useAppSelector(selectTimeStep);
 
-  const tracksSlice = Object.values(tracks).filter(track => {
-    const trackPlaylists = Object.values(track.playlists);
+  const playlistsSlice = useMemo(
+    () =>
+      Object.values(playlists).map(playlist => ({
+        ...playlist,
+        tracks: [
+          ...playlist.tracks.filter(track => {
+            let include = true;
 
-    let include = true;
-    if (startDate && trackPlaylists.some(playlist => playlist.added_at < startDate)) {
-      include = false;
-    }
-    if (endDate && trackPlaylists.some(playlist => playlist.added_at > endDate)) {
-      include = false;
-    }
+            if (startDate && tracks[track].playlists[playlist.id].added_at < startDate) {
+              include = false;
+            }
+            if (endDate && tracks[track].playlists[playlist.id].added_at > endDate) {
+              include = false;
+            }
 
-    return include;
-  });
+            return include;
+          }),
+        ],
+      })),
+    [startDate, endDate, playlists, tracks]
+  );
+
+  const lineChartData = useRollingSumOfPlaylists(playlistsSlice, timeStep);
 
   return (
-    <div>
+    <section>
       <TimeControls />
-      <Count value={tracksSlice.length} caption={`Total Tracks`} />
-      <BarChart
-        data={tracksSlice.reduce((acc, { playlists }) => {
-          let newTrack = acc;
-          Object.keys(playlists).forEach(key => (newTrack[key] = (newTrack[key] ?? 0) + 1));
-          return newTrack;
-        }, {} as Record<string, number>)}
-      />
-      <LineChart<CountAggregation>
-        datasets={getRollingSumOfPlaylists(tracksSlice, timeStep)}
-        x="time"
-        y="count"
-      />
-    </div>
+      <div className={styles.grid}>
+        <Count
+          value={playlistsSlice.reduce((count, { tracks }) => count + tracks.length, 0)}
+          caption={'Total Tracks'}
+        />
+        <TextBlock text={'Test'} caption={'Biggest Growing Playlist'} />
+        <BarChart
+          data={Object.values(playlistsSlice).reduce(
+            (acc, playlist) => ({ ...acc, [playlist.id]: playlist.tracks.length }),
+            {}
+          )}
+        />
+        <LineChart datasets={lineChartData} />
+        <TextBlock text={'Month'} caption={'Most Active Month'} />
+      </div>
+    </section>
   );
 };
 
