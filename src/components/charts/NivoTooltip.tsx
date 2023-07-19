@@ -1,7 +1,23 @@
+import { type BarTooltipProps } from '@nivo/bar';
 import { type SliceTooltipProps } from '@nivo/line';
 
 import store from '@/redux/store';
 import { formatDate } from '@/utils/dateFormat';
+
+interface ColourSquareProps {
+  colour: string;
+}
+
+const ColourSquare: React.FC<ColourSquareProps> = ({ colour }) => (
+  <div
+    style={{
+      height: '1rem',
+      width: '1rem',
+      aspectRatio: '1',
+      backgroundColor: colour,
+    }}
+  />
+);
 
 const tooltipStyle = {
   background: 'white',
@@ -19,14 +35,7 @@ export const NivoSliceTooltip: React.FC<SliceTooltipProps> = ({ slice }) => {
         {slice.points.map(point => (
           <tr key={`slice-tooltip-${point.id}`}>
             <td>
-              <div
-                style={{
-                  height: '1rem',
-                  width: '1rem',
-                  aspectRatio: '1',
-                  backgroundColor: point.serieColor,
-                }}
-              />
+              <ColourSquare colour={point.serieColor} />
             </td>
             <td>{playlists[point.serieId].name}</td>
             <td>
@@ -35,6 +44,23 @@ export const NivoSliceTooltip: React.FC<SliceTooltipProps> = ({ slice }) => {
           </tr>
         ))}
       </table>
+    </div>
+  );
+};
+
+export const NivoBarTooltip = <T,>(props: BarTooltipProps<T>) => {
+  const playlists = store.getState().playlist.playlists;
+
+  return (
+    <div style={{ ...tooltipStyle, display: 'flex', gap: '0.5rem' }}>
+      <div>
+        <ColourSquare colour={props.color} />
+      </div>
+      <div>{playlists[props.indexValue].name}</div>
+      <div>-</div>
+      <div>
+        <b>{props.value}</b>
+      </div>
     </div>
   );
 };

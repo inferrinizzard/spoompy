@@ -3,6 +3,7 @@ import { ResponsiveBar } from '@nivo/bar';
 import store from '@/redux/store';
 
 import Block from '../Block';
+import { NivoBarTooltip } from './NivoTooltip';
 
 export interface BarChartProps {
   data: Record<string, number>;
@@ -23,7 +24,7 @@ export const BarChart: React.FC<BarChartProps> = ({ data }) => {
         padding={0.3}
         colors={{ scheme: 'nivo' }}
         valueScale={{ type: 'linear' }}
-        // tooltip={} // TODO: custom tooltip label
+        tooltip={NivoBarTooltip}
       />
     </Block>
   );
