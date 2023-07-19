@@ -33,17 +33,19 @@ export const NivoSliceTooltip: React.FC<SliceTooltipProps> = ({ slice }) => {
     <div style={tooltipStyle}>
       <div>{formatDate(slice.points[0].data.x as Date, timeStep)}</div>
       <table>
-        {slice.points.map(point => (
-          <tr key={`slice-tooltip-${point.id}`}>
-            <td>
-              <ColourSquare colour={point.serieColor} />
-            </td>
-            <td>{playlists[point.serieId].name}</td>
-            <td>
-              <b>{point.data.y.toString()}</b>
-            </td>
-          </tr>
-        ))}
+        <tbody>
+          {slice.points.map(point => (
+            <tr key={`slice-tooltip-${point.id}`}>
+              <td>
+                <ColourSquare colour={point.serieColor} />
+              </td>
+              <td>{playlists[point.serieId].name}</td>
+              <td>
+                <b>{point.data.y.toString()}</b>
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   );
