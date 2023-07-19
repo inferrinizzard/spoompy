@@ -1,6 +1,7 @@
 import { ResponsiveBar } from '@nivo/bar';
 
 import store from '@/redux/store';
+import { chartTheme } from '@/utils/chartTheme';
 
 import Block from '../Block';
 import { NivoBarTooltip } from './NivoTooltip';
@@ -17,6 +18,7 @@ export const BarChart: React.FC<BarChartProps> = ({ data }) => {
   return (
     <Block height={2} width={3} style={{ color: 'black' }}>
       <ResponsiveBar
+        theme={chartTheme}
         data={chartData}
         axisBottom={{ format: id => playlists[id].name }}
         keys={['tracks']}

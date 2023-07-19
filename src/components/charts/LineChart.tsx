@@ -2,6 +2,7 @@ import { useOrdinalColorScale } from '@nivo/colors';
 import { type DatumValue, ResponsiveLine } from '@nivo/line';
 
 import store from '@/redux/store';
+import { chartTheme } from '@/utils/chartTheme';
 
 import Block from '../Block';
 import { NivoSliceTooltip } from './NivoTooltip';
@@ -20,6 +21,7 @@ export const LineChart = ({ datasets }: LineChartProps) => {
   return (
     <Block height={2} width={3} style={{ color: 'black' }}>
       <ResponsiveLine
+        theme={chartTheme}
         data={chartData}
         margin={{ top: 25, right: 20, bottom: 30, left: 30 }}
         colors={{ scheme: 'nivo' }}
