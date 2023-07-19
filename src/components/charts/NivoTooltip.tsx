@@ -27,10 +27,11 @@ const tooltipStyle = {
 
 export const NivoSliceTooltip: React.FC<SliceTooltipProps> = ({ slice }) => {
   const playlists = store.getState().playlist.playlists;
+  const timeStep = store.getState().analysis.timeStep;
 
   return (
     <div style={tooltipStyle}>
-      <div>{formatDate(slice.points[0].data.x as Date, 'day')}</div>
+      <div>{formatDate(slice.points[0].data.x as Date, timeStep)}</div>
       <table>
         {slice.points.map(point => (
           <tr key={`slice-tooltip-${point.id}`}>
