@@ -3,6 +3,7 @@ import { type DatumValue, ResponsiveLine } from '@nivo/line';
 import store from '@/redux/store';
 
 import Block from '../Block';
+import { NivoSliceTooltip } from './NivoTooltip';
 
 export interface LineChartProps {
   datasets: Record<string, { x: DatumValue; y: number }[]>;
@@ -26,7 +27,7 @@ export const LineChart = ({ datasets }: LineChartProps) => {
         enableSlices="x"
         xScale={{ type: 'time' }}
         axisBottom={{ format: date => date }}
-        // sliceTooltip={} // TODO: add date to slice tooltip
+        sliceTooltip={NivoSliceTooltip}
         legends={[
           {
             data: chartData,
