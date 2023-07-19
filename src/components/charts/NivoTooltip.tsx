@@ -1,6 +1,7 @@
 import { type SliceTooltipProps } from '@nivo/line';
 
 import store from '@/redux/store';
+import { formatDate } from '@/utils/dateFormat';
 
 const tooltipStyle = {
   background: 'white',
@@ -13,7 +14,7 @@ export const NivoSliceTooltip: React.FC<SliceTooltipProps> = ({ slice }) => {
 
   return (
     <div style={tooltipStyle}>
-      <div>{slice.points[0].data.x.toString()}</div>
+      <div>{formatDate(slice.points[0].data.x as Date, 'day')}</div>
       <table>
         {slice.points.map(point => (
           <tr key={`slice-tooltip-${point.id}`}>
