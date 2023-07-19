@@ -6,6 +6,7 @@ import { chartTheme } from '@/utils/chartTheme';
 
 import Block from '../Block';
 import { NivoSliceTooltip } from './NivoTooltip';
+import { formatDate } from '@/utils/dateFormat';
 
 export interface LineChartProps {
   datasets: Record<string, { x: DatumValue; y: number }[]>;
@@ -13,6 +14,7 @@ export interface LineChartProps {
 
 export const LineChart = ({ datasets }: LineChartProps) => {
   const playlists = store.getState().playlist.playlists;
+  const timeStep = store.getState().analysis.timeStep;
 
   const chartData = Object.entries(datasets).map(([id, data]) => ({ id, data }));
 
@@ -26,8 +28,16 @@ export const LineChart = ({ datasets }: LineChartProps) => {
         margin={{ top: 25, right: 20, bottom: 30, left: 30 }}
         colors={{ scheme: 'nivo' }}
         enableSlices="x"
-        xScale={{ type: 'time' }}
-        axisBottom={{ format: date => date }}
+        xScale={{ type: 'time', precision: timeStep }}
+        axisBottom={{
+          format: date => formatDate(date, timeStep),
+          tickValues:
+            timeStep === 'year'
+              ? 'every year'
+              : timeStep === 'month'
+              ? 'every 3 months'
+              : 'every 10 days',
+        }}
         sliceTooltip={NivoSliceTooltip}
         legends={[
           {

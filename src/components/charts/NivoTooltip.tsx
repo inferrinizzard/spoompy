@@ -40,7 +40,7 @@ export const NivoSliceTooltip: React.FC<SliceTooltipProps> = ({ slice }) => {
             </td>
             <td>{playlists[point.serieId].name}</td>
             <td>
-              <b>{point.index}</b>
+              <b>{point.data.y.toString()}</b>
             </td>
           </tr>
         ))}
