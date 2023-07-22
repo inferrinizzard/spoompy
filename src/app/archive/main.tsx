@@ -16,7 +16,7 @@ export const ArchiveMain: React.FC<ArchiveMainProps> = () => {
       <DownloadAll />
       <section>
         {/* flex */}
-        {playlists.map(playlist => (
+        {Object.values(playlists).map(playlist => (
           <DownloadRow key={playlist.id} playlist={playlist} />
         ))}
       </section>
