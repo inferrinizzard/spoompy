@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { Text } from '@kuma-ui/core';
 
 import styles from './page.module.css';
 
@@ -7,17 +8,17 @@ export default function Home() {
     <main className={styles.main}>
       <article>
         <Link href="/browse">
-          <h1>{'Browse'}</h1>
+          <Text fontSize={48}>{'Browse'}</Text>
         </Link>
       </article>
       <article>
         <Link href="/analysis">
-          <h1>{'Analysis'}</h1>
+          <Text fontSize={48}>{'Analysis'}</Text>
         </Link>
       </article>
       <article>
         <Link href="/archive">
-          <h1>{'Archive'}</h1>
+          <Text fontSize={48}>{'Archive'}</Text>
         </Link>
       </article>
       <article>
