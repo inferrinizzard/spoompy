@@ -1,9 +1,7 @@
 import { Inter } from 'next/font/google';
+import { KumaRegistry } from '@kuma-ui/next-plugin/registry';
 
 import ReduxProvider from '@/redux/components/Provider';
-
-import Navbar from '@/components/Navbar';
-import ReturnButton from '@/components/ReturnButton';
 
 import './globals.css';
 
@@ -18,7 +16,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ReduxProvider>{children}</ReduxProvider>
+        <ReduxProvider>
+          <KumaRegistry>{children}</KumaRegistry>
+        </ReduxProvider>
       </body>
     </html>
   );
