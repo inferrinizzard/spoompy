@@ -1,4 +1,4 @@
-import { Spacer, Text } from '@kuma-ui/core';
+import { Button, Spacer, Text } from '@kuma-ui/core';
 
 import HomeLink from '@/components/HomeLink';
 
