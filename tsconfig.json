@@ -24,7 +24,10 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "types": ["spotify-api"]
+    "types": [
+      "spotify-api"
+      // "./kuma.config.ts",
+    ]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]

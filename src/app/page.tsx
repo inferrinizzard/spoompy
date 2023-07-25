@@ -1,28 +1,17 @@
-import Link from 'next/link';
+import { Button, Spacer, Text } from '@kuma-ui/core';
+
+import HomeLink from '@/components/HomeLink';
 
 import styles from './page.module.css';
 
 export default function Home() {
   return (
     <main className={styles.main}>
-      <article>
-        <Link href="/browse">
-          <h1>{'Browse'}</h1>
-        </Link>
-      </article>
-      <article>
-        <Link href="/analysis">
-          <h1>{'Analysis'}</h1>
-        </Link>
-      </article>
-      <article>
-        <Link href="/archive">
-          <h1>{'Archive'}</h1>
-        </Link>
-      </article>
-      <article>
-        <h1>{'Misc'}</h1>
-      </article>
+      <Text fontSize={36}>{'Spotify Data Visualizer'}</Text>
+      <Spacer height={'2rem'} />
+      <HomeLink href="/browse" text="Browse Library" />
+      <HomeLink href="/analysis" text="Data Analysis" />
+      <HomeLink href="/archive" text="Archive Playlists" />
     </main>
   );
 }
