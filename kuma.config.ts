@@ -1,13 +1,15 @@
 import { createTheme } from '@kuma-ui/core';
 
-const theme = createTheme({
-  colors: {
-    red: {
-      100: 'red',
-    },
-    blue: 'blue',
-    green: 'lime',
+export const colors = {
+  red: {
+    100: 'red',
   },
+  blue: 'blue',
+  green: 'lime',
+};
+
+const theme = createTheme({
+  colors,
   breakpoints: {
     sm: '400px',
     md: '700px',
@@ -26,7 +28,7 @@ const theme = createTheme({
     Link: {
       baseStyle: {
         _hover: {
-          color: 'colors.green',
+          color: colors.green,
           textDecoration: 'underline',
         },
       },
