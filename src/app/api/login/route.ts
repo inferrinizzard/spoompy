@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import { generateSession } from '@/spotify';
+import { generateSession } from '@/spotify/auth';
 
 export async function GET(request: Request) {
   const urlParams = request.url.replace(/^.*[/]api[/]login?/, '');
