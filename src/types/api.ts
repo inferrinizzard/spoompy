@@ -23,3 +23,16 @@ export interface SpotifyAlbum {
 export interface SpotifyPlaylist extends SpotifyApi.PlaylistBaseObject {
   tracks: SpotifyTrack[];
 }
+
+export interface AuthCredentials {
+  code: string;
+  state?: string;
+}
+
+export interface AuthSession {
+  accessToken: string;
+  refreshToken: string;
+  tokenType: string;
+  expiresIn: number;
+  scope: string;
+}
