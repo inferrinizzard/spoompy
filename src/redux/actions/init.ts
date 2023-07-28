@@ -24,7 +24,6 @@ export const initPlaylists = async () => {
     } else {
       console.info('MOCK disabled, pulling live data');
       const spotify = getSpotify();
-      console.log(spotify);
     }
   }
 };

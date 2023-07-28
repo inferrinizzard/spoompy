@@ -1,5 +1,4 @@
 import SpotifyWebApiNode from 'spotify-web-api-node';
-import { redirect } from 'next/navigation';
 
 import { tryGetAuthSession } from './auth';
 
@@ -37,10 +36,10 @@ export const createSpotifyInstance = () => {
   return new SpotifyWebApiNode(spotifyApiParams);
 };
 
-export const beginAuthSpotify = () => {
+export const generateAuthUrl = () => {
   const scopes = ['user-top-read'];
   const state = 'test';
 
   const redirectUrl = getSpotify().createAuthorizeURL(scopes, state);
-  redirect(redirectUrl);
+  return redirectUrl;
 };

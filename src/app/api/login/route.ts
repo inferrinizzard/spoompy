@@ -1,6 +1,8 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
+import store from '@/redux/store';
+import { setAuthStatus } from '@/redux/slices/userSlice';
 import { generateSession } from '@/spotify/auth';
 
 export async function GET(request: Request) {
@@ -18,5 +20,6 @@ export async function GET(request: Request) {
   // @ts-expect-error
   cookieStore.set('AUTH_SESSION', authSession);
 
+  store.dispatch(setAuthStatus(true));
   redirect('http://localhost:3000');
 }
