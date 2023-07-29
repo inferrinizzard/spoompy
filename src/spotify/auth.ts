@@ -49,7 +49,13 @@ export const generateSession = async () => {
 };
 
 export const generateAuthUrl = () => {
-  const scopes = ['user-top-read'];
+  const scopes = [
+    'playlist-read-collaborative',
+    'playlist-read-private',
+    'user-library-read',
+    'user-read-recently-played',
+    'user-top-read',
+  ];
   const state = 'test';
 
   const redirectUrl = getSpotify().api.createAuthorizeURL(scopes, state);

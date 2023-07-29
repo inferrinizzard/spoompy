@@ -5,6 +5,7 @@ import { normalizePlaylists } from '@/utils/normalizr';
 
 import store from '../store';
 import { setEntities } from '../slices/playlistSlice';
+import { setUserDetails } from '../slices/userSlice';
 
 export const initPlaylists = async () => {
   if (!Object.keys(store.getState().playlist.playlists).length) {
@@ -24,6 +25,9 @@ export const initPlaylists = async () => {
     } else {
       console.info('MOCK disabled, pulling live data');
       const spotify = getSpotify();
+
+      const userDetails = await spotify.getUserDetails();
+      store.dispatch(setUserDetails(userDetails));
     }
   }
 };

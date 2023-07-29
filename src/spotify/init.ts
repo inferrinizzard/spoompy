@@ -1,6 +1,9 @@
 import SpotifyWebApiNode from 'spotify-web-api-node';
 
+import { type UserDetails } from '@/types/api';
+
 import { tryGetAuthSession } from './auth';
+import { handleRateLimitedError, throwError } from './handlers';
 
 let spotify: SpotifyInstance;
 
@@ -38,4 +41,15 @@ export class SpotifyInstance {
 
     this.api = new SpotifyWebApiNode(spotifyApiParams);
   }
+
+  getUserDetails = (): Promise<UserDetails> =>
+    this.api
+      .getMe()
+      .then(handleRateLimitedError)
+      .then(({ body }) => ({
+        name: body.display_name ?? '',
+        id: body.id,
+        image: body.images?.at(0)?.url ?? '', // TODO: add default profile image url
+      }))
+      .catch(throwError);
 }

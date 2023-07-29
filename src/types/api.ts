@@ -36,3 +36,9 @@ export interface AuthSession {
   expiresIn: number;
   scope: string;
 }
+
+export interface UserDetails {
+  name: string;
+  id: string;
+  image: string;
+}
