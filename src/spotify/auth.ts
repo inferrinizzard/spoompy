@@ -14,12 +14,12 @@ export const tryGetAuthSession = () => {
 };
 
 export const generateSession = async () => {
-  const spotify = getSpotify();
+  const spotifyApi = getSpotify().api;
 
   const cookieStore = cookies();
   const authCredentials = cookieStore.get('AUTH_CODE')!.value as unknown as AuthCredentials;
 
-  const authSession = await spotify
+  const authSession = await spotifyApi
     .authorizationCodeGrant(authCredentials.code)
     .then(({ body }) => {
       const accessToken = body.access_token;
@@ -28,8 +28,8 @@ export const generateSession = async () => {
       const expiresIn = body.expires_in;
       const scope = body.scope;
 
-      spotify.setAccessToken(accessToken);
-      spotify.setRefreshToken(refreshToken);
+      spotifyApi.setAccessToken(accessToken);
+      spotifyApi.setRefreshToken(refreshToken);
 
       return {
         accessToken,
@@ -46,4 +46,12 @@ export const generateSession = async () => {
   }
 
   return authSession as AuthSession;
+};
+
+export const generateAuthUrl = () => {
+  const scopes = ['user-top-read'];
+  const state = 'test';
+
+  const redirectUrl = getSpotify().api.createAuthorizeURL(scopes, state);
+  return redirectUrl;
 };

@@ -1,5 +1,5 @@
-import type SpotifyWebApiNode from 'spotify-web-api-node';
+import { type SpotifyInstance } from '@/spotify';
 
 export declare global {
-  var spotify: SpotifyWebApiNode;
+  var spotify: SpotifyInstance;
 }
