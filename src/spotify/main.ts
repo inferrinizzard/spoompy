@@ -1,6 +1,7 @@
+import { cookies } from 'next/headers';
 import SpotifyWebApiNode from 'spotify-web-api-node';
 
-import { type UserDetails } from '@/types/api';
+import { type AuthSession, type UserDetails } from '@/types/api';
 
 import { tryGetAuthSession } from './auth';
 import { handleRateLimitedError, throwError } from './handlers';
@@ -23,6 +24,7 @@ export const getSpotify = () => {
 
 export class SpotifyInstance {
   api: SpotifyWebApiNode;
+  refreshTimer?: ReturnType<typeof setTimeout>;
 
   constructor() {
     let spotifyApiParams: any = {
@@ -35,12 +37,42 @@ export class SpotifyInstance {
 
     const authSession = tryGetAuthSession();
     if (authSession) {
-      spotifyApiParams.accessToken = authSession.accessToken;
-      spotifyApiParams.refreshToken = authSession.refreshToken;
+      if (authSession.expiresAt > new Date().getTime()) {
+        spotifyApiParams.accessToken = authSession.accessToken;
+        spotifyApiParams.refreshToken = authSession.refreshToken;
+
+        this.refreshTimer = setTimeout(
+          () => this.refreshToken(),
+          Math.max(0, authSession.expiresIn - 100) * 1000
+        );
+      }
     }
 
     this.api = new SpotifyWebApiNode(spotifyApiParams);
   }
+
+  refreshToken = () =>
+    this.api.refreshAccessToken().then(({ body }) => {
+      this.api.setAccessToken(body.access_token);
+      body.refresh_token && this.api.setRefreshToken(body.refresh_token);
+
+      const authSession = tryGetAuthSession()!;
+      const newAuthSession: AuthSession = {
+        ...authSession,
+        accessToken: body.access_token,
+        refreshToken: body.refresh_token || authSession.refreshToken,
+        expiresIn: body.expires_in,
+        expiresAt: new Date(new Date().getTime() + body.expires_in * 1000).getTime(),
+      };
+
+      // @ts-expect-error
+      cookies().set('AUTH_SESSION', newAuthSession);
+
+      this.refreshTimer = setTimeout(
+        () => this.refreshToken(),
+        Math.max(0, body.expires_in - 100) * 1000
+      );
+    });
 
   getUserDetails = (): Promise<UserDetails> =>
     this.api

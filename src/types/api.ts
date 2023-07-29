@@ -34,6 +34,7 @@ export interface AuthSession {
   refreshToken: string;
   tokenType: string;
   expiresIn: number;
+  expiresAt: number;
   scope: string;
 }
 
