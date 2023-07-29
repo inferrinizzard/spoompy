@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 
 import { type AuthCredentials, type AuthSession } from '@/types/api';
 
-import { getSpotify } from './init';
+import { getSpotify } from './main';
 
 export const tryGetAuthSession = () => {
   const authSession = cookies().get('AUTH_SESSION')?.value;
