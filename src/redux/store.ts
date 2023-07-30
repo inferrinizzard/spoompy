@@ -5,6 +5,8 @@ import browseReducer from './slices/browseSlice';
 import playlistReducer from './slices/playlistSlice';
 import userReducer from './slices/userSlice';
 
+import initSpotifyMiddleware from './middleware/initSpotify';
+
 export const makeStore = () =>
   configureStore({
     reducer: {
@@ -15,6 +17,8 @@ export const makeStore = () =>
 
       user: userReducer,
     },
+    middleware: getDefaultMiddleware =>
+      getDefaultMiddleware().prepend(initSpotifyMiddleware.middleware),
   });
 
 const store = makeStore();
