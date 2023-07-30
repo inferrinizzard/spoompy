@@ -8,16 +8,13 @@ export const tryGetAuthSession = () => {
   const authSession = cookies().get('AUTH_SESSION')?.value;
 
   if (authSession) {
-    return authSession as unknown as AuthSession;
+    return JSON.parse(authSession) as AuthSession;
   }
   return null;
 };
 
-export const generateSession = async () => {
+export const generateSession = async (authCredentials: AuthCredentials) => {
   const spotifyInstance = getSpotify();
-
-  const cookieStore = cookies();
-  const authCredentials = cookieStore.get('AUTH_CODE')!.value as unknown as AuthCredentials;
 
   const authSession: AuthSession = await spotifyInstance.api
     .authorizationCodeGrant(authCredentials.code)
