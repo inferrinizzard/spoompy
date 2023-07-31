@@ -1,8 +1,11 @@
 import { Button, Spacer, Text } from '@kuma-ui/core';
+import Link from 'next/link';
 
 import HomeLink from '@/components/HomeLink';
+import store from '@/redux/store';
 
 import styles from './page.module.css';
+import { generateAuthUrl } from '@/spotify';
 
 export default function Home() {
   return (
@@ -12,6 +15,12 @@ export default function Home() {
       <HomeLink href="/browse" text="Browse Library" />
       <HomeLink href="/analysis" text="Data Analysis" />
       <HomeLink href="/archive" text="Archive Playlists" />
+
+      {!store.getState().user.isAuthed && (
+        <Button as={Link} href={generateAuthUrl()}>
+          {'Login'}
+        </Button>
+      )}
     </main>
   );
 }

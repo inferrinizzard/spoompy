@@ -22,6 +22,9 @@ const nextConfig = {
       },
     ],
   },
+  env: {
+    mock: true,
+  },
 };
 
 module.exports = withKumaUI(nextConfig);
