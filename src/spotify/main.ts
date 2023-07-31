@@ -66,7 +66,7 @@ export class SpotifyInstance {
       };
 
       // @ts-expect-error
-      cookies().set('AUTH_SESSION', newAuthSession);
+      cookies().set('AUTH_SESSION', JSON.stringify(newAuthSession));
 
       this.refreshTimer = setTimeout(
         () => this.refreshToken(),
