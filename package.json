@@ -17,7 +17,7 @@
     "@nivo/line": "^0.83.0",
     "@reduxjs/toolkit": "^1.9.5",
     "dayjs": "^1.11.7",
-    "next": "13.4.1",
+    "next": "^13.4.12",
     "normalizr": "^3.6.2",
     "open": "^7.3.0",
     "react": "18.2.0",
