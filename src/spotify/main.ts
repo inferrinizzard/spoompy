@@ -3,7 +3,7 @@ import SpotifyWebApiNode from 'spotify-web-api-node';
 
 import { type AuthSession, type UserDetails } from '@/types/api';
 
-import { tryGetAuthSession } from './auth';
+import { tryGetAuthSession } from './util';
 import { handleRateLimitedError, throwError } from './handlers';
 
 let spotify: SpotifyInstance;
