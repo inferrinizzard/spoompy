@@ -2,7 +2,7 @@ import { readFileSync, readdirSync } from 'fs';
 
 import { type PlaylistTrack, type PlaylistTrackWithName } from '@/types/common';
 
-export const getTracks = () => {
+export const getTracks = (): PlaylistTrackWithName[] => {
   const basePath = 'archive/2023-03-22/redux';
 
   const files = readdirSync(basePath);
@@ -36,7 +36,9 @@ export const getPlaylist = async (
   return await Promise.resolve(data);
 };
 
-export const getPlaylists = async (userId?: string) => {
+export const getPlaylists = async (
+  userId?: string,
+): Promise<SpotifyApi.PlaylistObjectSimplified[]> => {
   const basePath = 'mock';
 
   const data = JSON.parse(

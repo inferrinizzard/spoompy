@@ -9,6 +9,7 @@ import browseReducer from './slices/browseSlice';
 import playlistReducer from './slices/playlistSlice';
 import userReducer from './slices/userSlice';
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const makeStore = () =>
   configureStore({
     reducer: {

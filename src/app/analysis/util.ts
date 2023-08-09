@@ -6,6 +6,11 @@ import { countBy } from '@/utils/query';
 import { type TimeStep } from '@/types/common';
 import { type ValueOf } from '@/types/util';
 
+export const trimDate = (
+  dateString: string,
+  timeResolution: TimeStep,
+): string => dayjs(dateString).startOf(timeResolution).toISOString();
+
 export interface CountAggregation {
   x: Date;
   y: number;
@@ -14,7 +19,7 @@ export interface CountAggregation {
 export const useRollingSumOfPlaylists = (
   slice: Array<ValueOf<PlaylistState['playlists']>>,
   timeResolution: TimeStep = 'day',
-) => {
+): Record<string, CountAggregation[]> => {
   const tracks = useAppSelector(selectTracks);
 
   return slice.reduce((acc, playlist) => {
@@ -43,6 +48,3 @@ export const useRollingSumOfPlaylists = (
     return { ...acc, [playlist.id]: rollingSum };
   }, {} as Record<string, CountAggregation[]>);
 };
-
-export const trimDate = (dateString: string, timeResolution: TimeStep) =>
-  dayjs(dateString).startOf(timeResolution).toISOString();

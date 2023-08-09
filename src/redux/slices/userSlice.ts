@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { type UserDetails } from '@/types/api';

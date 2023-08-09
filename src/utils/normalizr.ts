@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { normalize, schema } from 'normalizr';
 
 import { type SpotifyPlaylist, type SpotifyTrack } from '@/types/api';

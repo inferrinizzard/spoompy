@@ -1,7 +1,7 @@
 import { type PlaylistState } from '@/redux/slices/playlistSlice';
 // import { type SpotifyPlaylist } from '@/types/api';
 
-const createDownloadAnchor = () => {
+const createDownloadAnchor = (): HTMLAnchorElement => {
   const anchorId = 'downloadAnchor';
 
   let downloadAnchor = document.getElementById(anchorId);
@@ -16,7 +16,7 @@ const createDownloadAnchor = () => {
   return downloadAnchor as HTMLAnchorElement;
 };
 
-export const download = (data: unknown, filename: string) => {
+export const download = (data: unknown, filename: string): void => {
   const downloadAnchor = createDownloadAnchor();
 
   const dataJson = JSON.stringify(data);
@@ -32,7 +32,7 @@ export const download = (data: unknown, filename: string) => {
 
 export const simplifyPlaylist = (
   playlist: PlaylistState['playlists'][number],
-) => {
+): typeof playlist => {
   // TODO: simplification fn, with options ?
   return playlist;
 };

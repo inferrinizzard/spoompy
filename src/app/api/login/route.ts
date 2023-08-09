@@ -4,7 +4,7 @@ import store from '@/redux/store';
 import { setAuthStatus } from '@/redux/slices/userSlice';
 import { generateSession } from '@/spotify/auth';
 
-export async function GET(request: Request) {
+export async function GET(request: Request): Promise<NextResponse> {
   const urlParams = request.url.replace(/^.*[/]api[/]login/, '');
   const queryParams = new URLSearchParams(urlParams);
 

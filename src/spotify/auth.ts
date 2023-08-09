@@ -4,7 +4,7 @@ import { type AuthCredentials, type AuthSession } from '@/types/api';
 
 import { getSpotify } from './main';
 
-export const tryGetAuthSession = () => {
+export const tryGetAuthSession = (): AuthSession | null => {
   const authSession = cookies().get('AUTH_SESSION')?.value;
 
   if (authSession) {
@@ -14,7 +14,9 @@ export const tryGetAuthSession = () => {
   return null;
 };
 
-export const generateSession = async (authCredentials: AuthCredentials) => {
+export const generateSession = async (
+  authCredentials: AuthCredentials,
+): Promise<AuthSession> => {
   const spotifyInstance = getSpotify();
 
   const authSession: AuthSession = await spotifyInstance.api
@@ -53,7 +55,7 @@ export const generateSession = async (authCredentials: AuthCredentials) => {
   return authSession;
 };
 
-export const generateAuthUrl = () => {
+export const generateAuthUrl = (): string => {
   const scopes = [
     'playlist-read-collaborative',
     'playlist-read-private',

@@ -7,7 +7,7 @@ import store from '../store';
 import { setEntities } from '../slices/playlistSlice';
 import { setUserDetails } from '../slices/userSlice';
 
-export const initPlaylists = async () => {
+export const initPlaylists = async (): Promise<void> => {
   if (!Object.keys(store.getState().playlist.playlists).length) {
     if (process.env.mock) {
       console.info('MOCK enabled, reading local json');

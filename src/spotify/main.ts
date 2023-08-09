@@ -8,29 +8,13 @@ import { handleRateLimitedError, throwError } from './handlers';
 
 let spotify: SpotifyInstance;
 
-export const getSpotify = () => {
-  if (!spotify) {
-    if (process.env.NODE_ENV === 'production') {
-      spotify = new SpotifyInstance();
-    } else {
-      if (!global.spotify) {
-        global.spotify = new SpotifyInstance();
-      }
-
-      spotify = global.spotify;
-    }
-  }
-
-  return spotify;
-};
-
 export class SpotifyInstance {
   public api: SpotifyWebApiNode;
 
-  private refreshTimer?: ReturnType<typeof setTimeout>;
+  public refreshTimer?: ReturnType<typeof setTimeout>;
 
   public constructor() {
-    let spotifyApiParams = {
+    let spotifyApiParams: ConstructorParameters<typeof SpotifyWebApiNode>[0] = {
       clientId: process.env.SPOTIFY_ID,
       clientSecret: process.env.SPOTIFY_SECRET,
       redirectUri: 'http://localhost:3000/api/login',
@@ -53,7 +37,7 @@ export class SpotifyInstance {
     this.api = new SpotifyWebApiNode(spotifyApiParams);
   }
 
-  public refreshToken = async () =>
+  public refreshToken = async (): Promise<void> =>
     await this.api.refreshAccessToken().then(({ body }) => {
       this.api.setAccessToken(body.access_token);
       if (body.refresh_token) {
@@ -94,3 +78,19 @@ export class SpotifyInstance {
       }))
       .catch(throwError);
 }
+
+export const getSpotify = (): SpotifyInstance => {
+  if (!spotify) {
+    if (process.env.NODE_ENV === 'production') {
+      spotify = new SpotifyInstance();
+    } else {
+      if (!global.spotify) {
+        global.spotify = new SpotifyInstance();
+      }
+
+      spotify = global.spotify;
+    }
+  }
+
+  return spotify;
+};

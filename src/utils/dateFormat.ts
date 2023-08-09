@@ -1,7 +1,7 @@
 export const formatDate = (
   date: Date,
   resolution: 'day' | 'month' | 'year',
-) => {
+): string => {
   const dateYear = date.getFullYear();
   if (resolution === 'year') {
     return dateYear.toString();
