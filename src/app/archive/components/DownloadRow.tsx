@@ -34,13 +34,16 @@ export const DownloadRow: React.FC<DownloadRowProps> = ({ playlist }) => (
       <h6>{`Num tracks: ${playlist.tracks.length}`}</h6>
     </span>
     <span>
-      <button onClick={() => download(playlist, `${playlist.name}.json`)}>
+      <button
+        onClick={() => download(playlist, `${playlist.name}.json`)}
+        type="button">
         {'Download'}
       </button>
       <button
         onClick={() =>
           download(simplifyPlaylist(playlist), `${playlist.name}.json`)
-        }>
+        }
+        type="button">
         {'Download Simplified'}
       </button>
     </span>

@@ -16,7 +16,8 @@ const Stepper: React.FC<StepperProps> = ({ totalLength }) => {
     <>
       <span>
         <button
-          onClick={() => dispatch(setSliceIndex(Math.max(0, slice.index - 1)))}>
+          onClick={() => dispatch(setSliceIndex(Math.max(0, slice.index - 1)))}
+          type="button">
           {'Prev'}
         </button>
       </span>
@@ -28,12 +29,16 @@ const Stepper: React.FC<StepperProps> = ({ totalLength }) => {
                 Math.min(slice.index + 1, totalLength / slice.size),
               ),
             )
-          }>
+          }
+          type="button">
           {'Next'}
         </button>
       </span>
       <span>
-        <button onClick={() => dispatch(setSliceIndex(0))}>{'Reset'}</button>
+        <button onClick={() => dispatch(setSliceIndex(0))} type="button">
+          {'Reset'}
+        </button>
+        {"type='button'"}
       </span>
       <span>{`${slice.index * slice.size + 1} - ${
         (slice.index + 1) * slice.size

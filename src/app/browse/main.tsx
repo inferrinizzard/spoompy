@@ -15,7 +15,8 @@ const BrowseMain: React.FC<DisplayProps> = () => {
       <button
         onClick={() => {
           view === 'playlist' ? setView('tabular') : setView('playlist');
-        }}>
+        }}
+        type="button">
         {'Switch View'}
       </button>
       {view === 'playlist' && <PlaylistView />}

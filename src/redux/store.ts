@@ -1,5 +1,8 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { type Action, type ThunkAction } from '@reduxjs/toolkit';
+import {
+  type Action,
+  type ThunkAction,
+  configureStore,
+} from '@reduxjs/toolkit';
 
 import analysisReducer from './slices/analysisSlice';
 import browseReducer from './slices/browseSlice';

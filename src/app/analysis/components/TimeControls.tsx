@@ -85,9 +85,8 @@ export const TimeControls: React.FC<TimeControlsProps> = ({}) => {
           <button
             disabled={selected == i}
             key={`time-range-${i}`}
-            onClick={() =>
-              range ? setRange(range, timeStep, i) : onClick?.()
-            }>
+            onClick={() => (range ? setRange(range, timeStep, i) : onClick?.())}
+            type="button">
             {label}
           </button>
         ))}

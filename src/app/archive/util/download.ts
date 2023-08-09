@@ -1,5 +1,5 @@
 import { type PlaylistState } from '@/redux/slices/playlistSlice';
-import { type SpotifyPlaylist } from '@/types/api';
+// import { type SpotifyPlaylist } from '@/types/api';
 
 const createDownloadAnchor = () => {
   const anchorId = 'downloadAnchor';

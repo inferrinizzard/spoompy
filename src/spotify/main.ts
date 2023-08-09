@@ -25,12 +25,12 @@ export const getSpotify = () => {
 };
 
 export class SpotifyInstance {
-  api: SpotifyWebApiNode;
+  public api: SpotifyWebApiNode;
 
-  refreshTimer?: ReturnType<typeof setTimeout>;
+  private refreshTimer?: ReturnType<typeof setTimeout>;
 
-  constructor() {
-    let spotifyApiParams: any = {
+  public constructor() {
+    let spotifyApiParams = {
       clientId: process.env.SPOTIFY_ID,
       clientSecret: process.env.SPOTIFY_SECRET,
       redirectUri: 'http://localhost:3000/api/login',
@@ -44,33 +44,37 @@ export class SpotifyInstance {
         spotifyApiParams.accessToken = authSession.accessToken;
         spotifyApiParams.refreshToken = authSession.refreshToken;
 
-        this.refreshTimer = setTimeout(
-          async () => await this.refreshToken(),
-          Math.max(0, authSession.expiresIn - 100) * 1000,
-        );
+        this.refreshTimer = setTimeout(async () => {
+          await this.refreshToken();
+        }, Math.max(0, authSession.expiresIn - 100) * 1000);
       }
     }
 
     this.api = new SpotifyWebApiNode(spotifyApiParams);
   }
 
-  refreshToken = async () =>
+  public refreshToken = async () =>
     await this.api.refreshAccessToken().then(({ body }) => {
       this.api.setAccessToken(body.access_token);
-      body.refresh_token && this.api.setRefreshToken(body.refresh_token);
+      if (body.refresh_token) {
+        this.api.setRefreshToken(body.refresh_token);
+      }
 
-      const authSession = tryGetAuthSession()!;
+      const authSession = tryGetAuthSession();
+      if (!authSession) {
+        throw new Error('Invalid authSession on refreshToken!');
+      }
+
       const newAuthSession: AuthSession = {
         ...authSession,
         accessToken: body.access_token,
-        refreshToken: body.refresh_token || authSession.refreshToken,
+        refreshToken: body.refresh_token ?? authSession.refreshToken,
         expiresIn: body.expires_in,
         expiresAt: new Date(
           new Date().getTime() + body.expires_in * 1000,
         ).getTime(),
       };
 
-      // @ts-expect-error
       cookies().set('AUTH_SESSION', JSON.stringify(newAuthSession));
 
       this.refreshTimer = setTimeout(
@@ -79,7 +83,7 @@ export class SpotifyInstance {
       );
     });
 
-  getUserDetails = async (): Promise<UserDetails> =>
+  public getUserDetails = async (): Promise<UserDetails> =>
     await this.api
       .getMe()
       .then(handleRateLimitedError)
