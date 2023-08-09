@@ -5,7 +5,10 @@ export interface ReturnButtonProps {}
 
 export const ReturnButton: React.FC<ReturnButtonProps> = () => {
   return (
-    <Link as={NextLink} href="/" style={{ position: 'fixed', bottom: 0, right: 0 }}>
+    <Link
+      as={NextLink}
+      href="/"
+      style={{ position: 'fixed', bottom: 0, right: 0 }}>
       {'Home'}
     </Link>
   );

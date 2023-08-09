@@ -1,23 +1,23 @@
 export interface SpotifyTrack {
-  name: string;
-  artists: SpotifyArtist[];
-  album: SpotifyAlbum;
   added_at: string;
   added_by: string;
+  album: SpotifyAlbum;
+  artists: SpotifyArtist[];
   id: string;
+  name: string;
   popularity: number;
   type: string;
 }
 
 export interface SpotifyArtist {
-  name: string;
   id: string;
+  name: string;
 }
 
 export interface SpotifyAlbum {
-  name: string;
   id: string;
   image: string;
+  name: string;
 }
 
 export interface SpotifyPlaylist extends SpotifyApi.PlaylistBaseObject {
@@ -31,15 +31,15 @@ export interface AuthCredentials {
 
 export interface AuthSession {
   accessToken: string;
-  refreshToken: string;
-  tokenType: string;
-  expiresIn: number;
   expiresAt: number;
+  expiresIn: number;
+  refreshToken: string;
   scope: string;
+  tokenType: string;
 }
 
 export interface UserDetails {
-  name: string;
   id: string;
   image: string;
+  name: string;
 }

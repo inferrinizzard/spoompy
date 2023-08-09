@@ -12,9 +12,9 @@ const Filter: React.FC<FilterProps> = () => {
   const playlists = useAppSelector(selectPlaylists);
 
   return (
-    <select onChange={e => dispatch(setPlaylistFilter(e.target.value))}>
-      <option value={''}>{'All'}</option>
-      {Object.values(playlists).map(playlist => (
+    <select onChange={(e) => dispatch(setPlaylistFilter(e.target.value))}>
+      <option value="">{'All'}</option>
+      {Object.values(playlists).map((playlist) => (
         <option key={playlist.id} value={playlist.id}>
           {playlist.name}
         </option>

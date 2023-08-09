@@ -16,14 +16,17 @@ export const getSpotify = () => {
       if (!global.spotify) {
         global.spotify = new SpotifyInstance();
       }
+
       spotify = global.spotify;
     }
   }
+
   return spotify;
 };
 
 export class SpotifyInstance {
   api: SpotifyWebApiNode;
+
   refreshTimer?: ReturnType<typeof setTimeout>;
 
   constructor() {
@@ -42,8 +45,8 @@ export class SpotifyInstance {
         spotifyApiParams.refreshToken = authSession.refreshToken;
 
         this.refreshTimer = setTimeout(
-          () => this.refreshToken(),
-          Math.max(0, authSession.expiresIn - 100) * 1000
+          async () => await this.refreshToken(),
+          Math.max(0, authSession.expiresIn - 100) * 1000,
         );
       }
     }
@@ -51,8 +54,8 @@ export class SpotifyInstance {
     this.api = new SpotifyWebApiNode(spotifyApiParams);
   }
 
-  refreshToken = () =>
-    this.api.refreshAccessToken().then(({ body }) => {
+  refreshToken = async () =>
+    await this.api.refreshAccessToken().then(({ body }) => {
       this.api.setAccessToken(body.access_token);
       body.refresh_token && this.api.setRefreshToken(body.refresh_token);
 
@@ -62,20 +65,22 @@ export class SpotifyInstance {
         accessToken: body.access_token,
         refreshToken: body.refresh_token || authSession.refreshToken,
         expiresIn: body.expires_in,
-        expiresAt: new Date(new Date().getTime() + body.expires_in * 1000).getTime(),
+        expiresAt: new Date(
+          new Date().getTime() + body.expires_in * 1000,
+        ).getTime(),
       };
 
       // @ts-expect-error
       cookies().set('AUTH_SESSION', JSON.stringify(newAuthSession));
 
       this.refreshTimer = setTimeout(
-        () => this.refreshToken(),
-        Math.max(0, body.expires_in - 100) * 1000
+        async () => await this.refreshToken(),
+        Math.max(0, body.expires_in - 100) * 1000,
       );
     });
 
-  getUserDetails = (): Promise<UserDetails> =>
-    this.api
+  getUserDetails = async (): Promise<UserDetails> =>
+    await this.api
       .getMe()
       .then(handleRateLimitedError)
       .then(({ body }) => ({

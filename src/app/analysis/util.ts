@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 
 import { useAppSelector } from '@/redux/client';
-import { selectTracks, type PlaylistState } from '@/redux/slices/playlistSlice';
+import { type PlaylistState, selectTracks } from '@/redux/slices/playlistSlice';
 import { countBy } from '@/utils/query';
 import { type TimeStep } from '@/types/common';
 import { type ValueOf } from '@/types/util';
@@ -12,14 +12,14 @@ export interface CountAggregation {
 }
 
 export const useRollingSumOfPlaylists = (
-  slice: ValueOf<PlaylistState['playlists']>[],
-  timeResolution: TimeStep = 'day'
+  slice: Array<ValueOf<PlaylistState['playlists']>>,
+  timeResolution: TimeStep = 'day',
 ) => {
   const tracks = useAppSelector(selectTracks);
 
   return slice.reduce((acc, playlist) => {
     const playlistTracks = playlist.tracks
-      .map(track => {
+      .map((track) => {
         const trackData = tracks[track];
         const playlistReference = trackData.playlists[playlist.id];
         return {
@@ -37,7 +37,7 @@ export const useRollingSumOfPlaylists = (
         sum: sum + count,
         data: data.concat([{ x: new Date(time), y: sum + count }]),
       }),
-      { sum: 0, data: [] as CountAggregation[] }
+      { sum: 0, data: [] as CountAggregation[] },
     ).data;
 
     return { ...acc, [playlist.id]: rollingSum };

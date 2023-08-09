@@ -1,6 +1,12 @@
-import { type SpotifyAlbum, type SpotifyArtist, type SpotifyTrack } from '@/types/api';
+import {
+  type SpotifyAlbum,
+  type SpotifyArtist,
+  type SpotifyTrack,
+} from '@/types/api';
 
-export const trimTrack = (item: SpotifyApi.PlaylistTrackObject): SpotifyTrack => {
+export const trimTrack = (
+  item: SpotifyApi.PlaylistTrackObject,
+): SpotifyTrack => {
   if (!item.track) {
     throw new Error('Track is null!');
   }
@@ -17,13 +23,17 @@ export const trimTrack = (item: SpotifyApi.PlaylistTrackObject): SpotifyTrack =>
   };
 };
 
-export const trimArtist = (artist: SpotifyApi.ArtistObjectSimplified): SpotifyArtist => ({
+export const trimArtist = (
+  artist: SpotifyApi.ArtistObjectSimplified,
+): SpotifyArtist => ({
   name: artist.name,
   id: artist.id,
   // uri: artist.uri
 });
 
-export const trimAlbum = (album: SpotifyApi.AlbumObjectSimplified): SpotifyAlbum => ({
+export const trimAlbum = (
+  album: SpotifyApi.AlbumObjectSimplified,
+): SpotifyAlbum => ({
   name: album.name,
   // album_type: album.album_type,
   // type: album.type,

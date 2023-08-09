@@ -34,7 +34,7 @@ export const NivoSliceTooltip: React.FC<SliceTooltipProps> = ({ slice }) => {
       <div>{formatDate(slice.points[0].data.x as Date, timeStep)}</div>
       <table>
         <tbody>
-          {slice.points.map(point => (
+          {slice.points.map((point) => (
             <tr key={`slice-tooltip-${point.id}`}>
               <td>
                 <ColourSquare colour={point.serieColor} />
@@ -60,7 +60,7 @@ export const NivoBarTooltip = <T,>(props: BarTooltipProps<T>) => {
         <ColourSquare colour={props.color} />
       </div>
       <div>{playlists[props.indexValue].name}</div>
-      <div>-</div>
+      <div>{'-'}</div>
       <div>
         <b>{props.value}</b>
       </div>

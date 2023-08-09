@@ -17,9 +17,9 @@ export const initPlaylists = async () => {
         return { ...rest, tracks: playlistTracks };
       });
 
-      const normalizedPlaylists = normalizePlaylists(playlists) as unknown as NormalizedPlaylists<
-        typeof playlists
-      >;
+      const normalizedPlaylists = normalizePlaylists(
+        playlists,
+      ) as unknown as NormalizedPlaylists<typeof playlists>;
 
       store.dispatch(setEntities(normalizedPlaylists.entities));
     } else {

@@ -15,14 +15,19 @@ const Stepper: React.FC<StepperProps> = ({ totalLength }) => {
   return (
     <>
       <span>
-        <button onClick={() => dispatch(setSliceIndex(Math.max(0, slice.index - 1)))}>
+        <button
+          onClick={() => dispatch(setSliceIndex(Math.max(0, slice.index - 1)))}>
           {'Prev'}
         </button>
       </span>
       <span>
         <button
           onClick={() =>
-            dispatch(setSliceIndex(Math.min(slice.index + 1, totalLength / slice.size)))
+            dispatch(
+              setSliceIndex(
+                Math.min(slice.index + 1, totalLength / slice.size),
+              ),
+            )
           }>
           {'Next'}
         </button>

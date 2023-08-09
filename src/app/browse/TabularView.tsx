@@ -3,8 +3,16 @@
 import { useMemo } from 'react';
 
 import { useAppSelector } from '@/redux/client';
-import { selectPlaylistFilter, selectSearch, selectSort } from '@/redux/slices/browseSlice';
-import { selectAlbums, selectArtists, selectTracks } from '@/redux/slices/playlistSlice';
+import {
+  selectPlaylistFilter,
+  selectSearch,
+  selectSort,
+} from '@/redux/slices/browseSlice';
+import {
+  selectAlbums,
+  selectArtists,
+  selectTracks,
+} from '@/redux/slices/playlistSlice';
 import { type PlaylistTrackEntityWithNormalizedArtistsAndAlbums } from '@/types/schema';
 
 import Filter from './components/Filter';
@@ -35,19 +43,23 @@ export const TabularView = () => {
         .reduce((list, track) => {
           const hasSearchKey = [
             track.name,
-            ...track.artists.map(id => artists[id].name),
+            ...track.artists.map((id) => artists[id].name),
             albums[track.album].name,
-          ].some(key => key.toLowerCase().includes(search));
+          ].some((key) => key.toLowerCase().includes(search));
 
-          const matchingPlaylists = Object.entries(track.playlists).filter(([id]) =>
-            playlistFilter ? id === playlistFilter : true
+          const matchingPlaylists = Object.entries(track.playlists).filter(
+            ([id]) => (playlistFilter ? id === playlistFilter : true),
           );
 
           if (hasSearchKey && matchingPlaylists.length) {
             const { playlists, ...rest } = track;
 
             return list.concat(
-              matchingPlaylists.map(([id, values]) => ({ ...rest, playlist: id, ...values }))
+              matchingPlaylists.map(([id, values]) => ({
+                ...rest,
+                playlist: id,
+                ...values,
+              })),
             );
           }
 
@@ -57,10 +69,12 @@ export const TabularView = () => {
           !sort
             ? undefined
             : (a, b) =>
-                (a[sort.column as keyof typeof a]! > b[sort.column as keyof typeof b]! ? 1 : -1) *
-                (sort.asc ? 1 : -1)
+                (a[sort.column as keyof typeof a]! >
+                b[sort.column as keyof typeof b]!
+                  ? 1
+                  : -1) * (sort.asc ? 1 : -1),
         ),
-    [albums, artists, tracks, playlistFilter, search, sort]
+    [albums, artists, tracks, playlistFilter, search, sort],
   );
 
   return (

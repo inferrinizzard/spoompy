@@ -1,15 +1,16 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { DateRange } from '@/types/common';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import type { AppState } from '../store';
+import { type DateRange } from '@/types/common';
+
+import { type AppState } from '../store';
 
 interface BrowseFilters {
   playlist?: string;
 }
 
 interface BrowseSort {
-  column: string;
   asc: boolean;
+  column: string;
 }
 
 interface BrowseSlice {
@@ -18,11 +19,11 @@ interface BrowseSlice {
 }
 
 export interface BrowseState {
-  search: string;
-  filters: BrowseFilters;
-  sort?: BrowseSort;
   dateRange: DateRange;
+  filters: BrowseFilters;
+  search: string;
   slice: BrowseSlice;
+  sort?: BrowseSort;
 }
 
 const initialState: BrowseState = {
@@ -54,7 +55,7 @@ export const browseSlice = createSlice({
     setEndDate: (state, action: PayloadAction<string>) => {
       state.dateRange.end = action.payload;
     },
-    clearDates: state => {
+    clearDates: (state) => {
       state.dateRange = {};
     },
   },
@@ -72,10 +73,12 @@ export const {
 
 export const selectSearch = (state: AppState) => state.browse.search;
 export const selectFilters = (state: AppState) => state.browse.filters;
-export const selectPlaylistFilter = (state: AppState) => state.browse.filters.playlist;
+export const selectPlaylistFilter = (state: AppState) =>
+  state.browse.filters.playlist;
 export const selectSort = (state: AppState) => state.browse.sort;
 export const selectSlice = (state: AppState) => state.browse.slice;
-export const selectStartDate = (state: AppState) => state.browse.dateRange.start;
+export const selectStartDate = (state: AppState) =>
+  state.browse.dateRange.start;
 export const selectEndDate = (state: AppState) => state.browse.dateRange.end;
 
 export default browseSlice.reducer;

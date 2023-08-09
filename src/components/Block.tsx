@@ -6,7 +6,12 @@ export interface BlockProps extends React.PropsWithChildren {
   style?: CSSProperties;
 }
 
-export const Block: React.FC<BlockProps> = ({ height = 1, width = 1, style, children }) => {
+export const Block: React.FC<BlockProps> = ({
+  height = 1,
+  width = 1,
+  style,
+  children,
+}) => {
   return (
     <div
       style={{

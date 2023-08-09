@@ -10,6 +10,7 @@ export const tryGetAuthSession = () => {
   if (authSession) {
     return JSON.parse(authSession) as AuthSession;
   }
+
   return null;
 };
 
@@ -23,15 +24,17 @@ export const generateSession = async (authCredentials: AuthCredentials) => {
       const refreshToken = body.refresh_token;
       const tokenType = body.token_type;
       const expiresIn = body.expires_in;
-      const expiresAt = new Date(new Date().getTime() + expiresIn * 1000).getTime();
+      const expiresAt = new Date(
+        new Date().getTime() + expiresIn * 1000,
+      ).getTime();
       const scope = body.scope;
 
       spotifyInstance.api.setAccessToken(accessToken);
       spotifyInstance.api.setRefreshToken(refreshToken);
 
       spotifyInstance.refreshTimer = setTimeout(
-        () => spotifyInstance.refreshToken(),
-        Math.max(0, expiresIn - 100) * 1000
+        async () => await spotifyInstance.refreshToken(),
+        Math.max(0, expiresIn - 100) * 1000,
       );
 
       return {
@@ -43,7 +46,7 @@ export const generateSession = async (authCredentials: AuthCredentials) => {
         scope,
       };
     })
-    .catch(error => {
+    .catch((error) => {
       throw new Error(error);
     });
 

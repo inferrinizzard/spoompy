@@ -1,6 +1,8 @@
 import { type MergeTypes } from './util';
 
-type IdObj = { id: string };
+interface IdObj {
+  id: string;
+}
 
 export type EntityKvp<Entity extends IdObj> = Record<Entity['id'], Entity>;
 

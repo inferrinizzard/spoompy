@@ -1,5 +1,4 @@
 import { type PlaylistState } from '@/redux/slices/playlistSlice';
-
 import { type SpotifyPlaylist } from '@/types/api';
 
 const createDownloadAnchor = () => {
@@ -31,7 +30,9 @@ export const download = (data: unknown, filename: string) => {
   window.URL.revokeObjectURL(url);
 };
 
-export const simplifyPlaylist = (playlist: PlaylistState['playlists'][number]) => {
+export const simplifyPlaylist = (
+  playlist: PlaylistState['playlists'][number],
+) => {
   // TODO: simplification fn, with options ?
   return playlist;
 };

@@ -15,7 +15,9 @@ export async function GET(request: Request) {
   store.dispatch(setAuthStatus(true));
 
   const res = NextResponse.redirect('http://localhost:3000');
-  res.cookies.set('AUTH_SESSION', JSON.stringify(authSession), { maxAge: authSession.expiresIn });
+  res.cookies.set('AUTH_SESSION', JSON.stringify(authSession), {
+    maxAge: authSession.expiresIn,
+  });
 
   return res;
 }
