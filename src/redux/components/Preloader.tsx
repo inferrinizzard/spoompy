@@ -6,7 +6,7 @@ import store from '../store';
 import { type PlaylistState, setEntities } from '../slices/playlistSlice';
 
 export interface PreloaderProps {
-  playlist: PlaylistState;
+  readonly playlist: PlaylistState;
 }
 
 const Preloader: React.FC<PreloaderProps> = ({ playlist }) => {

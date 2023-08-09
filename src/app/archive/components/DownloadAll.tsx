@@ -11,9 +11,9 @@ export const DownloadAll: React.FC<DownloadAllProps> = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'row', gap: '2rem' }}>
       <h2>{`Total Number of Playlists: ${Object.keys(playlists).length}`}</h2>
-      <button>{'Download All'}</button>
+      <button type="button">{'Download All'}</button>
       {/* TODO: downloads */}
-      <button>{'Download Selected'}</button>
+      <button type="button">{'Download Selected'}</button>
     </div>
   );
 };

@@ -7,7 +7,7 @@ import store from '../store';
 import { setEntities } from '../slices/playlistSlice';
 import { setUserDetails } from '../slices/userSlice';
 
-export const initPlaylists = async () => {
+export const initPlaylists = async (): Promise<void> => {
   if (!Object.keys(store.getState().playlist.playlists).length) {
     if (process.env.mock) {
       console.info('MOCK enabled, reading local json');
@@ -17,9 +17,9 @@ export const initPlaylists = async () => {
         return { ...rest, tracks: playlistTracks };
       });
 
-      const normalizedPlaylists = normalizePlaylists(playlists) as unknown as NormalizedPlaylists<
-        typeof playlists
-      >;
+      const normalizedPlaylists = normalizePlaylists(
+        playlists,
+      ) as unknown as NormalizedPlaylists<typeof playlists>;
 
       store.dispatch(setEntities(normalizedPlaylists.entities));
     } else {

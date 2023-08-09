@@ -9,7 +9,11 @@ const Search: React.FC<SearchProps> = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <input type="search" placeholder="Search" onChange={e => dispatch(setSearch(e.target.value))} />
+    <input
+      onChange={(e) => dispatch(setSearch(e.target.value))}
+      placeholder="Search"
+      type="search"
+    />
   );
 };
 

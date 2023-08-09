@@ -4,8 +4,11 @@ import { useMemo } from 'react';
 
 import { useAppSelector } from '@/redux/client';
 import { selectPlaylists, selectTracks } from '@/redux/slices/playlistSlice';
-import { selectEndDate, selectStartDate, selectTimeStep } from '@/redux/slices/analysisSlice';
-
+import {
+  selectEndDate,
+  selectStartDate,
+  selectTimeStep,
+} from '@/redux/slices/analysisSlice';
 import BarChart from '@/components/charts/BarChart';
 import LineChart from '@/components/charts/LineChart';
 import Count from '@/components/data/Count';
@@ -13,7 +16,6 @@ import TextBlock from '@/components/data/TextBlock';
 
 import TimeControls from './components/TimeControls';
 import { useRollingSumOfPlaylists } from './util';
-
 import styles from './main.module.css';
 
 export interface AnalysisMainProps {}
@@ -28,16 +30,22 @@ export const AnalysisMain: React.FC<AnalysisMainProps> = () => {
 
   const playlistsSlice = useMemo(
     () =>
-      Object.values(playlists).map(playlist => ({
+      Object.values(playlists).map((playlist) => ({
         ...playlist,
         tracks: [
-          ...playlist.tracks.filter(track => {
+          ...playlist.tracks.filter((track) => {
             let include = true;
 
-            if (startDate && tracks[track].playlists[playlist.id].added_at < startDate) {
+            if (
+              startDate &&
+              tracks[track].playlists[playlist.id].added_at < startDate
+            ) {
               include = false;
             }
-            if (endDate && tracks[track].playlists[playlist.id].added_at > endDate) {
+            if (
+              endDate &&
+              tracks[track].playlists[playlist.id].added_at > endDate
+            ) {
               include = false;
             }
 
@@ -45,7 +53,7 @@ export const AnalysisMain: React.FC<AnalysisMainProps> = () => {
           }),
         ],
       })),
-    [startDate, endDate, playlists, tracks]
+    [startDate, endDate, playlists, tracks],
   );
 
   const lineChartData = useRollingSumOfPlaylists(playlistsSlice, timeStep);
@@ -55,18 +63,24 @@ export const AnalysisMain: React.FC<AnalysisMainProps> = () => {
       <TimeControls />
       <div className={styles.grid}>
         <Count
-          value={playlistsSlice.reduce((count, { tracks }) => count + tracks.length, 0)}
-          caption={'Total Tracks'}
+          caption="Total Tracks"
+          value={playlistsSlice.reduce(
+            (count, { tracks }) => count + tracks.length,
+            0,
+          )}
         />
-        <TextBlock text={'Test'} caption={'Biggest Growing Playlist'} />
+        <TextBlock caption="Biggest Growing Playlist" text="Test" />
         <BarChart
           data={Object.values(playlistsSlice).reduce(
-            (acc, playlist) => ({ ...acc, [playlist.id]: playlist.tracks.length }),
-            {}
+            (acc, playlist) => ({
+              ...acc,
+              [playlist.id]: playlist.tracks.length,
+            }),
+            {},
           )}
         />
         <LineChart datasets={lineChartData} />
-        <TextBlock text={'Month'} caption={'Most Active Month'} />
+        <TextBlock caption="Most Active Month" text="Month" />
       </div>
     </section>
   );
