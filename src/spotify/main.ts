@@ -1,7 +1,13 @@
 import { cookies } from 'next/headers';
 import SpotifyWebApiNode from 'spotify-web-api-node';
 
-import { type AuthSession, type UserDetails } from '@/types/api';
+import { trimTrack } from '@/api/utils/track';
+import {
+  type AuthSession,
+  type SpotifyPlaylist,
+  type SpotifyTrack,
+  type UserDetails,
+} from '@/types/api';
 
 import { tryGetAuthSession } from './util';
 import { handleRateLimitedError, throwError } from './handlers';
@@ -108,29 +114,32 @@ export class SpotifyInstance {
     return playlists;
   };
 
-  public getPlaylistTracks = async (
+  public getPlaylistWithTracks = async (
     playlistId: string,
-  ): Promise<SpotifyApi.PlaylistTrackObject[]> => {
-    const firstSlice = await this.api
-      .getPlaylistTracks(playlistId, { limit: 50 })
+  ): Promise<SpotifyPlaylist> => {
+    const playlistObject = await this.api
+      .getPlaylist(playlistId)
       .then(handleRateLimitedError)
       .then(({ body }) => body)
       .catch(throwError);
 
-    const numTracks = firstSlice.total;
+    const numTracks = playlistObject.tracks.total;
 
-    let tracks = firstSlice.items;
-    for (let i = 50; i < numTracks; i += 50) {
+    let tracks: SpotifyTrack[] = [];
+    for (let i = 0; i < numTracks; i += 50) {
       const playlistSlice = await this.api
         .getPlaylistTracks(playlistId, { offset: i, limit: 50 })
         .then(handleRateLimitedError)
         .then(({ body }) => body.items)
         .catch(throwError);
 
-      tracks = tracks.concat(playlistSlice);
+      tracks = tracks.concat(playlistSlice.map((track) => trimTrack(track)));
     }
 
-    return tracks;
+    return {
+      ...playlistObject,
+      tracks,
+    };
   };
 }
 
