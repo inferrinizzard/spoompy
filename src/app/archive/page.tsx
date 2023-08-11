@@ -1,16 +1,18 @@
 import Navbar from '@/components/Navbar';
 import ReturnButton from '@/components/ReturnButton';
-import ReduxMain from '@/redux/components/ReduxMain';
+import store from '@/redux/store';
+import Preloader from '@/redux/components/Preloader';
 
 import ArchiveMain from './main';
 
 export const Archive = async () => {
   return (
-    <ReduxMain>
+    <main>
+      <Preloader playlist={store.getState().playlist} />
       <Navbar />
       <ArchiveMain />
       <ReturnButton />
-    </ReduxMain>
+    </main>
   );
 };
 

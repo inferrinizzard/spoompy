@@ -7,6 +7,7 @@ interface ApiResponse {
 export const handleRateLimitedError = <R extends ApiResponse>(res: R): R => {
   if (res.statusCode === 429) {
     console.info('Rate limit reached !');
+    console.log(res);
   }
 
   return res;

@@ -3,17 +3,14 @@ import Link from 'next/link';
 
 import HomeLink from '@/components/HomeLink';
 import store from '@/redux/store';
-import { setUserDetails } from '@/redux/slices/userSlice';
-import { generateAuthUrl, getSpotify } from '@/spotify';
+import { getUserDetails, getUserPlaylists } from '@/redux/actions';
+import { generateAuthUrl } from '@/spotify';
 
 import styles from './page.module.css';
 
 export async function Home() {
-  if (store.getState().user.isAuthed) {
-    await getSpotify()
-      .getUserDetails()
-      .then((userDetails) => store.dispatch(setUserDetails(userDetails)));
-  }
+  await getUserDetails();
+  await getUserPlaylists();
 
   return (
     <main className={styles.main}>

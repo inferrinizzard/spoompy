@@ -1,7 +1,13 @@
 import { cookies } from 'next/headers';
 import SpotifyWebApiNode from 'spotify-web-api-node';
 
-import { type AuthSession, type UserDetails } from '@/types/api';
+import { trimTrack } from '@/api/utils/track';
+import {
+  type AuthSession,
+  type SpotifyPlaylist,
+  type SpotifyTrack,
+  type UserDetails,
+} from '@/types/api';
 
 import { tryGetAuthSession } from './util';
 import { handleRateLimitedError, throwError } from './handlers';
@@ -77,6 +83,64 @@ export class SpotifyInstance {
         image: body.images?.at(0)?.url ?? '', // TODO: add default profile image url
       }))
       .catch(throwError);
+
+  public getUserPlaylists = async (userId: string): Promise<string[]> => {
+    const firstSlice = await this.api
+      .getUserPlaylists(userId, { limit: 50 })
+      .then(handleRateLimitedError)
+      .then(({ body }) => ({
+        ...body,
+        items: body.items.filter((playlist) => playlist.owner.id === userId), // filter only for playlists that belong to userId
+      }))
+      .catch(throwError);
+
+    const numPlaylists = firstSlice.total;
+
+    let playlists = firstSlice.items.map((playlist) => playlist.id);
+    for (let i = 50; i < numPlaylists; i += 50) {
+      const playlistSlice = await this.api
+        .getUserPlaylists(userId, { offset: i, limit: 50 })
+        .then(handleRateLimitedError)
+        .then(({ body }) =>
+          body.items
+            .filter((playlist) => playlist.owner.id === userId) // filter only for playlists that belong to userId
+            .map((playlist) => playlist.id),
+        )
+        .catch(throwError);
+
+      playlists = playlists.concat(playlistSlice);
+    }
+
+    return playlists;
+  };
+
+  public getPlaylistWithTracks = async (
+    playlistId: string,
+  ): Promise<SpotifyPlaylist> => {
+    const playlistObject = await this.api
+      .getPlaylist(playlistId)
+      .then(handleRateLimitedError)
+      .then(({ body }) => body)
+      .catch(throwError);
+
+    const numTracks = playlistObject.tracks.total;
+
+    let tracks: SpotifyTrack[] = [];
+    for (let i = 0; i < numTracks; i += 50) {
+      const playlistSlice = await this.api
+        .getPlaylistTracks(playlistId, { offset: i, limit: 50 })
+        .then(handleRateLimitedError)
+        .then(({ body }) => body.items)
+        .catch(throwError);
+
+      tracks = tracks.concat(playlistSlice.map((track) => trimTrack(track)));
+    }
+
+    return {
+      ...playlistObject,
+      tracks,
+    };
+  };
 }
 
 export const getSpotify = (): SpotifyInstance => {
