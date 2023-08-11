@@ -78,9 +78,9 @@ export class SpotifyInstance {
       }))
       .catch(throwError);
 
-  public getUserPlaylists = async (): Promise<string[]> => {
+  public getUserPlaylists = async (userId: string): Promise<string[]> => {
     const firstSlice = await this.api
-      .getUserPlaylists({ limit: 50 })
+      .getUserPlaylists(userId, { limit: 50 })
       .then(handleRateLimitedError)
       .then(({ body }) => body)
       .catch(throwError);
@@ -90,7 +90,7 @@ export class SpotifyInstance {
     let playlists = firstSlice.items.map((playlist) => playlist.id);
     for (let i = 50; i < numPlaylists; i += 50) {
       const playlistSlice = await this.api
-        .getUserPlaylists({ offset: i, limit: 50 })
+        .getUserPlaylists(userId, { offset: i, limit: 50 })
         .then(handleRateLimitedError)
         .then(({ body }) => body.items.map((playlist) => playlist.id))
         .catch(throwError);
