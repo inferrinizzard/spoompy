@@ -9,7 +9,8 @@ import { generateAuthUrl, getSpotify } from '@/spotify';
 import styles from './page.module.css';
 
 export async function Home() {
-  if (store.getState().user.isAuthed) {
+  const isAuthed = store.getState().user.isAuthed;
+  if (isAuthed) {
     await getSpotify()
       .getUserDetails()
       .then((userDetails) => store.dispatch(setUserDetails(userDetails)));
@@ -19,11 +20,11 @@ export async function Home() {
     <main className={styles.main}>
       <Text fontSize={36}>{'Spotify Data Visualizer'}</Text>
       <Spacer height="2rem" />
-      <HomeLink href="/browse" text="Browse Library" />
-      <HomeLink href="/analysis" text="Data Analysis" />
-      <HomeLink href="/archive" text="Archive Playlists" />
+      <HomeLink disabled={!isAuthed} href="/browse" text="Browse Library" />
+      <HomeLink disabled={!isAuthed} href="/analysis" text="Data Analysis" />
+      <HomeLink disabled={!isAuthed} href="/archive" text="Archive Playlists" />
 
-      {!store.getState().user.isAuthed && (
+      {!isAuthed && (
         <Button as={Link} href={generateAuthUrl()}>
           {'Login'}
         </Button>
