@@ -82,7 +82,10 @@ export class SpotifyInstance {
     const firstSlice = await this.api
       .getUserPlaylists(userId, { limit: 50 })
       .then(handleRateLimitedError)
-      .then(({ body }) => body)
+      .then(({ body }) => ({
+        ...body,
+        items: body.items.filter((playlist) => playlist.owner.id === userId), // filter only for playlists that belong to userId
+      }))
       .catch(throwError);
 
     const numPlaylists = firstSlice.total;
@@ -92,7 +95,11 @@ export class SpotifyInstance {
       const playlistSlice = await this.api
         .getUserPlaylists(userId, { offset: i, limit: 50 })
         .then(handleRateLimitedError)
-        .then(({ body }) => body.items.map((playlist) => playlist.id))
+        .then(({ body }) =>
+          body.items
+            .filter((playlist) => playlist.owner.id === userId) // filter only for playlists that belong to userId
+            .map((playlist) => playlist.id),
+        )
         .catch(throwError);
 
       playlists = playlists.concat(playlistSlice);
