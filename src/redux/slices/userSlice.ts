@@ -7,11 +7,13 @@ import { type AppState } from '../store';
 
 export interface UserState {
   isAuthed: boolean;
+  playlists: string[];
   userDetails?: UserDetails;
 }
 
 const initialState: UserState = {
   isAuthed: false,
+  playlists: [],
 };
 
 export const userSlice = createSlice({
@@ -24,12 +26,17 @@ export const userSlice = createSlice({
     setUserDetails: (state, action: PayloadAction<UserDetails>) => {
       state.userDetails = action.payload;
     },
+    setUserPlaylists: (state, action: PayloadAction<string[]>) => {
+      state.playlists = action.payload;
+    },
   },
 });
 
-export const { setAuthStatus, setUserDetails } = userSlice.actions;
+export const { setAuthStatus, setUserDetails, setUserPlaylists } =
+  userSlice.actions;
 
 export const selectAuthStatus = (state: AppState) => state.user.isAuthed;
 export const selectUserDetails = (state: AppState) => state.user.userDetails;
+export const selectUserPlaylists = (state: AppState) => state.user.playlists;
 
 export default userSlice.reducer;

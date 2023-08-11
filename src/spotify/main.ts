@@ -77,6 +77,29 @@ export class SpotifyInstance {
         image: body.images?.at(0)?.url ?? '', // TODO: add default profile image url
       }))
       .catch(throwError);
+
+  public getUserPlaylists = async (): Promise<string[]> => {
+    const firstSlice = await this.api
+      .getUserPlaylists({ limit: 50 })
+      .then(handleRateLimitedError)
+      .then(({ body }) => body)
+      .catch(throwError);
+
+    const numPlaylists = firstSlice.total;
+
+    let playlists = firstSlice.items.map((playlist) => playlist.id);
+    for (let i = 50; i < numPlaylists; i += 50) {
+      const playlistSlice = await this.api
+        .getUserPlaylists({ offset: i, limit: 50 })
+        .then(handleRateLimitedError)
+        .then(({ body }) => body.items.map((playlist) => playlist.id))
+        .catch(throwError);
+
+      playlists = playlists.concat(playlistSlice);
+    }
+
+    return playlists;
+  };
 }
 
 export const getSpotify = (): SpotifyInstance => {

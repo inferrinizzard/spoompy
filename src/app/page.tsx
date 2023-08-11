@@ -3,13 +3,14 @@ import Link from 'next/link';
 
 import HomeLink from '@/components/HomeLink';
 import store from '@/redux/store';
-import { getUserDetails } from '@/redux/actions';
+import { getUserDetails, getUserPlaylists } from '@/redux/actions';
 import { generateAuthUrl } from '@/spotify';
 
 import styles from './page.module.css';
 
 export async function Home() {
   await getUserDetails();
+  await getUserPlaylists();
 
   return (
     <main className={styles.main}>
