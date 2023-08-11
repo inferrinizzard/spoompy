@@ -1,28 +1,43 @@
-export const distinctBy = <const T, const K extends keyof T>(data: T[], key: K) => [
-  ...data.reduce((acc, datum) => new Set([...acc, datum[key]]), new Set<T[K]>()),
+export const distinctBy = <
+  const Key extends string,
+  T extends Record<Key, string>,
+>(
+  data: T[],
+  key: Key,
+): Array<T[Key]> => [
+  ...data.reduce(
+    (acc, datum) => new Set([...acc, datum[key]]),
+    new Set<T[Key]>(),
+  ),
 ];
 
-export const groupBy = <const Key extends string, T extends Record<Key, string>>(
-  tracks: T[],
-  key: Key
-) =>
-  tracks.reduce(
-    (acc, track) => ({
+export const groupBy = <
+  const Key extends string,
+  T extends Record<Key, string>,
+>(
+  data: T[],
+  key: Key,
+): Record<T[Key], T[]> =>
+  data.reduce(
+    (acc, datum) => ({
       ...acc,
-      [track[key]]: (acc[track[key]] ?? []).concat([track]),
+      [datum[key]]: (acc[datum[key]] ?? []).concat([datum]),
     }),
-    {} as Record<T[typeof key], T[]>
+    {} as Record<T[typeof key], T[]>,
   );
 
 // T = <K, V> where T[K] = V extends string
-export const countBy = <const Key extends string, T extends Record<Key, string>>(
-  tracks: T[],
-  key: Key
-) =>
-  tracks.reduce(
-    (acc, track) => ({
+export const countBy = <
+  const Key extends string,
+  T extends Record<Key, string>,
+>(
+  data: T[],
+  key: Key,
+): Record<T[Key], number> =>
+  data.reduce(
+    (acc, datum) => ({
       ...acc,
-      [track[key]]: (acc[track[key]] ?? 0) + 1,
+      [datum[key]]: (acc[datum[key]] ?? 0) + 1,
     }),
-    {} as Record<T[typeof key], number>
+    {} as Record<T[typeof key], number>,
   );

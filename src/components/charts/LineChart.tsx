@@ -3,34 +3,32 @@ import { type DatumValue, ResponsiveLine } from '@nivo/line';
 
 import store from '@/redux/store';
 import { chartTheme } from '@/utils/chartTheme';
-
-import Block from '../Block';
-import { NivoSliceTooltip } from './NivoTooltip';
 import { formatDate } from '@/utils/dateFormat';
 
+import Block from '../Block';
+
+import { NivoSliceTooltip } from './NivoTooltip';
+
 export interface LineChartProps {
-  datasets: Record<string, { x: DatumValue; y: number }[]>;
+  readonly datasets: Record<string, { x: DatumValue; y: number }[]>;
 }
 
 export const LineChart = ({ datasets }: LineChartProps) => {
   const playlists = store.getState().playlist.playlists;
   const timeStep = store.getState().analysis.timeStep;
 
-  const chartData = Object.entries(datasets).map(([id, data]) => ({ id, data }));
+  const chartData = Object.entries(datasets).map(([id, data]) => ({
+    id,
+    data,
+  }));
 
   const getColor = useOrdinalColorScale({ scheme: 'nivo' }, 'id');
 
   return (
-    <Block height={2} width={3} style={{ color: 'black' }}>
+    <Block height={2} style={{ color: 'black' }} width={3}>
       <ResponsiveLine
-        theme={chartTheme}
-        data={chartData}
-        margin={{ top: 25, right: 20, bottom: 30, left: 30 }}
-        colors={{ scheme: 'nivo' }}
-        enableSlices="x"
-        xScale={{ type: 'time', precision: timeStep }}
         axisBottom={{
-          format: date => formatDate(date, timeStep),
+          format: (date) => formatDate(date, timeStep),
           tickValues:
             timeStep === 'year'
               ? 'every year'
@@ -38,10 +36,12 @@ export const LineChart = ({ datasets }: LineChartProps) => {
               ? 'every 3 months'
               : 'every 10 days',
         }}
-        sliceTooltip={NivoSliceTooltip}
+        colors={{ scheme: 'nivo' }}
+        data={chartData}
+        enableSlices="x"
         legends={[
           {
-            data: chartData.map(line => ({
+            data: chartData.map((line) => ({
               ...line,
               label: playlists[line.id].name,
               color: getColor(line),
@@ -71,6 +71,10 @@ export const LineChart = ({ datasets }: LineChartProps) => {
             ],
           },
         ]}
+        margin={{ top: 25, right: 20, bottom: 30, left: 30 }}
+        sliceTooltip={NivoSliceTooltip}
+        theme={chartTheme}
+        xScale={{ type: 'time', precision: timeStep }}
       />
     </Block>
   );

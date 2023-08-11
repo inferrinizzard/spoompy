@@ -14,7 +14,7 @@ export async function Home() {
   return (
     <main className={styles.main}>
       <Text fontSize={36}>{'Spotify Data Visualizer'}</Text>
-      <Spacer height={'2rem'} />
+      <Spacer height="2rem" />
       <HomeLink href="/browse" text="Browse Library" />
       <HomeLink href="/analysis" text="Data Analysis" />
       <HomeLink href="/archive" text="Archive Playlists" />

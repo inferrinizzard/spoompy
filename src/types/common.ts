@@ -1,10 +1,10 @@
 export interface PlaylistTrack {
-  name: string;
-  artists: string;
-  album: string;
-  id: string;
-  time: string;
   addedBy?: number;
+  album: string;
+  artists: string;
+  id: string;
+  name: string;
+  time: string;
 }
 
 export interface PlaylistTrackWithName extends PlaylistTrack {
@@ -12,8 +12,8 @@ export interface PlaylistTrackWithName extends PlaylistTrack {
 }
 
 export interface DateRange {
-  start?: string;
   end?: string;
+  start?: string;
 }
 
-export type TimeStep = 'year' | 'month' | 'day';
+export type TimeStep = 'day' | 'month' | 'year';

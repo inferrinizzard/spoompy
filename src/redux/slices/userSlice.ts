@@ -1,8 +1,9 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { type UserDetails } from '@/types/api';
 
-import type { AppState } from '../store';
+import { type AppState } from '../store';
 
 export interface UserState {
   isAuthed: boolean;

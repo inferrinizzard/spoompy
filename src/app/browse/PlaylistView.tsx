@@ -22,7 +22,7 @@ export const PlaylistView = () => {
           gridTemplateColumns: 'repeat(auto-fill, minmax(8rem, 1fr))',
           gap: '1rem',
         }}>
-        {Object.values(playlists).map(playlist => (
+        {Object.values(playlists).map((playlist) => (
           <Block key={playlist.id}>{playlist.name}</Block>
         ))}
       </section>

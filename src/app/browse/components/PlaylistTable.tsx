@@ -2,7 +2,11 @@
 
 import { useAppDispatch, useAppSelector } from '@/redux/client';
 import { selectSlice, selectSort, setSort } from '@/redux/slices/browseSlice';
-import { selectAlbums, selectArtists, selectPlaylists } from '@/redux/slices/playlistSlice';
+import {
+  selectAlbums,
+  selectArtists,
+  selectPlaylists,
+} from '@/redux/slices/playlistSlice';
 
 import { type PlaylistTrackEntityWithPlaylist } from '../TabularView';
 
@@ -34,7 +38,10 @@ const PlaylistTable: React.FC<PlaylistTableProps> = ({ tracks }) => {
     dispatch(setSort(nextSort()));
   };
 
-  const playlistSlice = tracks.slice(slice.index * slice.size, (slice.index + 1) * slice.size);
+  const playlistSlice = tracks.slice(
+    slice.index * slice.size,
+    (slice.index + 1) * slice.size,
+  );
 
   return (
     <table>
@@ -50,11 +57,11 @@ const PlaylistTable: React.FC<PlaylistTableProps> = ({ tracks }) => {
         </tr>
       </thead>
       <tbody>
-        {playlistSlice.map(track => (
+        {playlistSlice.map((track) => (
           <tr key={track.playlist + track.id}>
             <td>{playlists[track.playlist].name}</td>
             <td>{track.name}</td>
-            <td>{track.artists.map(id => artists[id].name)}</td>
+            <td>{track.artists.map((id) => artists[id].name)}</td>
             <td>{albums[track.album].name}</td>
             <td>{track.added_at}</td>
             <td>{track.id}</td>
