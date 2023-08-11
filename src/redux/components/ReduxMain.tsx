@@ -7,7 +7,7 @@ import store from '@/redux/store';
 export interface ReduxMainProps extends PropsWithChildren {}
 
 export const ReduxMain = async ({ children }: ReduxMainProps) => {
-  await initPlaylists();
+  // await initPlaylists();
 
   return (
     <main>
