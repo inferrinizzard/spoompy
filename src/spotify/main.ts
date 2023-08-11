@@ -100,6 +100,31 @@ export class SpotifyInstance {
 
     return playlists;
   };
+
+  public getPlaylistTracks = async (
+    playlistId: string,
+  ): Promise<SpotifyApi.PlaylistTrackObject[]> => {
+    const firstSlice = await this.api
+      .getPlaylistTracks(playlistId, { limit: 50 })
+      .then(handleRateLimitedError)
+      .then(({ body }) => body)
+      .catch(throwError);
+
+    const numTracks = firstSlice.total;
+
+    let tracks = firstSlice.items;
+    for (let i = 50; i < numTracks; i += 50) {
+      const playlistSlice = await this.api
+        .getPlaylistTracks(playlistId, { offset: i, limit: 50 })
+        .then(handleRateLimitedError)
+        .then(({ body }) => body.items)
+        .catch(throwError);
+
+      tracks = tracks.concat(playlistSlice);
+    }
+
+    return tracks;
+  };
 }
 
 export const getSpotify = (): SpotifyInstance => {
