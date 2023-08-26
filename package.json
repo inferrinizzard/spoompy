@@ -17,6 +17,7 @@
     "@nivo/core": "^0.83.0",
     "@nivo/line": "^0.83.0",
     "@reduxjs/toolkit": "^1.9.5",
+    "@spotify/web-api-ts-sdk": "^1.1.0",
     "dayjs": "^1.11.7",
     "next": "^13.4.12",
     "normalizr": "^3.6.2",
