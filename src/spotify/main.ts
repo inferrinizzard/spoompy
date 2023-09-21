@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers';
+import { type SdkOptions, SpotifyApi } from '@spotify/web-api-ts-sdk';
 import SpotifyWebApiNode from 'spotify-web-api-node';
 
 import { trimTrack } from '@/api/utils/track';
@@ -17,9 +18,11 @@ let spotify: SpotifyInstance;
 export class SpotifyInstance {
   public api: SpotifyWebApiNode;
 
+  public sdk: SpotifyApi | null = null;
+
   public refreshTimer?: ReturnType<typeof setTimeout>;
 
-  public constructor() {
+  public constructor(apiConfig: SdkOptions = {}) {
     let spotifyApiParams: ConstructorParameters<typeof SpotifyWebApiNode>[0] = {
       clientId: process.env.SPOTIFY_ID,
       clientSecret: process.env.SPOTIFY_SECRET,
@@ -38,6 +41,18 @@ export class SpotifyInstance {
           await this.refreshToken();
         }, Math.max(0, authSession.expiresIn - 100) * 1000);
       }
+
+      this.sdk = SpotifyApi.withAccessToken(
+        spotifyApiParams.clientId ?? '',
+        {
+          access_token: authSession.accessToken,
+          token_type: authSession.tokenType,
+          refresh_token: authSession.refreshToken,
+          expires: authSession.expiresAt,
+          expires_in: authSession.expiresIn,
+        },
+        apiConfig,
+      );
     }
 
     this.api = new SpotifyWebApiNode(spotifyApiParams);
