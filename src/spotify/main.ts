@@ -1,5 +1,9 @@
 import { cookies } from 'next/headers';
-import { type SdkOptions, SpotifyApi } from '@spotify/web-api-ts-sdk';
+import {
+  type SdkOptions,
+  SpotifyApi,
+  type User,
+} from '@spotify/web-api-ts-sdk';
 import SpotifyWebApiNode from 'spotify-web-api-node';
 
 import { trimTrack } from '@/api/utils/track';
@@ -7,7 +11,6 @@ import {
   type AuthSession,
   type SpotifyPlaylist,
   type SpotifyTrack,
-  type UserDetails,
 } from '@/types/api';
 
 import { tryGetAuthSession } from './util';
@@ -88,18 +91,26 @@ export class SpotifyInstance {
       );
     });
 
-  public getUserDetails = async (): Promise<UserDetails> =>
-    await this.api
-      .getMe()
-      .then(handleRateLimitedError)
-      .then(({ body }) => ({
-        name: body.display_name ?? '',
-        id: body.id,
-        image: body.images?.at(0)?.url ?? '', // TODO: add default profile image url
-      }))
-      .catch(throwError);
+  public getUserDetails = async (): Promise<User> => {
+    if (!this.sdk) {
+      throw new Error('SDK not initialised!');
+    }
+
+    return await this.sdk.currentUser.profile();
+  };
+  // await this.api
+  //   .getMe()
+  //   .then(handleRateLimitedError)
+  //   .then(({ body }) => ({
+  //     name: body.display_name ?? '',
+  //     id: body.id,
+  //     image: body.images?.at(0)?.url ?? '', // TODO: add default profile image url
+  //   }))
+  //   .catch(throwError);
 
   public getUserPlaylists = async (userId: string): Promise<string[]> => {
+    // await this.sdk.playlists.getUsersPlaylists(userId, 1);
+
     const firstSlice = await this.api
       .getUserPlaylists(userId, { limit: 50 })
       .then(handleRateLimitedError)

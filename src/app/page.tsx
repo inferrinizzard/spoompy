@@ -30,7 +30,7 @@ export async function Home() {
       )}
 
       {store.getState().user.userDetails && (
-        <h1>{`Welcome, ${store.getState().user.userDetails?.name}`}</h1>
+        <h1>{`Welcome, ${store.getState().user.userDetails?.display_name}`}</h1>
       )}
     </main>
   );
