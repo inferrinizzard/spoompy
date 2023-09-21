@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import {
+  ConsoleLoggingErrorHandler,
   type SdkOptions,
   SpotifyApi,
   type User,
@@ -169,13 +170,17 @@ export class SpotifyInstance {
   };
 }
 
+const spotifySdkConfig: SdkOptions = {
+  errorHandler: new ConsoleLoggingErrorHandler(),
+};
+
 export const getSpotify = (): SpotifyInstance => {
   if (!spotify) {
     if (process.env.NODE_ENV === 'production') {
-      spotify = new SpotifyInstance();
+      spotify = new SpotifyInstance(spotifySdkConfig);
     } else {
       if (!global.spotify) {
-        global.spotify = new SpotifyInstance();
+        global.spotify = new SpotifyInstance(spotifySdkConfig);
       }
 
       spotify = global.spotify;
