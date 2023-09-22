@@ -4,7 +4,7 @@
   "description": "",
   "private": true,
   "scripts": {
-    "archive": "ts-node --esm node/index.ts",
+    "archive": "tsx node/index.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -41,6 +41,7 @@
     "dotenv": "^16.0.3",
     "eslint": "8.40.0",
     "eslint-config-next": "13.4.1",
+    "tsx": "^3.12.10",
     "typescript": "5.0.4"
   },
   "browserslist": {
