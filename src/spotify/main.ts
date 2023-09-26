@@ -15,7 +15,8 @@ import {
 } from '@/types/api';
 
 import { tryGetAuthSession } from './util';
-import { handleRateLimitedError, throwError } from './handlers';
+
+type SpotifyParams = ConstructorParameters<typeof SpotifyWebApiNode>[0];
 
 let spotify: SpotifyInstance;
 
@@ -26,8 +27,14 @@ export class SpotifyInstance {
 
   public refreshTimer?: ReturnType<typeof setTimeout>;
 
+  private readonly params: SpotifyParams;
+
+  private readonly sdkConfig: SdkOptions;
+
   public constructor(apiConfig: SdkOptions = {}) {
-    let spotifyApiParams: ConstructorParameters<typeof SpotifyWebApiNode>[0] = {
+    this.sdkConfig = apiConfig;
+
+    let spotifyApiParams: SpotifyParams = {
       clientId: process.env.SPOTIFY_ID,
       clientSecret: process.env.SPOTIFY_SECRET,
       redirectUri: 'http://localhost:3000/api/login',
@@ -36,6 +43,7 @@ export class SpotifyInstance {
     };
 
     const authSession = tryGetAuthSession();
+    console.log({ authSession });
     if (authSession) {
       if (authSession.expiresAt > new Date().getTime()) {
         spotifyApiParams.accessToken = authSession.accessToken;
@@ -60,7 +68,30 @@ export class SpotifyInstance {
     }
 
     this.api = new SpotifyWebApiNode(spotifyApiParams);
+
+    this.params = spotifyApiParams;
   }
+
+  public startSdk = (): boolean => {
+    const authSession = tryGetAuthSession();
+    if (authSession) {
+      this.sdk = SpotifyApi.withAccessToken(
+        this.params?.clientId ?? '',
+        {
+          access_token: authSession.accessToken,
+          token_type: authSession.tokenType,
+          refresh_token: authSession.refreshToken,
+          expires: authSession.expiresAt,
+          expires_in: authSession.expiresIn,
+        },
+        this.sdkConfig,
+      );
+
+      return true;
+    }
+
+    return false;
+  };
 
   public refreshToken = async (): Promise<void> =>
     await this.api.refreshAccessToken().then(({ body }) => {
@@ -99,41 +130,32 @@ export class SpotifyInstance {
 
     return await this.sdk.currentUser.profile();
   };
-  // await this.api
-  //   .getMe()
-  //   .then(handleRateLimitedError)
-  //   .then(({ body }) => ({
-  //     name: body.display_name ?? '',
-  //     id: body.id,
-  //     image: body.images?.at(0)?.url ?? '', // TODO: add default profile image url
-  //   }))
-  //   .catch(throwError);
 
   public getUserPlaylists = async (userId: string): Promise<string[]> => {
-    // await this.sdk.playlists.getUsersPlaylists(userId, 1);
+    if (!this.sdk) {
+      throw new Error('SDK not initialised!');
+    }
 
-    const firstSlice = await this.api
-      .getUserPlaylists(userId, { limit: 50 })
-      .then(handleRateLimitedError)
-      .then(({ body }) => ({
-        ...body,
-        items: body.items.filter((playlist) => playlist.owner.id === userId), // filter only for playlists that belong to userId
-      }))
-      .catch(throwError);
+    const firstSlice = await this.sdk.playlists
+      .getUsersPlaylists(userId, 50)
+      .then((playlistPage) => ({
+        ...playlistPage,
+        items: playlistPage.items.filter(
+          (playlist) => playlist.owner.id === userId,
+        ), // filter only for playlists that belong to userId
+      }));
 
     const numPlaylists = firstSlice.total;
 
     let playlists = firstSlice.items.map((playlist) => playlist.id);
     for (let i = 50; i < numPlaylists; i += 50) {
-      const playlistSlice = await this.api
-        .getUserPlaylists(userId, { offset: i, limit: 50 })
-        .then(handleRateLimitedError)
-        .then(({ body }) =>
-          body.items
+      const playlistSlice = await this.sdk.playlists
+        .getUsersPlaylists(userId, 50, i)
+        .then((playlistPage) =>
+          playlistPage.items
             .filter((playlist) => playlist.owner.id === userId) // filter only for playlists that belong to userId
             .map((playlist) => playlist.id),
-        )
-        .catch(throwError);
+        );
 
       playlists = playlists.concat(playlistSlice);
     }
@@ -144,23 +166,27 @@ export class SpotifyInstance {
   public getPlaylistWithTracks = async (
     playlistId: string,
   ): Promise<SpotifyPlaylist> => {
-    const playlistObject = await this.api
-      .getPlaylist(playlistId)
-      .then(handleRateLimitedError)
-      .then(({ body }) => body)
-      .catch(throwError);
+    if (!this.sdk) {
+      throw new Error('SDK not initialised!');
+    }
+
+    const playlistObject = await this.sdk.playlists.getPlaylist(playlistId);
 
     const numTracks = playlistObject.tracks.total;
 
     let tracks: SpotifyTrack[] = [];
     for (let i = 0; i < numTracks; i += 50) {
-      const playlistSlice = await this.api
-        .getPlaylistTracks(playlistId, { offset: i, limit: 50 })
-        .then(handleRateLimitedError)
-        .then(({ body }) => body.items)
-        .catch(throwError);
+      const playlistSlice = await this.sdk.playlists.getPlaylistItems(
+        playlistId,
+        undefined,
+        undefined,
+        50,
+        i,
+      );
 
-      tracks = tracks.concat(playlistSlice.map((track) => trimTrack(track)));
+      tracks = tracks.concat(
+        playlistSlice.items.map((track) => trimTrack(track)),
+      );
     }
 
     return {
@@ -185,6 +211,10 @@ export const getSpotify = (): SpotifyInstance => {
 
       spotify = global.spotify;
     }
+  }
+
+  if (!spotify.sdk) {
+    spotify.startSdk();
   }
 
   return spotify;

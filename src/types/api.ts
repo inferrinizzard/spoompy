@@ -1,3 +1,5 @@
+import { type Playlist } from '@spotify/web-api-ts-sdk';
+
 export interface SpotifyTrack {
   added_at: string;
   added_by: string;
@@ -20,7 +22,7 @@ export interface SpotifyAlbum {
   name: string;
 }
 
-export interface SpotifyPlaylist extends SpotifyApi.PlaylistBaseObject {
+export interface SpotifyPlaylist extends Omit<Playlist, 'tracks'> {
   tracks: SpotifyTrack[];
 }
 

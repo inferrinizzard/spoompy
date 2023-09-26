@@ -10,6 +10,7 @@ import styles from './page.module.css';
 
 export async function Home() {
   const isAuthed = store.getState().user.isAuthed;
+
   if (isAuthed) {
     await getUserDetails();
     await getUserPlaylists();
