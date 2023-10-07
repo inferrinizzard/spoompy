@@ -11,7 +11,7 @@ export const Browse = async () => {
 
   return (
     <main>
-      <Preloader playlist={store.getState().playlist} />
+      <Preloader state={store.getState()} />
       <Navbar />
       <BrowseMain />
       <ReturnButton />

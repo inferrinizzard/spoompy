@@ -13,13 +13,9 @@ export const getUserDetails = async (): Promise<void> => {
 
 export const getUserPlaylists = async (): Promise<void> => {
   const user = store.getState().user;
-  if (user.isAuthed) {
-    if (user.userDetails) {
-      await getSpotify()
-        .getUserPlaylists(user.userDetails.id)
-        .then((userPlaylists) =>
-          store.dispatch(setUserPlaylists(userPlaylists)),
-        );
-    }
+  if (user.isAuthed && user.userDetails) {
+    await getSpotify()
+      .getUserPlaylists(user.userDetails.id)
+      .then((userPlaylists) => store.dispatch(setUserPlaylists(userPlaylists)));
   }
 };
