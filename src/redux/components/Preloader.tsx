@@ -3,12 +3,7 @@
 import React, { useRef } from 'react';
 
 import store, { AppState } from '../store';
-import { setEntities } from '../slices/playlistSlice';
-import {
-  setAuthStatus,
-  setUserDetails,
-  setUserPlaylists,
-} from '../slices/userSlice';
+import { replaceState } from '../actions';
 
 export interface PreloaderProps {
   readonly state: AppState;
@@ -17,11 +12,7 @@ export interface PreloaderProps {
 const Preloader: React.FC<PreloaderProps> = ({ state }) => {
   const loaded = useRef(false);
   if (!loaded.current) {
-    store.dispatch(setEntities(state.playlist));
-    store.dispatch(setAuthStatus(state.user.isAuthed));
-    state.user.userDetails &&
-      store.dispatch(setUserDetails(state.user.userDetails));
-    store.dispatch(setUserPlaylists(state.user.playlists));
+    store.dispatch(replaceState(state));
     loaded.current = true;
   }
 

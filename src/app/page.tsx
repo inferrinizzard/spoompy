@@ -9,8 +9,8 @@ import { generateAuthUrl } from '@/spotify';
 import styles from './page.module.css';
 
 export async function Home() {
-  await getUserDetails();
-  await getUserPlaylists();
+  // await getUserDetails();
+  // await getUserPlaylists();
 
   return (
     <main className={styles.main}>
