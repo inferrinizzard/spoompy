@@ -1,130 +1,52 @@
-import { cookies } from 'next/headers';
 import {
   ConsoleLoggingErrorHandler,
   type SdkOptions,
   SpotifyApi,
   type User,
 } from '@spotify/web-api-ts-sdk';
-import SpotifyWebApiNode from 'spotify-web-api-node';
 
 import { trimTrack } from '@/api/utils/track';
-import {
-  type AuthSession,
-  type SpotifyPlaylist,
-  type SpotifyTrack,
-} from '@/types/api';
+import { type SpotifyPlaylist, type SpotifyTrack } from '@/types/api';
 
 import { tryGetAuthSession } from './util';
-import { SPOTIFY_AUTH_COOKIE } from './constants';
-
-type SpotifyParams = ConstructorParameters<typeof SpotifyWebApiNode>[0];
+import { SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from './constants';
 
 let spotify: SpotifyInstance;
 
 export class SpotifyInstance {
-  public api: SpotifyWebApiNode;
-
-  public sdk: SpotifyApi | null = null;
+  public sdk: SpotifyApi;
 
   public refreshTimer?: ReturnType<typeof setTimeout>;
-
-  private readonly params: SpotifyParams;
 
   private readonly sdkConfig: SdkOptions;
 
   public constructor(apiConfig: SdkOptions = {}) {
     this.sdkConfig = apiConfig;
 
-    let spotifyApiParams: SpotifyParams = {
-      clientId: process.env.SPOTIFY_ID,
-      clientSecret: process.env.SPOTIFY_SECRET,
-      redirectUri: 'http://localhost:3000/api/login',
-      // accessToken: undefined,
-      // refreshToken: undefined,
-    };
-
+    let sdk;
     const authSession = tryGetAuthSession();
-    console.log({ authSession });
-    if (authSession) {
-      if (authSession.expiresAt > new Date().getTime()) {
-        spotifyApiParams.accessToken = authSession.accessToken;
-        spotifyApiParams.refreshToken = authSession.refreshToken;
-
-        this.refreshTimer = setTimeout(async () => {
-          await this.refreshToken();
-        }, Math.max(0, authSession.expiresIn - 100) * 1000);
+    try {
+      if (authSession) {
+        console.log('TRY with PKCE');
+        sdk = SpotifyApi.withAccessToken(
+          SPOTIFY_CLIENT_ID,
+          authSession,
+          this.sdkConfig,
+        );
       }
-
-      this.sdk = SpotifyApi.withAccessToken(
-        spotifyApiParams.clientId ?? '',
-        {
-          access_token: authSession.accessToken,
-          token_type: authSession.tokenType,
-          refresh_token: authSession.refreshToken,
-          expires: authSession.expiresAt,
-          expires_in: authSession.expiresIn,
-        },
-        apiConfig,
-      );
+    } finally {
+      if (!sdk) {
+        console.log('CC fallback');
+        sdk = SpotifyApi.withClientCredentials(
+          SPOTIFY_CLIENT_ID,
+          process.env.SPOTIFY_SECRET ?? '',
+          SPOTIFY_SCOPES,
+        );
+      }
     }
 
-    this.api = new SpotifyWebApiNode(spotifyApiParams);
-
-    this.params = spotifyApiParams;
+    this.sdk = sdk;
   }
-
-  public startSdk = (): boolean => {
-    const authSession = tryGetAuthSession();
-    if (authSession) {
-      this.sdk = SpotifyApi.withAccessToken(
-        this.params?.clientId ?? '',
-        {
-          access_token: authSession.accessToken,
-          token_type: authSession.tokenType,
-          refresh_token: authSession.refreshToken,
-          expires: authSession.expiresAt,
-          expires_in: authSession.expiresIn,
-        },
-        this.sdkConfig,
-      );
-
-      return true;
-    }
-
-    return false;
-  };
-
-  public refreshToken = async (): Promise<void> =>
-    await this.api.refreshAccessToken().then(({ body }) => {
-      this.api.setAccessToken(body.access_token);
-      if (body.refresh_token) {
-        this.api.setRefreshToken(body.refresh_token);
-      }
-
-      const authSession = tryGetAuthSession();
-      if (!authSession) {
-        throw new Error('Invalid authSession on refreshToken!');
-      }
-
-      const newAuthSession: AuthSession = {
-        ...authSession,
-        accessToken: body.access_token,
-        refreshToken: body.refresh_token ?? authSession.refreshToken,
-        expiresIn: body.expires_in,
-        expiresAt: new Date(
-          new Date().getTime() + body.expires_in * 1000,
-        ).getTime(),
-      };
-
-      cookies().set(SPOTIFY_AUTH_COOKIE, JSON.stringify(newAuthSession), {
-        maxAge: newAuthSession.expiresIn,
-      });
-
-      this.refreshTimer = setTimeout(
-        async () => await this.refreshToken(),
-        Math.max(0, body.expires_in - 100) * 1000,
-      );
-    });
 
   public getUserDetails = async (): Promise<User> => {
     if (!this.sdk) {
@@ -214,10 +136,6 @@ export const getSpotify = (): SpotifyInstance => {
 
       spotify = global.spotify;
     }
-  }
-
-  if (!spotify.sdk) {
-    spotify.startSdk();
   }
 
   return spotify;
