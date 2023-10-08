@@ -19,7 +19,7 @@ export const HomeLink: React.FC<HomeLinkProps> = ({ href, text, disabled }) => {
     <Box as="article" style={{ marginBottom: '3rem' }}>
       <Link
         as={NextLink}
-        href={disabled ? '' : href}
+        href={disabled ? 'null' : href}
         style={{ ...(disabled && disabledLinkStyles) }}>
         <Text fontSize={48}>{text}</Text>
       </Link>

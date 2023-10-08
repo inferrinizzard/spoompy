@@ -1,3 +1,5 @@
+'use server';
+
 import { getSpotify } from '@/spotify';
 import { type SpotifyPlaylist } from '@/types/api';
 import { normalizePlaylists } from '@/utils/normalizr';

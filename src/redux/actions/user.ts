@@ -1,3 +1,5 @@
+'use server';
+
 import { getSpotify } from '@/spotify';
 
 import store from '../store';
