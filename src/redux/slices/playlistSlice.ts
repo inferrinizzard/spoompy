@@ -4,6 +4,7 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { type PlaylistEntities } from '@/types/schema';
 
 import { type AppState } from '../store';
+import { replaceState } from '../actions/replaceState';
 
 export type PlaylistState = PlaylistEntities;
 
@@ -21,6 +22,11 @@ export const playlistSlice = createSlice({
     setEntities: (state, action: PayloadAction<PlaylistEntities>) => {
       return action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(replaceState, (_, action) => {
+      return action.payload.playlist;
+    });
   },
 });
 

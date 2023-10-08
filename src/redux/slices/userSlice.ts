@@ -4,6 +4,7 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { type UserDetails } from '@/types/api';
 
 import { type AppState } from '../store';
+import { replaceState } from '../actions/replaceState';
 
 export interface UserState {
   isAuthed: boolean;
@@ -29,6 +30,11 @@ export const userSlice = createSlice({
     setUserPlaylists: (state, action: PayloadAction<string[]>) => {
       state.playlists = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(replaceState, (_, action) => {
+      return action.payload.user;
+    });
   },
 });
 

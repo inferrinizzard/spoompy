@@ -4,6 +4,7 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { type DateRange, type TimeStep } from '@/types/common';
 
 import { type AppState } from '../store';
+import { replaceState } from '../actions/replaceState';
 
 export interface AnalysisState {
   dateRange: DateRange;
@@ -31,6 +32,11 @@ export const analysisSlice = createSlice({
     setTimeStep: (state, action: PayloadAction<TimeStep>) => {
       state.timeStep = action.payload;
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(replaceState, (_, action) => {
+      return action.payload.analysis;
+    });
   },
 });
 

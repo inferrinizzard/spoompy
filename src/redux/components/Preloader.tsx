@@ -2,17 +2,17 @@
 
 import React, { useRef } from 'react';
 
-import store from '../store';
-import { type PlaylistState, setEntities } from '../slices/playlistSlice';
+import store, { AppState } from '../store';
+import { replaceState } from '../actions';
 
 export interface PreloaderProps {
-  readonly playlist: PlaylistState;
+  readonly state: AppState;
 }
 
-const Preloader: React.FC<PreloaderProps> = ({ playlist }) => {
+const Preloader: React.FC<PreloaderProps> = ({ state }) => {
   const loaded = useRef(false);
   if (!loaded.current) {
-    store.dispatch(setEntities(playlist));
+    store.dispatch(replaceState(state));
     loaded.current = true;
   }
 
