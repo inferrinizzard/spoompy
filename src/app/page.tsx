@@ -5,10 +5,13 @@ import HomeLink from '@/components/HomeLink';
 import store from '@/redux/store';
 import { getUserDetails, getUserPlaylists } from '@/redux/actions';
 import { generateAuthUrl } from '@/spotify';
+import { readAuthSession } from '@/redux/actions/init';
 
 import styles from './page.module.css';
 
 export async function Home() {
+  readAuthSession();
+
   const isAuthed = store.getState().user.isAuthed;
 
   if (isAuthed) {

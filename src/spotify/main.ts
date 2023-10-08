@@ -15,6 +15,7 @@ import {
 } from '@/types/api';
 
 import { tryGetAuthSession } from './util';
+import { SPOTIFY_AUTH_COOKIE } from './constants';
 
 type SpotifyParams = ConstructorParameters<typeof SpotifyWebApiNode>[0];
 
@@ -115,7 +116,9 @@ export class SpotifyInstance {
         ).getTime(),
       };
 
-      cookies().set('AUTH_SESSION', JSON.stringify(newAuthSession));
+      cookies().set(SPOTIFY_AUTH_COOKIE, JSON.stringify(newAuthSession), {
+        maxAge: newAuthSession.expiresIn,
+      });
 
       this.refreshTimer = setTimeout(
         async () => await this.refreshToken(),

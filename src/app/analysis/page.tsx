@@ -3,8 +3,8 @@ import { redirect } from 'next/navigation';
 
 import Navbar from '@/components/Navbar';
 import ReturnButton from '@/components/ReturnButton';
-import store from '@/redux/store';
 import Preloader from '@/redux/components/Preloader';
+import store from '@/redux/store';
 
 import AnalysisMain from './main';
 
@@ -14,7 +14,7 @@ export const Analysis = async () => {
   }
   return (
     <main>
-      <Preloader playlist={store.getState().playlist} />
+      <Preloader state={store.getState()} />
       <Navbar />
       <AnalysisMain />
       <ReturnButton />
