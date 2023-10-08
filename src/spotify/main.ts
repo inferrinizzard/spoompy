@@ -1,5 +1,5 @@
-import { cookies } from 'next/headers';
 import SpotifyWebApiNode from 'spotify-web-api-node';
+import { cookies } from 'next/headers';
 
 import { trimTrack } from '@/api/utils/track';
 import {
@@ -11,6 +11,7 @@ import {
 
 import { tryGetAuthSession } from './util';
 import { handleRateLimitedError, throwError } from './handlers';
+import { SPOTIFY_AUTH_COOKIE } from './constants';
 
 let spotify: SpotifyInstance;
 
@@ -65,7 +66,9 @@ export class SpotifyInstance {
         ).getTime(),
       };
 
-      cookies().set('AUTH_SESSION', JSON.stringify(newAuthSession));
+      cookies().set(SPOTIFY_AUTH_COOKIE, JSON.stringify(newAuthSession), {
+        maxAge: newAuthSession.expiresIn,
+      });
 
       this.refreshTimer = setTimeout(
         async () => await this.refreshToken(),

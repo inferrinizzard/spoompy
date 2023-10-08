@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import store from '@/redux/store';
 import { setAuthStatus } from '@/redux/slices/userSlice';
 import { generateSession } from '@/spotify/auth';
+import { SPOTIFY_AUTH_COOKIE } from '@/spotify/constants';
 
 export async function GET(request: Request): Promise<NextResponse> {
   const urlParams = request.url.replace(/^.*[/]api[/]login/, '');
@@ -19,7 +20,8 @@ export async function GET(request: Request): Promise<NextResponse> {
   store.dispatch(setAuthStatus(true));
 
   const res = NextResponse.redirect('http://localhost:3000');
-  res.cookies.set('AUTH_SESSION', JSON.stringify(authSession), {
+
+  res.cookies.set(SPOTIFY_AUTH_COOKIE, JSON.stringify(authSession), {
     maxAge: authSession.expiresIn,
   });
 
