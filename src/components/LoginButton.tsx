@@ -3,9 +3,13 @@
 import { useEffect } from 'react';
 import { Button, Text } from '@kuma-ui/core';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
-import { cookies } from 'next/headers';
 
-import { SPOTIFY_AUTH_COOKIE, SPOTIFY_SCOPES } from '@/spotify/constants';
+import {
+  REROUTE_HOME_URL,
+  SPOTIFY_CLIENT_ID,
+  SPOTIFY_POSTBACK_URL,
+  SPOTIFY_SCOPES,
+} from '@/spotify/constants';
 
 export interface LoginButtonProps {}
 
@@ -13,10 +17,10 @@ export const LoginButton: React.FC<LoginButtonProps> = () => {
   useEffect(() => {
     if (new URLSearchParams(window.location.search).has('code')) {
       SpotifyApi.performUserAuthorization(
-        '104889eeeb724a9ca5efa673f527f38f',
-        'http://localhost:3000',
+        SPOTIFY_CLIENT_ID,
+        REROUTE_HOME_URL,
         SPOTIFY_SCOPES,
-        'http://localhost:3000/api/postback',
+        SPOTIFY_POSTBACK_URL,
       );
     }
   }, []);
@@ -25,10 +29,10 @@ export const LoginButton: React.FC<LoginButtonProps> = () => {
     <Button
       onClick={() =>
         SpotifyApi.performUserAuthorization(
-          '104889eeeb724a9ca5efa673f527f38f',
-          'http://localhost:3000',
+          SPOTIFY_CLIENT_ID,
+          REROUTE_HOME_URL,
           SPOTIFY_SCOPES,
-          'http://localhost:3000/api/postback',
+          SPOTIFY_POSTBACK_URL,
         )
       }>
       <Text fontSize={24}>{'Login'}</Text>
