@@ -1,4 +1,3 @@
-import { getCookie } from 'cookies-next';
 import { cookies } from 'next/headers';
 
 import { type AuthSession } from '@/types/api';
@@ -6,16 +5,15 @@ import { type AuthSession } from '@/types/api';
 import { SPOTIFY_AUTH_COOKIE } from './constants';
 
 export const tryGetAuthSession = (): AuthSession | null => {
-  let authSession;
+  const authSessionString = cookies().get(SPOTIFY_AUTH_COOKIE)?.value;
 
-  if (typeof window === 'undefined') {
-    authSession = cookies().get(SPOTIFY_AUTH_COOKIE)?.value;
-  } else {
-    authSession = getCookie('AUTH_SESSION');
-  }
+  if (authSessionString) {
+    const authSession = JSON.parse(authSessionString) as AuthSession;
+    if (authSession.expiresAt > new Date().getTime()) {
+      return authSession;
+    }
 
-  if (authSession) {
-    return JSON.parse(authSession) as AuthSession;
+    // cookies().delete(SPOTIFY_AUTH_COOKIE);
   }
 
   return null;
