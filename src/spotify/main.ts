@@ -5,7 +5,7 @@ import {
   type User,
 } from '@spotify/web-api-ts-sdk';
 
-import { trimTrack } from '@/api/utils/track';
+import { trimPlaylist, trimTrack } from '@/api/utils/trim';
 import { type SpotifyPlaylist, type SpotifyTrack } from '@/types/api';
 
 import { tryGetAuthSession } from './util';
@@ -114,10 +114,7 @@ export class SpotifyInstance {
       );
     }
 
-    return {
-      ...playlistObject,
-      tracks,
-    };
+    return trimPlaylist(playlistObject, tracks);
   };
 }
 

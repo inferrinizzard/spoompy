@@ -1,4 +1,5 @@
 import {
+  type Playlist,
   type PlaylistedTrack,
   type SimplifiedAlbum,
   type SimplifiedArtist,
@@ -8,6 +9,7 @@ import {
 import {
   type SpotifyAlbum,
   type SpotifyArtist,
+  type SpotifyPlaylist,
   type SpotifyTrack,
 } from '@/types/api';
 
@@ -44,3 +46,19 @@ export const trimTrack = (item: PlaylistedTrack): SpotifyTrack => {
     type: track.type,
   };
 };
+
+export const trimPlaylist = (
+  playlist: Playlist,
+  tracks?: SpotifyTrack[],
+): SpotifyPlaylist => ({
+  collaborative: playlist.collaborative,
+  description: playlist.description,
+  id: playlist.id,
+  images: playlist.images,
+  name: playlist.name,
+  owner: playlist.owner.id,
+  public: playlist.public,
+  // snapshotId: playlist.snapshot_id,
+  tracks: tracks ?? [], // to be replaced afterwards
+  // type: playlist.type,
+});

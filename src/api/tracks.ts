@@ -2,7 +2,7 @@ import { readFileSync } from 'fs';
 
 import { type SpotifyTrack } from '@/types/api';
 
-import { trimTrack } from './utils/track';
+import { trimTrack } from './utils/trim';
 
 export const getPlaylistTracks = (id: string): SpotifyTrack[] => {
   // spotify.getPlaylistTracks(id). etc
