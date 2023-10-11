@@ -5,7 +5,7 @@ import {
   type User,
 } from '@spotify/web-api-ts-sdk';
 
-import { trimPlaylist, trimTrack } from '@/api/utils/trim';
+import { trimPlaylist, trimTrack } from '@/utils/normalizr/trim';
 import { type SpotifyPlaylist, type SpotifyTrack } from '@/types/api';
 
 import { tryGetAuthSession } from './util';
