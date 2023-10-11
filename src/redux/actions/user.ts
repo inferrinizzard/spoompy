@@ -9,7 +9,7 @@ export const getUserDetails = async (): Promise<void> => {
   if (store.getState().user.isAuthed) {
     await getSpotify()
       .getUserDetails()
-      .then((userDetails) => store.dispatch(setUserDetails(userDetails)));
+      .then((user) => store.dispatch(setUserDetails(user)));
   }
 };
 

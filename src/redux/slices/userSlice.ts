@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
-
-import { type UserDetails } from '@/types/api';
+import { type User } from '@spotify/web-api-ts-sdk';
 
 import { type AppState } from '../store';
 import { replaceState } from '../actions/replaceState';
@@ -9,7 +8,7 @@ import { replaceState } from '../actions/replaceState';
 export interface UserState {
   isAuthed: boolean;
   playlists: string[];
-  userDetails?: UserDetails;
+  userDetails?: User;
 }
 
 const initialState: UserState = {
@@ -24,7 +23,7 @@ export const userSlice = createSlice({
     setAuthStatus: (state, action: PayloadAction<boolean>) => {
       state.isAuthed = action.payload;
     },
-    setUserDetails: (state, action: PayloadAction<UserDetails>) => {
+    setUserDetails: (state, action: PayloadAction<User>) => {
       state.userDetails = action.payload;
     },
     setUserPlaylists: (state, action: PayloadAction<string[]>) => {

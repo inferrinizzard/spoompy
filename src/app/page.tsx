@@ -1,10 +1,9 @@
-import { Button, Spacer, Text } from '@kuma-ui/core';
-import Link from 'next/link';
+import { Spacer, Text } from '@kuma-ui/core';
 
 import HomeLink from '@/components/HomeLink';
+import LoginButton from '@/components/LoginButton';
 import store from '@/redux/store';
 import { getUserDetails, getUserPlaylists } from '@/redux/actions';
-import { generateAuthUrl } from '@/spotify';
 import { readAuthSession } from '@/redux/actions/init';
 
 import styles from './page.module.css';
@@ -26,14 +25,10 @@ export async function Home() {
       <HomeLink disabled={!isAuthed} href="/analysis" text="Data Analysis" />
       <HomeLink disabled={!isAuthed} href="/archive" text="Archive Playlists" />
 
-      {!isAuthed && (
-        <Button as={Link} href={generateAuthUrl()}>
-          {'Login'}
-        </Button>
-      )}
+      {!isAuthed && <LoginButton />}
 
       {store.getState().user.userDetails && (
-        <h1>{`Welcome, ${store.getState().user.userDetails?.name}`}</h1>
+        <h1>{`Welcome, ${store.getState().user.userDetails?.display_name}`}</h1>
       )}
     </main>
   );
