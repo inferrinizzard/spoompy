@@ -1,10 +1,10 @@
 import { Spacer, Text } from '@kuma-ui/core';
 
 import HomeLink from '@/components/HomeLink';
+import LoginButton from '@/components/LoginButton';
 import store from '@/redux/store';
 import { getUserDetails, getUserPlaylists } from '@/redux/actions';
 import { readAuthSession } from '@/redux/actions/init';
-import LoginButton from '@/components/LoginButton';
 
 import styles from './page.module.css';
 

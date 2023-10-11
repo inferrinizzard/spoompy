@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button, Text } from '@kuma-ui/core';
 import { SpotifyApi } from '@spotify/web-api-ts-sdk';
 
@@ -14,16 +14,7 @@ import {
 export interface LoginButtonProps {}
 
 export const LoginButton: React.FC<LoginButtonProps> = () => {
-  useEffect(() => {
-    if (new URLSearchParams(window.location.search).has('code')) {
-      SpotifyApi.performUserAuthorization(
-        SPOTIFY_CLIENT_ID,
-        REROUTE_HOME_URL,
-        SPOTIFY_SCOPES,
-        SPOTIFY_POSTBACK_URL,
-      );
-    }
-  }, []);
+  const router = useRouter();
 
   return (
     <Button
@@ -33,7 +24,7 @@ export const LoginButton: React.FC<LoginButtonProps> = () => {
           REROUTE_HOME_URL,
           SPOTIFY_SCOPES,
           SPOTIFY_POSTBACK_URL,
-        )
+        ).then(() => router.refresh())
       }>
       <Text fontSize={24}>{'Login'}</Text>
     </Button>
