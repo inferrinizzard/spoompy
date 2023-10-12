@@ -2,7 +2,7 @@
 
 import { getSpotify } from '@/spotify';
 import { type SpotifyPlaylist } from '@/types/api';
-import { normalizePlaylists } from '@/utils/normalizr';
+import { normalizePlaylists } from '@/utils/normalizr/normalize';
 import { type NormalizedPlaylists } from '@/types/schema';
 
 import store from '../store';
