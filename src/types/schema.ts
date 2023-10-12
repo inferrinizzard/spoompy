@@ -7,7 +7,9 @@ import {
 import { type IdsOf } from './entities';
 import { type SpliceObject } from './util';
 
-export interface NormalizedPlaylists<Playlists extends SpotifyPlaylist[]> {
+export interface NormalizedPlaylists<
+  Playlists extends SpotifyPlaylist[] = SpotifyPlaylist[],
+> {
   entities: PlaylistEntities;
   result: IdsOf<Playlists>;
 }

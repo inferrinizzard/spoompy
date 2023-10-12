@@ -1,4 +1,17 @@
-import { type Playlist } from '@spotify/web-api-ts-sdk';
+import { type Image } from '@spotify/web-api-ts-sdk';
+
+export interface SpotifyPlaylist {
+  collaborative: boolean;
+  description: string;
+  id: string;
+  images: Image[];
+  name: string;
+  owner: string;
+  public: boolean;
+  // snapshotId: string;
+  tracks: SpotifyTrack[];
+  // type: string;
+}
 
 export interface SpotifyTrack {
   added_at: string;
@@ -20,10 +33,6 @@ export interface SpotifyAlbum {
   id: string;
   image: string;
   name: string;
-}
-
-export interface SpotifyPlaylist extends Omit<Playlist, 'tracks'> {
-  tracks: SpotifyTrack[];
 }
 
 export interface AuthCredentials {
