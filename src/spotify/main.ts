@@ -10,6 +10,7 @@ import { type SpotifyPlaylist, type SpotifyTrack } from '@/types/api';
 
 import { tryGetAuthSession } from './utils/getSession';
 import { SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from './constants';
+import { RequestQueue } from './utils/requestQueue';
 import { handleRateLimitedError } from './handlers';
 
 let spotify: SpotifyInstance;
@@ -19,9 +20,13 @@ export class SpotifyInstance {
 
   public refreshTimer?: ReturnType<typeof setTimeout>;
 
+  private readonly queue: RequestQueue;
+
   private readonly sdkConfig: SdkOptions;
 
   public constructor(apiConfig: SdkOptions = {}) {
+    this.queue = new RequestQueue();
+
     this.sdkConfig = {
       ...apiConfig,
       responseValidator: { validateResponse: handleRateLimitedError },
@@ -53,7 +58,11 @@ export class SpotifyInstance {
   }
 
   public getUserDetails = async (): Promise<User> => {
-    return await this.sdk.currentUser.profile();
+    const thunkId = this.queue.add(
+      async () => await this.sdk.currentUser.profile(),
+    );
+
+    return await this.queue.runOne<User>(thunkId);
   };
 
   public getUserPlaylists = async (userId: string): Promise<string[]> => {
