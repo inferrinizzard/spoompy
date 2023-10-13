@@ -1,6 +1,6 @@
 'use server';
 
-import { tryGetAuthSession } from '@/spotify/util';
+import { tryGetAuthSession } from '@/spotify/utils/getSession';
 
 import store from '../store';
 import { setAuthStatus } from '../slices/userSlice';

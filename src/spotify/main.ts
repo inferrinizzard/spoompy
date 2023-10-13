@@ -8,7 +8,7 @@ import {
 import { trimPlaylist, trimTrack } from '@/utils/normalizr/trim';
 import { type SpotifyPlaylist, type SpotifyTrack } from '@/types/api';
 
-import { tryGetAuthSession } from './util';
+import { tryGetAuthSession } from './utils/getSession';
 import { SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from './constants';
 
 let spotify: SpotifyInstance;
