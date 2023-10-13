@@ -49,18 +49,10 @@ export class SpotifyInstance {
   }
 
   public getUserDetails = async (): Promise<User> => {
-    if (!this.sdk) {
-      throw new Error('SDK not initialised!');
-    }
-
     return await this.sdk.currentUser.profile();
   };
 
   public getUserPlaylists = async (userId: string): Promise<string[]> => {
-    if (!this.sdk) {
-      throw new Error('SDK not initialised!');
-    }
-
     const firstSlice = await this.sdk.playlists
       .getUsersPlaylists(userId, 50)
       .then((playlistPage) => ({
@@ -91,10 +83,6 @@ export class SpotifyInstance {
   public getPlaylistWithTracks = async (
     playlistId: string,
   ): Promise<SpotifyPlaylist> => {
-    if (!this.sdk) {
-      throw new Error('SDK not initialised!');
-    }
-
     const playlistObject = await this.sdk.playlists.getPlaylist(playlistId);
 
     const numTracks = playlistObject.tracks.total;
