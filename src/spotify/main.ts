@@ -10,6 +10,7 @@ import { type SpotifyPlaylist, type SpotifyTrack } from '@/types/api';
 
 import { tryGetAuthSession } from './utils/getSession';
 import { SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from './constants';
+import { handleRateLimitedError } from './handlers';
 
 let spotify: SpotifyInstance;
 
@@ -21,7 +22,10 @@ export class SpotifyInstance {
   private readonly sdkConfig: SdkOptions;
 
   public constructor(apiConfig: SdkOptions = {}) {
-    this.sdkConfig = apiConfig;
+    this.sdkConfig = {
+      ...apiConfig,
+      responseValidator: { validateResponse: handleRateLimitedError },
+    };
 
     let sdk;
     const authSession = tryGetAuthSession();
