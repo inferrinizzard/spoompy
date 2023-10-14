@@ -13,7 +13,6 @@ export const Browse = async () => {
   if (!store.getState().user.isAuthed) {
     redirect('/', RedirectType.replace);
   }
-  await getAllPlaylistTracks();
 
   return (
     <main>

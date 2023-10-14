@@ -21,7 +21,7 @@ export const playlistSlice = createSlice({
   initialState,
   reducers: {
     setEntities: (state, action: PayloadAction<PlaylistEntities>) => {
-      return mergeEntities(state, action.payload);
+      mergeEntities(state, action.payload);
     },
   },
   extraReducers: (builder) => {
