@@ -1,7 +1,6 @@
 'use server';
 
 import { getSpotify } from '@/spotify';
-import { type SpotifyPlaylist } from '@/types/api';
 import { normalizePlaylists } from '@/utils/normalizr/normalize';
 import { type NormalizedPlaylists } from '@/types/schema';
 
@@ -9,29 +8,21 @@ import store from '../store';
 import { setEntities } from '../slices/playlistSlice';
 
 export const getAllPlaylistTracks = async (): Promise<void> => {
-  if (store.getState().user.isAuthed) {
-    const playlistPromises = store
-      .getState()
-      .user.playlists.slice(0, 10) // TODO: temp
-      .map(
-        async (playlist) => await getSpotify().getPlaylistWithTracks(playlist),
-      );
-
-    const playlistsRes = await Promise.allSettled(playlistPromises);
-
-    let playlists: SpotifyPlaylist[] = [];
-    for (let playlist of playlistsRes) {
-      if (playlist.status === 'rejected') {
-        console.info('Failed!', playlist.reason); // TODO: retry
-      } else {
-        playlists.push(playlist.value);
-      }
-    }
-
-    const normalizedPlaylists = normalizePlaylists(
-      playlists,
-    ) as unknown as NormalizedPlaylists<typeof playlists>;
-
-    store.dispatch(setEntities(normalizedPlaylists.entities));
+  if (!store.getState().user.isAuthed) {
+    return;
   }
+
+  store
+    .getState()
+    .user.playlists.slice(0, 10) // TODO: temp
+    .map(getSpotify().getPlaylistWithTracks) // check here which playlists already exist in store
+    .map(
+      async (promise) =>
+        await promise.then((playlist) => {
+          const normalizedPlaylist = normalizePlaylists([
+            playlist,
+          ]) as unknown as NormalizedPlaylists;
+          store.dispatch(setEntities(normalizedPlaylist.entities));
+        }),
+    );
 };
