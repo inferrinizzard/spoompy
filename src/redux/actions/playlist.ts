@@ -5,7 +5,7 @@ import { normalizePlaylists } from '@/utils/normalizr/normalize';
 import { type NormalizedPlaylists } from '@/types/schema';
 
 import store from '../store';
-import { setEntities } from '../slices/playlistSlice';
+import { updateEntities } from '../slices/playlistSlice';
 
 export const getAllPlaylistTracks = async (): Promise<void> => {
   if (!store.getState().user.isAuthed) {
@@ -22,7 +22,7 @@ export const getAllPlaylistTracks = async (): Promise<void> => {
           const normalizedPlaylist = normalizePlaylists([
             playlist,
           ]) as unknown as NormalizedPlaylists;
-          store.dispatch(setEntities(normalizedPlaylist.entities));
+          store.dispatch(updateEntities(normalizedPlaylist.entities));
         }),
     );
 };
