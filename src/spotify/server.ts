@@ -5,6 +5,8 @@ import {
   type User,
 } from '@spotify/web-api-ts-sdk';
 
+import { type PlaylistRef } from '@/types/api';
+
 import { tryGetAuthSession } from './utils/getSession';
 import { SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from './constants';
 import { RequestQueue } from './utils/requestQueue';
@@ -62,7 +64,7 @@ export class ServerSpotifyInstance {
     return await this.queue.runOne<User>(thunkId);
   };
 
-  public getUserPlaylists = async (userId: string): Promise<string[]> => {
+  public getUserPlaylists = async (userId: string): Promise<PlaylistRef[]> => {
     const firstSlice = await this.sdk.playlists
       .getUsersPlaylists(userId, 50)
       .then((playlistPage) => ({
@@ -74,14 +76,20 @@ export class ServerSpotifyInstance {
 
     const numPlaylists = firstSlice.total;
 
-    let playlists = firstSlice.items.map((playlist) => playlist.id);
+    let playlists = firstSlice.items.map((playlist) => ({
+      id: playlist.id,
+      snapshotId: playlist.snapshot_id,
+    }));
     for (let i = 50; i < numPlaylists; i += 50) {
       const playlistSlice = await this.sdk.playlists
         .getUsersPlaylists(userId, 50, i)
         .then((playlistPage) =>
           playlistPage.items
             .filter((playlist) => playlist.owner.id === userId) // filter only for playlists that belong to userId
-            .map((playlist) => playlist.id),
+            .map((playlist) => ({
+              id: playlist.id,
+              snapshotId: playlist.snapshot_id,
+            })),
         );
 
       playlists = playlists.concat(playlistSlice);

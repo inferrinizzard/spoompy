@@ -1,6 +1,6 @@
 import { type Image } from '@spotify/web-api-ts-sdk';
 
-export interface SpotifyPlaylist {
+export interface SpotifyPlaylist extends PlaylistRef {
   collaborative: boolean;
   description: string;
   id: string;
@@ -8,7 +8,7 @@ export interface SpotifyPlaylist {
   name: string;
   owner: string;
   public: boolean;
-  // snapshotId: string;
+  snapshotId: string;
   tracks: SpotifyTrack[];
   // type: string;
 }
@@ -33,4 +33,9 @@ export interface SpotifyAlbum {
   id: string;
   image: string;
   name: string;
+}
+
+export interface PlaylistRef {
+  id: string;
+  snapshotId: string;
 }

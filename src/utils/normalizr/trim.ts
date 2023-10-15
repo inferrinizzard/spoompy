@@ -58,7 +58,7 @@ export const trimPlaylist = (
   name: playlist.name,
   owner: playlist.owner.id,
   public: playlist.public,
-  // snapshotId: playlist.snapshot_id,
+  snapshotId: playlist.snapshot_id,
   tracks: tracks ?? [], // to be replaced afterwards
   // type: playlist.type,
 });
