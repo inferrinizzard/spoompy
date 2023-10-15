@@ -1,2 +1,2 @@
-export * from './client/replaceState';
+export * from './client/preloadState';
 export * from './server/user';

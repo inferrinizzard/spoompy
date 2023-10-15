@@ -4,7 +4,7 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { type DateRange } from '@/types/common';
 
 import { type AppState } from '../store';
-import { replaceState } from '../actions/client/replaceState';
+import { preloadState } from '../actions/client/preloadState';
 
 interface BrowseFilters {
   playlist?: string;
@@ -62,7 +62,7 @@ export const browseSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(replaceState, (_, action) => {
+    builder.addCase(preloadState, (_, action) => {
       return action.payload.browse;
     });
   },

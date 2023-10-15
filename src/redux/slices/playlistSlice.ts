@@ -5,7 +5,7 @@ import { type PlaylistEntities } from '@/types/schema';
 import { mergeEntities } from '@/utils/mergeEntities';
 
 import { type AppState } from '../store';
-import { replaceState } from '../actions/client/replaceState';
+import { preloadState } from '../actions/client/preloadState';
 
 export type PlaylistState = PlaylistEntities;
 
@@ -25,7 +25,7 @@ export const playlistSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(replaceState, (_, action) => {
+    builder.addCase(preloadState, (_, action) => {
       return action.payload.playlist;
     });
   },

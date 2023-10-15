@@ -3,7 +3,7 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { type User } from '@spotify/web-api-ts-sdk';
 
 import { type AppState } from '../store';
-import { replaceState } from '../actions/client/replaceState';
+import { preloadState } from '../actions/client/preloadState';
 
 export interface UserState {
   isAuthed: boolean;
@@ -31,7 +31,7 @@ export const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(replaceState, (_, action) => {
+    builder.addCase(preloadState, (_, action) => {
       return action.payload.user;
     });
   },
