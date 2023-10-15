@@ -8,12 +8,15 @@ import {
 import { trimPlaylist, trimTrack } from '@/utils/normalizr/trim';
 import { type SpotifyPlaylist, type SpotifyTrack } from '@/types/api';
 
-import { tryGetAuthSession } from './util';
-import { SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from './constants';
+import {
+  SPOTIFY_CLIENT_ID,
+  SPOTIFY_POSTBACK_URL,
+  SPOTIFY_SCOPES,
+} from './constants';
 
-let spotify: SpotifyInstance;
+let spotify: ClientSpotifyInstance;
 
-export class SpotifyInstance {
+export class ClientSpotifyInstance {
   public sdk: SpotifyApi;
 
   public refreshTimer?: ReturnType<typeof setTimeout>;
@@ -23,27 +26,12 @@ export class SpotifyInstance {
   public constructor(apiConfig: SdkOptions = {}) {
     this.sdkConfig = apiConfig;
 
-    let sdk;
-    const authSession = tryGetAuthSession();
-    try {
-      if (authSession) {
-        console.log('TRY with PKCE');
-        sdk = SpotifyApi.withAccessToken(
-          SPOTIFY_CLIENT_ID,
-          authSession,
-          this.sdkConfig,
-        );
-      }
-    } finally {
-      if (!sdk) {
-        console.log('CC fallback');
-        sdk = SpotifyApi.withClientCredentials(
-          SPOTIFY_CLIENT_ID,
-          process.env.SPOTIFY_SECRET ?? '',
-          SPOTIFY_SCOPES,
-        );
-      }
-    }
+    const sdk = SpotifyApi.withUserAuthorization(
+      SPOTIFY_CLIENT_ID,
+      SPOTIFY_POSTBACK_URL,
+      SPOTIFY_SCOPES,
+      this.sdkConfig,
+    );
 
     this.sdk = sdk;
   }
@@ -122,16 +110,16 @@ const spotifySdkConfig: SdkOptions = {
   errorHandler: new ConsoleLoggingErrorHandler(),
 };
 
-export const getSpotify = (): SpotifyInstance => {
+export const getSpotify = (): ClientSpotifyInstance => {
   if (!spotify) {
     if (process.env.NODE_ENV === 'production') {
-      spotify = new SpotifyInstance(spotifySdkConfig);
+      spotify = new ClientSpotifyInstance(spotifySdkConfig);
     } else {
       if (!global.spotify) {
-        global.spotify = new SpotifyInstance(spotifySdkConfig);
+        global.spotify = new ClientSpotifyInstance(spotifySdkConfig);
       }
 
-      spotify = global.spotify as SpotifyInstance;
+      spotify = global.spotify as ClientSpotifyInstance;
     }
   }
 
