@@ -20,8 +20,8 @@ export const playlistSlice = createSlice({
   name: 'playlist',
   initialState,
   reducers: {
-    setEntities: (state, action: PayloadAction<PlaylistEntities>) => {
-      return mergeEntities(state, action.payload);
+    updateEntities: (state, action: PayloadAction<PlaylistEntities>) => {
+      mergeEntities(state, action.payload);
     },
   },
   extraReducers: (builder) => {
@@ -31,7 +31,7 @@ export const playlistSlice = createSlice({
   },
 });
 
-export const { setEntities } = playlistSlice.actions;
+export const { updateEntities } = playlistSlice.actions;
 
 export const selectTracks = (state: AppState) => state.playlist.tracks;
 export const selectPlaylists = (state: AppState) => state.playlist.playlists;

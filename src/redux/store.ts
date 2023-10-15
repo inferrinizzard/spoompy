@@ -8,6 +8,7 @@ import analysisReducer from './slices/analysisSlice';
 import browseReducer from './slices/browseSlice';
 import playlistReducer from './slices/playlistSlice';
 import userReducer from './slices/userSlice';
+import { listenerMiddleware } from './middleware/listener';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const makeStore = () =>
@@ -20,6 +21,9 @@ export const makeStore = () =>
 
       user: userReducer,
     },
+
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().prepend(listenerMiddleware.middleware),
   });
 
 const store = makeStore();
