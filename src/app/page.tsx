@@ -5,6 +5,7 @@ import LoginButton from '@/components/LoginButton';
 import store from '@/redux/store';
 import { getUserDetails, getUserPlaylists } from '@/redux/actions';
 import { readAuthSession } from '@/redux/actions/init';
+import Preloader from '@/redux/components/Preloader';
 
 import styles from './page.module.css';
 
@@ -19,6 +20,8 @@ export async function Home() {
 
   return (
     <main className={styles.main}>
+      <Preloader state={store.getState()} />
+
       <Text fontSize={36}>{'Spotify Data Visualizer'}</Text>
       <Spacer height="2rem" />
       <HomeLink disabled={!isAuthed} href="/browse" text="Browse Library" />
