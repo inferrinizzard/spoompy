@@ -7,10 +7,7 @@ import store from '../store';
 import { updateEntities } from '../slices/playlistSlice';
 
 export const getPlaylists = async (playlists: PlaylistRef[]): Promise<void> => {
-  // console.log(localStorage);
-
   playlists
-    .map((playlist) => playlist.id)
     .map(getClientSpotify().getPlaylistWithTracks) // check here which playlists already exist in store
     .map(
       async (promise) =>
