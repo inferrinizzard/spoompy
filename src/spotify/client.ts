@@ -2,7 +2,6 @@ import {
   ConsoleLoggingErrorHandler,
   type SdkOptions,
   SpotifyApi,
-  type User,
 } from '@spotify/web-api-ts-sdk';
 
 import { trimPlaylist, trimTrack } from '@/utils/normalizr/trim';
@@ -26,14 +25,12 @@ export class ClientSpotifyInstance {
   public constructor(apiConfig: SdkOptions = {}) {
     this.sdkConfig = apiConfig;
 
-    const sdk = SpotifyApi.withUserAuthorization(
+    this.sdk = SpotifyApi.withUserAuthorization(
       SPOTIFY_CLIENT_ID,
       SPOTIFY_POSTBACK_URL,
       SPOTIFY_SCOPES,
       this.sdkConfig,
     );
-
-    this.sdk = sdk;
   }
 
   public getPlaylistWithTracks = async (
