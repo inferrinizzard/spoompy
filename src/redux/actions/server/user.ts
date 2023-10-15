@@ -1,6 +1,6 @@
 'use server';
 
-import { getServerSpotify } from '@/spotify';
+import { getServerSpotify } from '@/spotify/server';
 
 import store from '../../store';
 import { setUserDetails, setUserPlaylists } from '../../slices/userSlice';

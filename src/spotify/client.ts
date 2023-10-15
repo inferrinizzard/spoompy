@@ -67,7 +67,7 @@ const spotifySdkConfig: SdkOptions = {
   errorHandler: new ConsoleLoggingErrorHandler(),
 };
 
-export const getSpotify = (): ClientSpotifyInstance => {
+export const getClientSpotify = (): ClientSpotifyInstance => {
   if (!clientSpotify) {
     if (process.env.NODE_ENV === 'production') {
       clientSpotify = new ClientSpotifyInstance(spotifySdkConfig);
