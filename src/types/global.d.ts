@@ -1,7 +1,9 @@
-import { type ServerSpotifyInstance } from '@/spotify';
-import { type ClientSpotifyInstance } from '@/spotify/client';
+import {
+  type ClientSpotifyInstance,
+  type ServerSpotifyInstance,
+} from '@/spotify';
 
 export declare global {
-  var spotify: ClientSpotifyInstance | ServerSpotifyInstance;
+  var clientSpotify: ClientSpotifyInstance;
   var serverSpotify: ServerSpotifyInstance;
 }

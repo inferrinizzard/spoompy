@@ -14,7 +14,7 @@ import {
   SPOTIFY_SCOPES,
 } from './constants';
 
-let spotify: ClientSpotifyInstance;
+let clientSpotify: ClientSpotifyInstance;
 
 export class ClientSpotifyInstance {
   public sdk: SpotifyApi;
@@ -35,46 +35,6 @@ export class ClientSpotifyInstance {
 
     this.sdk = sdk;
   }
-
-  public getUserDetails = async (): Promise<User> => {
-    if (!this.sdk) {
-      throw new Error('SDK not initialised!');
-    }
-
-    return await this.sdk.currentUser.profile();
-  };
-
-  public getUserPlaylists = async (userId: string): Promise<string[]> => {
-    if (!this.sdk) {
-      throw new Error('SDK not initialised!');
-    }
-
-    const firstSlice = await this.sdk.playlists
-      .getUsersPlaylists(userId, 50)
-      .then((playlistPage) => ({
-        ...playlistPage,
-        items: playlistPage.items.filter(
-          (playlist) => playlist.owner.id === userId,
-        ), // filter only for playlists that belong to userId
-      }));
-
-    const numPlaylists = firstSlice.total;
-
-    let playlists = firstSlice.items.map((playlist) => playlist.id);
-    for (let i = 50; i < numPlaylists; i += 50) {
-      const playlistSlice = await this.sdk.playlists
-        .getUsersPlaylists(userId, 50, i)
-        .then((playlistPage) =>
-          playlistPage.items
-            .filter((playlist) => playlist.owner.id === userId) // filter only for playlists that belong to userId
-            .map((playlist) => playlist.id),
-        );
-
-      playlists = playlists.concat(playlistSlice);
-    }
-
-    return playlists;
-  };
 
   public getPlaylistWithTracks = async (
     playlistId: string,
@@ -111,17 +71,17 @@ const spotifySdkConfig: SdkOptions = {
 };
 
 export const getSpotify = (): ClientSpotifyInstance => {
-  if (!spotify) {
+  if (!clientSpotify) {
     if (process.env.NODE_ENV === 'production') {
-      spotify = new ClientSpotifyInstance(spotifySdkConfig);
+      clientSpotify = new ClientSpotifyInstance(spotifySdkConfig);
     } else {
-      if (!global.spotify) {
-        global.spotify = new ClientSpotifyInstance(spotifySdkConfig);
+      if (!global.clientSpotify) {
+        global.clientSpotify = new ClientSpotifyInstance(spotifySdkConfig);
       }
 
-      spotify = global.spotify as ClientSpotifyInstance;
+      clientSpotify = global.clientSpotify;
     }
   }
 
-  return spotify;
+  return clientSpotify;
 };

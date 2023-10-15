@@ -5,9 +5,6 @@ import {
   type User,
 } from '@spotify/web-api-ts-sdk';
 
-import { trimPlaylist, trimTrack } from '@/utils/normalizr/trim';
-import { type SpotifyPlaylist, type SpotifyTrack } from '@/types/api';
-
 import { tryGetAuthSession } from './util';
 import { SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from './constants';
 
@@ -86,35 +83,6 @@ export class ServerSpotifyInstance {
     }
 
     return playlists;
-  };
-
-  public getPlaylistWithTracks = async (
-    playlistId: string,
-  ): Promise<SpotifyPlaylist> => {
-    if (!this.sdk) {
-      throw new Error('SDK not initialised!');
-    }
-
-    const playlistObject = await this.sdk.playlists.getPlaylist(playlistId);
-
-    const numTracks = playlistObject.tracks.total;
-
-    let tracks: SpotifyTrack[] = [];
-    for (let i = 0; i < numTracks; i += 50) {
-      const playlistSlice = await this.sdk.playlists.getPlaylistItems(
-        playlistId,
-        undefined,
-        undefined,
-        50,
-        i,
-      );
-
-      tracks = tracks.concat(
-        playlistSlice.items.map((track) => trimTrack(track)),
-      );
-    }
-
-    return trimPlaylist(playlistObject, tracks);
   };
 }
 
