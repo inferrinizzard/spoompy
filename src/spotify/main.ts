@@ -8,8 +8,10 @@ import {
 import { trimPlaylist, trimTrack } from '@/utils/normalizr/trim';
 import { type SpotifyPlaylist, type SpotifyTrack } from '@/types/api';
 
-import { tryGetAuthSession } from './util';
+import { tryGetAuthSession } from './utils/getSession';
 import { SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from './constants';
+import { RequestQueue } from './utils/requestQueue';
+import { handleRateLimitedError } from './handlers';
 
 let spotify: SpotifyInstance;
 
@@ -18,10 +20,17 @@ export class SpotifyInstance {
 
   public refreshTimer?: ReturnType<typeof setTimeout>;
 
+  private readonly queue: RequestQueue;
+
   private readonly sdkConfig: SdkOptions;
 
   public constructor(apiConfig: SdkOptions = {}) {
-    this.sdkConfig = apiConfig;
+    this.queue = new RequestQueue();
+
+    this.sdkConfig = {
+      ...apiConfig,
+      responseValidator: { validateResponse: handleRateLimitedError },
+    };
 
     let sdk;
     const authSession = tryGetAuthSession();
@@ -49,18 +58,14 @@ export class SpotifyInstance {
   }
 
   public getUserDetails = async (): Promise<User> => {
-    if (!this.sdk) {
-      throw new Error('SDK not initialised!');
-    }
+    const thunkId = this.queue.add(
+      async () => await this.sdk.currentUser.profile(),
+    );
 
-    return await this.sdk.currentUser.profile();
+    return await this.queue.runOne<User>(thunkId);
   };
 
   public getUserPlaylists = async (userId: string): Promise<string[]> => {
-    if (!this.sdk) {
-      throw new Error('SDK not initialised!');
-    }
-
     const firstSlice = await this.sdk.playlists
       .getUsersPlaylists(userId, 50)
       .then((playlistPage) => ({
@@ -91,10 +96,6 @@ export class SpotifyInstance {
   public getPlaylistWithTracks = async (
     playlistId: string,
   ): Promise<SpotifyPlaylist> => {
-    if (!this.sdk) {
-      throw new Error('SDK not initialised!');
-    }
-
     const playlistObject = await this.sdk.playlists.getPlaylist(playlistId);
 
     const numTracks = playlistObject.tracks.total;

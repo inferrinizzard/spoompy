@@ -34,23 +34,3 @@ export interface SpotifyAlbum {
   image: string;
   name: string;
 }
-
-export interface AuthCredentials {
-  code: string;
-  state?: string;
-}
-
-export interface AuthSession {
-  accessToken: string;
-  expiresAt: number;
-  expiresIn: number;
-  refreshToken: string;
-  scope: string;
-  tokenType: string;
-}
-
-export interface UserDetails {
-  id: string;
-  image: string;
-  name: string;
-}
