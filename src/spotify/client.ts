@@ -18,7 +18,10 @@ import {
   SPOTIFY_SCOPES,
 } from './constants';
 import { EntityCache } from './utils/entityCache';
-import { buildPlaylistFields, buildTrackFields } from './utils/fieldBuilder';
+import {
+  buildPlaylistFields,
+  buildTrackItemFields,
+} from './utils/fieldBuilder';
 
 let clientSpotify: ClientSpotifyInstance;
 
@@ -76,7 +79,7 @@ export class ClientSpotifyInstance {
       const playlistSlice = await this.sdk.playlists.getPlaylistItems(
         playlist.id,
         undefined,
-        `items(${buildTrackFields(true)})`,
+        `items(${buildTrackItemFields()})`,
         50,
         i,
       );

@@ -22,27 +22,27 @@ export const buildAlbumFields = (simplified: boolean = true): string => {
   return outString;
 };
 
-export const buildTrackFields = (nested: boolean = false): string => {
-  const fields = ['name', 'added_at', 'added_by', 'id', 'popularity', 'type'];
+export const buildTrackFields = (): string => {
+  const fields = [
+    'name',
+    'id',
+    'popularity',
+    'type',
+    `artists(${buildArtistFields()})`, // get nested artists fields
+    `album(${buildAlbumFields()})`, // get nested album fields
+  ];
 
-  let outString = fields.join(',');
+  return fields.join(',');
+};
 
-  if (nested) {
-    const nestedFields = {
-      artists: `,artists(${buildArtistFields()})`,
-      album: `,album(${buildAlbumFields()})`,
-    };
+export const buildTrackItemFields = (): string => {
+  const fields = ['added_at', 'added_by', `track(${buildTrackFields()})`];
 
-    Object.entries(nestedFields).forEach(
-      ([field, nestedString]) => (outString += nestedString),
-    );
-  }
-
-  return outString;
+  return fields.join(',');
 };
 
 export const buildPlaylistFields = (nested: boolean = false): string => {
-  const fields = [
+  let fields = [
     'collaborative',
     'description',
     'id',
@@ -53,20 +53,14 @@ export const buildPlaylistFields = (nested: boolean = false): string => {
     'snapshot_id',
   ];
 
-  let outString = fields.join(',');
-
   if (nested) {
-    const nestedFields = {
-      tracks: `,tracks.items(added_at,added_by,track(${buildTrackFields(
-        true,
-      )}))`,
-      owner: `,owner(id,display_name)`,
-    };
+    const nestedFields = [
+      `tracks.items(${buildTrackItemFields()})`, // get nested track item fields
+      `owner(id,display_name)`, // replace owner field
+    ];
 
-    Object.entries(nestedFields).forEach(
-      ([field, nestedString]) => (outString += nestedString),
-    );
+    fields.push(...nestedFields);
   }
 
-  return outString;
+  return fields.join(',');
 };
