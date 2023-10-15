@@ -18,6 +18,7 @@ import {
   SPOTIFY_SCOPES,
 } from './constants';
 import { EntityCache } from './utils/entityCache';
+import { buildPlaylistFields, buildTrackFields } from './utils/fieldBuilder';
 
 let clientSpotify: ClientSpotifyInstance;
 
@@ -52,7 +53,7 @@ export class ClientSpotifyInstance {
     const playlistObject = await this.sdk.playlists.getPlaylist(
       playlist.id,
       undefined,
-      'collaborative,description,id,images,name,owner,public,snapshot_id,tracks.items(track(artists(id,name),album(name,id,images),name,added_at,added_by,id,popularity,type))',
+      buildPlaylistFields(true),
     );
     this.cache.set(playlistObject.snapshot_id, playlistObject);
 
@@ -75,7 +76,7 @@ export class ClientSpotifyInstance {
       const playlistSlice = await this.sdk.playlists.getPlaylistItems(
         playlist.id,
         undefined,
-        'items(track(artists(id,name),album(name,id,images),name,added_at,added_by,id,popularity,type))',
+        `items(${buildTrackFields(true)})`,
         50,
         i,
       );
