@@ -116,6 +116,11 @@ export class SpotifyInstance {
 
     return trimPlaylist(playlistObject, tracks);
   };
+
+  public getAllPlaylistTracks = async (
+    playlists: string[],
+    updateCallback: (playlist: SpotifyPlaylist) => void,
+  ): Promise<void> => {};
 }
 
 const spotifySdkConfig: SdkOptions = {
