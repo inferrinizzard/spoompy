@@ -11,9 +11,9 @@ import { type SpotifyPlaylist, type SpotifyTrack } from '@/types/api';
 import { tryGetAuthSession } from './util';
 import { SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from './constants';
 
-let spotify: SpotifyInstance;
+let serverSpotify: ServerSpotifyInstance;
 
-export class SpotifyInstance {
+export class ServerSpotifyInstance {
   public sdk: SpotifyApi;
 
   public refreshTimer?: ReturnType<typeof setTimeout>;
@@ -122,18 +122,18 @@ const spotifySdkConfig: SdkOptions = {
   errorHandler: new ConsoleLoggingErrorHandler(),
 };
 
-export const getSpotify = (): SpotifyInstance => {
-  if (!spotify) {
+export const getServerSpotify = (): ServerSpotifyInstance => {
+  if (!serverSpotify) {
     if (process.env.NODE_ENV === 'production') {
-      spotify = new SpotifyInstance(spotifySdkConfig);
+      serverSpotify = new ServerSpotifyInstance(spotifySdkConfig);
     } else {
-      if (!global.spotify) {
-        global.spotify = new SpotifyInstance(spotifySdkConfig);
+      if (!global.serverSpotify) {
+        global.serverSpotify = new ServerSpotifyInstance(spotifySdkConfig);
       }
 
-      spotify = global.spotify as SpotifyInstance;
+      serverSpotify = global.serverSpotify;
     }
   }
 
-  return spotify;
+  return serverSpotify;
 };

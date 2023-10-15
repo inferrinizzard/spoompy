@@ -1,6 +1,6 @@
 'use server';
 
-import { getSpotify } from '@/spotify';
+import { getServerSpotify } from '@/spotify';
 import { normalizePlaylists } from '@/utils/normalizr/normalize';
 import { type NormalizedPlaylists } from '@/types/schema';
 
@@ -15,7 +15,7 @@ export const getAllPlaylistTracks = async (): Promise<void> => {
   store
     .getState()
     .user.playlists.slice(0, 10) // TODO: temp
-    .map(getSpotify().getPlaylistWithTracks) // check here which playlists already exist in store
+    .map(getServerSpotify().getPlaylistWithTracks) // check here which playlists already exist in store
     .map(
       async (promise) =>
         await promise.then((playlist) => {
