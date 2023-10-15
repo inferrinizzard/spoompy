@@ -4,7 +4,7 @@ import HomeLink from '@/components/HomeLink';
 import LoginButton from '@/components/LoginButton';
 import store from '@/redux/store';
 import { getUserDetails, getUserPlaylists } from '@/redux/actions';
-import { readAuthSession } from '@/redux/actions/init';
+import { readAuthSession } from '@/redux/actions/server/init';
 import Preloader from '@/redux/components/Preloader';
 
 import styles from './page.module.css';

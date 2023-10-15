@@ -3,7 +3,7 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { type User } from '@spotify/web-api-ts-sdk';
 
 import { type AppState } from '../store';
-import { replaceState } from '../actions/replaceState';
+import { replaceState } from '../actions/client/replaceState';
 
 export interface UserState {
   isAuthed: boolean;

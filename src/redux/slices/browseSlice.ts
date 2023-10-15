@@ -4,7 +4,7 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { type DateRange } from '@/types/common';
 
 import { type AppState } from '../store';
-import { replaceState } from '../actions/replaceState';
+import { replaceState } from '../actions/client/replaceState';
 
 interface BrowseFilters {
   playlist?: string;

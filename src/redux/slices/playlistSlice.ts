@@ -5,7 +5,7 @@ import { type PlaylistEntities } from '@/types/schema';
 import { mergeEntities } from '@/utils/mergeEntities';
 
 import { type AppState } from '../store';
-import { replaceState } from '../actions/replaceState';
+import { replaceState } from '../actions/client/replaceState';
 
 export type PlaylistState = PlaylistEntities;
 

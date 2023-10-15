@@ -2,8 +2,8 @@
 
 import { getServerSpotify } from '@/spotify';
 
-import store from '../store';
-import { setUserDetails, setUserPlaylists } from '../slices/userSlice';
+import store from '../../store';
+import { setUserDetails, setUserPlaylists } from '../../slices/userSlice';
 
 export const getUserDetails = async (): Promise<void> => {
   if (store.getState().user.isAuthed) {
