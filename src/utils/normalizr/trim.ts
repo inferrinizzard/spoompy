@@ -59,6 +59,6 @@ export const trimPlaylist = (
   owner: playlist.owner.id,
   public: playlist.public,
   snapshotId: playlist.snapshot_id,
-  tracks: tracks ?? [], // to be replaced afterwards
+  tracks: tracks ?? playlist.tracks.items.map(trimTrack),
   // type: playlist.type,
 });

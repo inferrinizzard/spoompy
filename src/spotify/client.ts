@@ -13,8 +13,8 @@ import {
 } from '@/types/api';
 
 import {
+  REROUTE_HOME_URL,
   SPOTIFY_CLIENT_ID,
-  SPOTIFY_POSTBACK_URL,
   SPOTIFY_SCOPES,
 } from './constants';
 import { EntityCache } from './utils/entityCache';
@@ -35,7 +35,7 @@ export class ClientSpotifyInstance {
 
     this.sdk = SpotifyApi.withUserAuthorization(
       SPOTIFY_CLIENT_ID,
-      SPOTIFY_POSTBACK_URL,
+      REROUTE_HOME_URL,
       SPOTIFY_SCOPES,
       this.sdkConfig,
     );
@@ -49,7 +49,11 @@ export class ClientSpotifyInstance {
       return cachePlaylist;
     }
 
-    const playlistObject = await this.sdk.playlists.getPlaylist(playlist.id);
+    const playlistObject = await this.sdk.playlists.getPlaylist(
+      playlist.id,
+      undefined,
+      'collaborative,description,id,images,name,owner,public,snapshot_id,tracks.items(track(artists(id,name),album(name,id,images),name,added_at,added_by,id,popularity,type))',
+    );
     this.cache.set(playlistObject.snapshot_id, playlistObject);
 
     return playlistObject;
@@ -60,21 +64,23 @@ export class ClientSpotifyInstance {
   ): Promise<SpotifyPlaylist> => {
     const playlistObject = await this.getPlaylist(playlist);
 
-    const numTracks = playlistObject.tracks.total;
+    if (playlistObject.tracks.total <= 100) {
+      return trimPlaylist(playlistObject);
+    }
 
-    let tracks: SpotifyTrack[] = [];
-    for (let i = 0; i < numTracks; i += 50) {
+    const numTracks = playlistObject.tracks.total;
+    let tracks: SpotifyTrack[] = playlistObject.tracks.items.map(trimTrack);
+
+    for (let i = 100; i < numTracks; i += 50) {
       const playlistSlice = await this.sdk.playlists.getPlaylistItems(
         playlist.id,
         undefined,
-        undefined,
+        'items(track(artists(id,name),album(name,id,images),name,added_at,added_by,id,popularity,type))',
         50,
         i,
       );
 
-      tracks = tracks.concat(
-        playlistSlice.items.map((track) => trimTrack(track)),
-      );
+      tracks = tracks.concat(playlistSlice.items.map(trimTrack));
     }
 
     return trimPlaylist(playlistObject, tracks);
