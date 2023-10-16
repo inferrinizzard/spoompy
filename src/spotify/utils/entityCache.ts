@@ -15,6 +15,10 @@ export class EntityCache {
     return null;
   };
 
+  public remove = (id: string): void => {
+    localStorage.removeItem(id);
+  };
+
   private readonly compress = (obj: unknown): string => {
     return compressLZ(stringify(obj));
   };
