@@ -50,27 +50,35 @@ export class ClientSpotifyInstance {
   }
 
   public getPlaylist = async (playlist: PlaylistRef): Promise<Playlist> => {
-    const cacheSnapshot = this.cache.get<string>(playlist.id);
+    try {
+      const cacheSnapshot = this.cache.get<string>(playlist.id);
 
-    // remove old cached playlistObj @ old snapshot if current playlist is no longer this snapshot
-    if (cacheSnapshot && cacheSnapshot !== playlist.snapshotId) {
-      this.cache.remove(cacheSnapshot);
+      // remove old cached playlistObj @ old snapshot if current playlist is no longer this snapshot
+      if (cacheSnapshot && cacheSnapshot !== playlist.snapshotId) {
+        this.cache.remove(cacheSnapshot);
+      }
+
+      const cachePlaylist = this.cache.get<Playlist>(playlist.snapshotId);
+      if (cachePlaylist) {
+        return cachePlaylist;
+      }
+    } catch {
+      console.log(
+        'Error in retrieving cache for:',
+        playlist.id,
+        '@',
+        playlist.snapshotId,
+      );
     }
 
-    const cachePlaylist = this.cache.get<Playlist>(playlist.snapshotId);
-    if (cachePlaylist) {
-      return cachePlaylist;
-    }
-
-    const playlistObject = await this.sdk.playlists.getPlaylist(
-      playlist.id,
-      undefined,
-      buildPlaylistFields(true),
-    );
-    this.cache.set(playlist.id, playlist.snapshotId); // latest version of playlist @ playlist.id is this snapshot
-    this.cache.set(playlistObject.snapshot_id, playlistObject);
-
-    return playlistObject;
+    return await this.sdk.playlists
+      .getPlaylist(playlist.id, undefined, buildPlaylistFields(true))
+      .then((playlistObject) => {
+        this.cache.set(playlist.id, playlist.snapshotId); // latest version of playlist @ playlist.id is this snapshot
+        this.cache.set(playlistObject.snapshot_id, playlistObject);
+        return playlistObject;
+      });
+  };
   };
 
   public getPlaylistWithTracks = async (
