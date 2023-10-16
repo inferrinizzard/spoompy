@@ -22,6 +22,7 @@ import {
   buildPlaylistFields,
   buildTrackItemFields,
 } from './utils/fieldBuilder';
+import { RequestQueue } from './utils/requestQueue';
 
 let clientSpotify: ClientSpotifyInstance;
 
@@ -32,8 +33,11 @@ export class ClientSpotifyInstance {
 
   public cache: EntityCache;
 
+  private readonly queue: RequestQueue;
+
   public constructor(apiConfig: SdkOptions = {}) {
     this.cache = new EntityCache();
+    this.queue = new RequestQueue();
 
     this.sdkConfig = apiConfig;
 

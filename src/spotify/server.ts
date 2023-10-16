@@ -9,7 +9,6 @@ import { type PlaylistRef } from '@/types/api';
 
 import { tryGetAuthSession } from './utils/getSession';
 import { SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from './constants';
-import { RequestQueue } from './utils/requestQueue';
 import { handleRateLimitedError } from './handlers';
 
 let serverSpotify: ServerSpotifyInstance;
@@ -19,13 +18,9 @@ export class ServerSpotifyInstance {
 
   public refreshTimer?: ReturnType<typeof setTimeout>;
 
-  private readonly queue: RequestQueue;
-
   private readonly sdkConfig: SdkOptions;
 
   public constructor(apiConfig: SdkOptions = {}) {
-    this.queue = new RequestQueue();
-
     this.sdkConfig = {
       ...apiConfig,
       responseValidator: { validateResponse: handleRateLimitedError },
@@ -57,11 +52,7 @@ export class ServerSpotifyInstance {
   }
 
   public getUserDetails = async (): Promise<User> => {
-    const thunkId = this.queue.add(
-      async () => await this.sdk.currentUser.profile(),
-    );
-
-    return await this.queue.runOne<User>(thunkId);
+    return await this.sdk.currentUser.profile();
   };
 
   public getUserPlaylists = async (userId: string): Promise<PlaylistRef[]> => {
