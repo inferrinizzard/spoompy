@@ -19,6 +19,7 @@
     "@reduxjs/toolkit": "^1.9.5",
     "@spotify/web-api-ts-sdk": "^1.1.0",
     "dayjs": "^1.11.7",
+    "lz-string": "^1.5.0",
     "next": "^13.4.12",
     "normalizr": "^3.6.2",
     "open": "^7.3.0",

@@ -1,3 +1,4 @@
+import { compress as compressLZ, decompress as decompressLZ } from 'lz-string';
 import { parse, stringify } from 'zipson';
 
 export class EntityCache {
@@ -15,10 +16,10 @@ export class EntityCache {
   };
 
   private readonly compress = (obj: unknown): string => {
-    return stringify(obj);
+    return compressLZ(stringify(obj));
   };
 
   private readonly decompress = <Return>(str: string): Return => {
-    return parse(str);
+    return parse(decompressLZ(str));
   };
 }
