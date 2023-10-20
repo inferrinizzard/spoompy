@@ -79,6 +79,17 @@ export class ClientSpotifyInstance {
         return playlistObject;
       });
   };
+
+  public getAllPlaylistTracks = async (playlists: PlaylistRef[]) => {
+    let thunkIds = [];
+
+    for (const playlist of playlists) {
+      const getPlaylistThunk = async () => await this.getPlaylist(playlist);
+      const getPlaylistId = this.queue.add(getPlaylistThunk);
+      thunkIds.push(getPlaylistId);
+    }
+
+    return await this.queue.runBatch<Playlist>(thunkIds);
   };
 
   public getPlaylistWithTracks = async (
