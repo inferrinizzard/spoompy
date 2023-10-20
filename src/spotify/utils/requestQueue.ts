@@ -8,6 +8,11 @@ interface RequestBatch<Data> {
   next: (() => Promise<RequestBatch<Data>>) | null;
 }
 
+interface ThunkError<ErrorType extends Error = Error> {
+  error?: ErrorType;
+  thunkId: string;
+}
+
 // benchmark 30 requests / seconds = wait 35ms between each ?
 const MAX_CONCURRENT_REQUESTS = 30;
 
@@ -22,8 +27,6 @@ export class RequestQueue {
 
   public retryAfter: number;
 
-  private readonly toRetry: string[][]; // ids
-
   private counter = 0;
 
   // keep track of inflight requests
@@ -33,7 +36,6 @@ export class RequestQueue {
     this.inFlightRequests = new Map();
 
     this.retryAfter = 0;
-    this.toRetry = [];
   }
 
   public add = (thunk: BaseThunk): string => {
@@ -51,22 +53,23 @@ export class RequestQueue {
   >(
     thunkId: string,
     thunk: Thunk,
-  ): Thunk | (() => Promise<null>) => {
+  ): (() => Promise<ReturnType | ThunkError>) => {
     if (this.inFlightRequests.size >= MAX_CONCURRENT_REQUESTS) {
-      return async () => await Promise.resolve(null);
+      return async () => await Promise.resolve({ thunkId });
     }
 
     this.inFlightRequests.set(thunkId, Date.now().toString());
+
     return async () =>
       await thunk()
-        .catch((error) => {
+        .catch<ThunkError>((error: Error) => {
           this.inFlightRequests.delete(thunkId);
           if (error instanceof RateLimitedError) {
             this.retryAfter = error.retryAfter;
-            return null;
+            return { thunkId };
           }
 
-          return error;
+          return { error, thunkId };
         })
         .finally(() => {
           this.inFlightRequests.delete(thunkId);
@@ -94,17 +97,25 @@ export class RequestQueue {
 
     thunkPromises.push(timer);
 
-    // handle error, rate limits, add thunk id, paging
+    // rate limits, paging
     let data = [];
     const results = await Promise.allSettled(thunkPromises);
     for (const result of results) {
       if (result.status === 'rejected') {
-        // nextIds.push(''); // return Id;
-        continue;
+        throw Error(`Unknown result! ${result.status}`);
       }
 
       if (result.value) {
-        data.push(result.value as Return);
+        if ('error' in (result.value as object)) {
+          const thunkError = result.value as ThunkError;
+
+          // TODO: check instead if error is retriable
+          if (!thunkError.error) {
+            nextIds.push(thunkError.thunkId);
+          }
+        } else {
+          data.push(result.value as Return);
+        }
       }
     }
 

@@ -89,6 +89,7 @@ export class ClientSpotifyInstance {
       thunkIds.push(getPlaylistId);
     }
 
+    // for each returned playlist, check if it needs further getPlaylistTracks
     return await this.queue.runBatch<Playlist>(thunkIds);
   };
 
