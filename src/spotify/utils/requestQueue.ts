@@ -25,7 +25,7 @@ export class RequestQueue {
 
   private readonly inFlightRequests: Map<string, string>; // id: timestamp
 
-  public retryAfter: number;
+  public retryTimer: Promise<void> | null;
 
   private counter = 0;
 
@@ -35,7 +35,7 @@ export class RequestQueue {
     this.idQueue = {};
     this.inFlightRequests = new Map();
 
-    this.retryAfter = 0;
+    this.retryTimer = null;
   }
 
   public add = (thunk: BaseThunk): string => {
@@ -65,7 +65,11 @@ export class RequestQueue {
         .catch<ThunkError>((error: Error) => {
           this.inFlightRequests.delete(thunkId);
           if (error instanceof RateLimitedError) {
-            this.retryAfter = error.retryAfter;
+            this.retryTimer = new Promise<void>((resolve) =>
+              setTimeout(() => {
+                resolve();
+              }, error.retryAfter * 1000),
+            );
             return { thunkId };
           }
 
@@ -82,6 +86,10 @@ export class RequestQueue {
     const batchIds = ids.slice(0, MAX_CONCURRENT_REQUESTS);
     const nextIds = ids.slice(MAX_CONCURRENT_REQUESTS);
 
+    if (this.retryTimer) {
+      await this.retryTimer.then(() => (this.retryTimer = null));
+    }
+
     const thunkPromises = batchIds
       .filter((thunkId) => thunkId in this.thunkMap)
       .map(async (thunkId) => {
@@ -97,7 +105,6 @@ export class RequestQueue {
 
     thunkPromises.push(timer);
 
-    // rate limits, paging
     let data = [];
     const results = await Promise.allSettled(thunkPromises);
     for (const result of results) {
