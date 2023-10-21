@@ -84,6 +84,7 @@ export class ClientSpotifyInstance {
     let thunkIds = [];
 
     for (const playlist of playlists) {
+      // TODO: skip adding to queue if cache hit
       const getPlaylistThunk = async () => await this.getPlaylist(playlist);
       const getPlaylistId = this.queue.add(getPlaylistThunk);
       thunkIds.push(getPlaylistId);

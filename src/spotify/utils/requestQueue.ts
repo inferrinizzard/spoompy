@@ -1,5 +1,3 @@
-import { randomUUID } from 'crypto';
-
 import { RateLimitedError } from '../handlers';
 
 type BaseThunk<Return = unknown> = () => Promise<Return>;
@@ -19,7 +17,7 @@ const MAX_CONCURRENT_REQUESTS = 30;
 const MIN_MS_BETWEEN_BATCHES = 1000;
 
 export class RequestQueue {
-  public idQueue: Record<string, number>; // id: order
+  public idQueue: Record<number, string>; // index: id
 
   public thunkMap: Record<string, BaseThunk>;
 
@@ -28,6 +26,8 @@ export class RequestQueue {
   public retryTimer: Promise<void> | null;
 
   private counter = 0;
+
+  private index = 0;
 
   // keep track of inflight requests
   public constructor() {
@@ -39,8 +39,8 @@ export class RequestQueue {
   }
 
   public add = (thunk: BaseThunk): string => {
-    const newId = randomUUID();
-    this.idQueue[newId] = ++this.counter;
+    const newId = crypto.randomUUID();
+    this.idQueue[this.counter++] = newId;
 
     this.thunkMap[newId] = thunk;
 
@@ -80,6 +80,35 @@ export class RequestQueue {
         });
   };
 
+  private readonly getIds = (): string[] => {
+    const idRange = {
+      start: this.index,
+      end: Math.min(this.counter, this.index + MAX_CONCURRENT_REQUESTS),
+    };
+
+    const ids = new Array(idRange.end - idRange.start)
+      .fill(0)
+      .map((_, i) => this.idQueue[i]);
+
+    this.index = idRange.end;
+
+    return ids;
+  };
+
+  public runAll = async <Return>(): Promise<RequestBatch<Return>> => {
+    const ids = this.getIds();
+
+    let batchPromise = this.runBatch<Return>(ids);
+    if (this.index < this.counter) {
+      batchPromise = batchPromise.then((batch) => {
+        batch.next = async () => await this.runAll<Return>();
+        return batch;
+      });
+    }
+
+    return await batchPromise;
+  };
+
   public runBatch = async <Return>(
     ids: string[],
   ): Promise<RequestBatch<Return>> => {
@@ -94,6 +123,7 @@ export class RequestQueue {
       .filter((thunkId) => thunkId in this.thunkMap)
       .map(async (thunkId) => {
         const thunk = this.thunkMap[thunkId];
+        console.log('running thunk:', thunkId);
         return await this.composeThunk(thunkId, thunk)();
       });
 
