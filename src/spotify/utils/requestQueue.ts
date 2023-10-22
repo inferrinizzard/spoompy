@@ -19,7 +19,7 @@ const MIN_MS_BETWEEN_BATCHES = 1000;
 export class RequestQueue {
   public idQueue: Record<number, string>; // index: id
 
-  public thunkMap: Record<string, BaseThunk>;
+  public thunkMap: Map<string, BaseThunk>;
 
   private readonly inFlightRequests: Map<string, string>; // id: timestamp
 
@@ -29,9 +29,8 @@ export class RequestQueue {
 
   private index = 0;
 
-  // keep track of inflight requests
   public constructor() {
-    this.thunkMap = {};
+    this.thunkMap = new Map();
     this.idQueue = {};
     this.inFlightRequests = new Map();
 
@@ -42,7 +41,7 @@ export class RequestQueue {
     const newId = crypto.randomUUID();
     this.idQueue[this.counter++] = newId;
 
-    this.thunkMap[newId] = thunk;
+    this.thunkMap.set(newId, thunk);
 
     return newId;
   };
@@ -62,9 +61,12 @@ export class RequestQueue {
 
     return async () =>
       await thunk()
+        .then((data) => {
+          this.thunkMap.delete(thunkId);
+          return data;
+        })
         .catch<ThunkError>((error: Error) => {
-          this.inFlightRequests.delete(thunkId);
-          if (error instanceof RateLimitedError) {
+          if (error instanceof RateLimitedError && !this.retryTimer) {
             this.retryTimer = new Promise<void>((resolve) =>
               setTimeout(() => {
                 resolve();
@@ -120,9 +122,9 @@ export class RequestQueue {
     }
 
     const thunkPromises = batchIds
-      .filter((thunkId) => thunkId in this.thunkMap)
+      .filter((thunkId) => this.thunkMap.has(thunkId))
       .map(async (thunkId) => {
-        const thunk = this.thunkMap[thunkId];
+        const thunk = this.thunkMap.get(thunkId) as BaseThunk;
         console.log('running thunk:', thunkId);
         return await this.composeThunk(thunkId, thunk)();
       });
