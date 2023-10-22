@@ -17,7 +17,7 @@ const MAX_CONCURRENT_REQUESTS = 30;
 const MIN_MS_BETWEEN_BATCHES = 1000;
 
 export class RequestQueue {
-  public idQueue: Record<number, string>; // index: id
+  public idQueue: string[];
 
   public thunkMap: Map<string, BaseThunk>;
 
@@ -25,13 +25,9 @@ export class RequestQueue {
 
   public retryTimer: Promise<void> | null;
 
-  private counter = 0;
-
-  private index = 0;
-
   public constructor() {
     this.thunkMap = new Map();
-    this.idQueue = {};
+    this.idQueue = [];
     this.inFlightRequests = new Map();
 
     this.retryTimer = null;
@@ -39,7 +35,7 @@ export class RequestQueue {
 
   public add = (thunk: BaseThunk): string => {
     const newId = crypto.randomUUID();
-    this.idQueue[this.counter++] = newId;
+    this.idQueue.push(newId);
 
     this.thunkMap.set(newId, thunk);
 
@@ -82,40 +78,29 @@ export class RequestQueue {
         });
   };
 
-  private readonly getIds = (): string[] => {
-    const idRange = {
-      start: this.index,
-      end: Math.min(this.counter, this.index + MAX_CONCURRENT_REQUESTS),
-    };
-
-    const ids = new Array(idRange.end - idRange.start)
-      .fill(0)
-      .map((_, i) => this.idQueue[i]);
-
-    this.index = idRange.end;
-
-    return ids;
-  };
-
   public runAll = async <Return>(): Promise<RequestBatch<Return>> => {
-    const ids = this.getIds();
-
-    let batchPromise = this.runBatch<Return>(ids);
-    if (this.index < this.counter) {
-      batchPromise = batchPromise.then((batch) => {
-        batch.next = async () => await this.runAll<Return>();
-        return batch;
-      });
-    }
-
-    return await batchPromise;
+    return await this.run<Return>(
+      () => this.idQueue,
+      (id) => this.idQueue.push(id),
+    );
   };
 
   public runBatch = async <Return>(
     ids: string[],
   ): Promise<RequestBatch<Return>> => {
-    const batchIds = ids.slice(0, MAX_CONCURRENT_REQUESTS);
-    const nextIds = ids.slice(MAX_CONCURRENT_REQUESTS);
+    let idQueue = ids;
+
+    return await this.run<Return>(
+      () => idQueue,
+      (id) => idQueue.push(id),
+    );
+  };
+
+  private readonly run = async <Return>(
+    getIds: () => string[],
+    requeue: (id: string) => void,
+  ): Promise<RequestBatch<Return>> => {
+    const batchIds = getIds().splice(0, MAX_CONCURRENT_REQUESTS);
 
     if (this.retryTimer) {
       await this.retryTimer.then(() => (this.retryTimer = null));
@@ -150,7 +135,7 @@ export class RequestQueue {
 
           // TODO: check instead if error is retriable
           if (!thunkError.error) {
-            nextIds.push(thunkError.thunkId);
+            requeue(thunkError.thunkId);
           }
         } else {
           data.push(result.value as Return);
@@ -158,8 +143,8 @@ export class RequestQueue {
       }
     }
 
-    const next = nextIds.length
-      ? async () => await this.runBatch<Return>(nextIds)
+    const next = getIds().length
+      ? async () => await this.run<Return>(getIds, requeue)
       : null;
 
     return { data, next };
