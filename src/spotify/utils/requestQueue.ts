@@ -17,7 +17,7 @@ const MAX_CONCURRENT_REQUESTS = 30;
 const MIN_MS_BETWEEN_BATCHES = 1000;
 
 export class RequestQueue {
-  public idQueue: Map<string, number>;
+  public idQueue: string[];
 
   public thunkMap: Map<string, BaseThunk>;
 
@@ -25,11 +25,9 @@ export class RequestQueue {
 
   public retryTimer: Promise<void> | null;
 
-  private counter = 0;
-
   public constructor() {
     this.thunkMap = new Map();
-    this.idQueue = new Map();
+    this.idQueue = [];
     this.inFlightRequests = new Map();
 
     this.retryTimer = null;
@@ -37,7 +35,7 @@ export class RequestQueue {
 
   public add = (thunk: BaseThunk): string => {
     const newId = crypto.randomUUID();
-    this.idQueue.set(newId, this.counter++);
+    this.idQueue.push(newId);
 
     this.thunkMap.set(newId, thunk);
 
@@ -80,40 +78,8 @@ export class RequestQueue {
         });
   };
 
-  public runAll = async <Return>(): Promise<RequestBatch<Return>> => {
-    return await this.run<Return>(
-      () => this.idQueue,
-      (id) => this.idQueue.set(id, this.counter++),
-    );
-  };
-
-  public runBatch = async <Return>(
-    ids: string[],
-  ): Promise<RequestBatch<Return>> => {
-    let idQueue = new Map(
-      ids.map((id) => {
-        // try remove dupes from main queue
-        this.idQueue.delete(id);
-        return [id, this.counter++];
-      }),
-    );
-
-    return await this.run<Return>(
-      () => idQueue,
-      (id) => idQueue.set(id, this.counter++),
-    );
-  };
-
-  private readonly run = async <Return>(
-    getIdMap: () => Map<string, number>,
-    requeue: (id: string) => void,
-  ): Promise<RequestBatch<Return>> => {
-    const batchIds = Object.keys(getIdMap())
-      .slice(0, MAX_CONCURRENT_REQUESTS)
-      .map((id) => {
-        getIdMap().delete(id);
-        return id;
-      });
+  public run = async <Return>(): Promise<RequestBatch<Return>> => {
+    const batchIds = this.idQueue.splice(0, MAX_CONCURRENT_REQUESTS);
 
     if (this.retryTimer) {
       await this.retryTimer.then(() => (this.retryTimer = null));
@@ -148,7 +114,7 @@ export class RequestQueue {
 
           // TODO: check instead if error is retriable
           if (!thunkError.error) {
-            requeue(thunkError.thunkId);
+            this.idQueue.push(thunkError.thunkId);
           }
         } else {
           data.push(result.value as Return);
@@ -156,8 +122,8 @@ export class RequestQueue {
       }
     }
 
-    const next = getIdMap().size
-      ? async () => await this.run<Return>(getIdMap, requeue)
+    const next = this.idQueue.length
+      ? async () => await this.run<Return>()
       : null;
 
     return { data, next };
