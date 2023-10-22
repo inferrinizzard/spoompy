@@ -17,7 +17,7 @@ const MAX_CONCURRENT_REQUESTS = 30;
 const MIN_MS_BETWEEN_BATCHES = 1000;
 
 export class RequestQueue {
-  public idQueue: string[];
+  public idQueue: Map<string, number>;
 
   public thunkMap: Map<string, BaseThunk>;
 
@@ -25,9 +25,11 @@ export class RequestQueue {
 
   public retryTimer: Promise<void> | null;
 
+  private counter = 0;
+
   public constructor() {
     this.thunkMap = new Map();
-    this.idQueue = [];
+    this.idQueue = new Map();
     this.inFlightRequests = new Map();
 
     this.retryTimer = null;
@@ -35,7 +37,7 @@ export class RequestQueue {
 
   public add = (thunk: BaseThunk): string => {
     const newId = crypto.randomUUID();
-    this.idQueue.push(newId);
+    this.idQueue.set(newId, this.counter++);
 
     this.thunkMap.set(newId, thunk);
 
@@ -81,26 +83,37 @@ export class RequestQueue {
   public runAll = async <Return>(): Promise<RequestBatch<Return>> => {
     return await this.run<Return>(
       () => this.idQueue,
-      (id) => this.idQueue.push(id),
+      (id) => this.idQueue.set(id, this.counter++),
     );
   };
 
   public runBatch = async <Return>(
     ids: string[],
   ): Promise<RequestBatch<Return>> => {
-    let idQueue = ids;
+    let idQueue = new Map(
+      ids.map((id) => {
+        // try remove dupes from main queue
+        this.idQueue.delete(id);
+        return [id, this.counter++];
+      }),
+    );
 
     return await this.run<Return>(
       () => idQueue,
-      (id) => idQueue.push(id),
+      (id) => idQueue.set(id, this.counter++),
     );
   };
 
   private readonly run = async <Return>(
-    getIds: () => string[],
+    getIdMap: () => Map<string, number>,
     requeue: (id: string) => void,
   ): Promise<RequestBatch<Return>> => {
-    const batchIds = getIds().splice(0, MAX_CONCURRENT_REQUESTS);
+    const batchIds = Object.keys(getIdMap())
+      .slice(0, MAX_CONCURRENT_REQUESTS)
+      .map((id) => {
+        getIdMap().delete(id);
+        return id;
+      });
 
     if (this.retryTimer) {
       await this.retryTimer.then(() => (this.retryTimer = null));
@@ -143,8 +156,8 @@ export class RequestQueue {
       }
     }
 
-    const next = getIds().length
-      ? async () => await this.run<Return>(getIds, requeue)
+    const next = getIdMap().size
+      ? async () => await this.run<Return>(getIdMap, requeue)
       : null;
 
     return { data, next };
