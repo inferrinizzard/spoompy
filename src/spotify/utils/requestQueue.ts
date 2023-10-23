@@ -1,93 +1,147 @@
-import { randomUUID } from 'crypto';
-
 import { RateLimitedError } from '../handlers';
 
 type BaseThunk<Return = unknown> = () => Promise<Return>;
+export interface RequestBatch<Data> {
+  data: Data[];
+  next: (() => Promise<RequestBatch<Data>>) | null;
+}
+
+interface ThunkError<ErrorType extends Error = Error> {
+  error?: ErrorType;
+  thunkId: string;
+}
 
 // benchmark 30 requests / seconds = wait 35ms between each ?
 const MAX_CONCURRENT_REQUESTS = 30;
 
-export class RequestQueue {
-  public idQueue: Record<string, number>; // id: order
+const MIN_MS_BETWEEN_BATCHES = 1000;
 
-  public thunkMap: Record<string, BaseThunk>;
+export class RequestQueue {
+  public idQueue: string[];
+
+  public thunkMap: Map<string, BaseThunk>;
 
   private readonly inFlightRequests: Map<string, string>; // id: timestamp
 
-  public retryAfter: number;
+  public retryTimer: Promise<void> | null;
 
-  private readonly toRetry: string[][]; // ids
-
-  private counter = 0;
-
-  // keep track of inflight requests
   public constructor() {
-    this.thunkMap = {};
-    this.idQueue = {};
+    this.thunkMap = new Map();
+    this.idQueue = [];
     this.inFlightRequests = new Map();
 
-    this.retryAfter = 0;
-    this.toRetry = [];
+    this.retryTimer = null;
   }
 
-  public add = (thunk: BaseThunk): string => {
-    const newId = randomUUID();
-    this.idQueue[newId] = ++this.counter;
+  public add = <Return, Thunk extends BaseThunk<Return>>(
+    thunk: Thunk,
+  ): string => {
+    const newId = crypto.randomUUID();
+    this.idQueue.push(newId);
 
-    this.thunkMap[newId] = thunk;
+    this.thunkMap.set(newId, thunk);
 
     return newId;
   };
 
-  public runOne = async <ReturnType>(id: string): Promise<ReturnType> =>
-    (await this.runGroup<ReturnType>([id]))[0];
+  private readonly hasIds = (idMap?: Record<string, unknown>): boolean => {
+    if (idMap) {
+      return this.idQueue.some((id) => id in idMap);
+    }
 
-  public runGroup = async <ReturnType>(
-    ids: string[],
-  ): Promise<ReturnType[]> => {
-    let failed: string[] = [];
+    return this.idQueue.length > 0;
+  };
 
-    let out = [];
-    for (let i = 0; i < ids.length; i++) {
-      const thunkId = ids[i];
+  private readonly composeThunk = <Return, Thunk extends BaseThunk<Return>>(
+    thunkId: string,
+    thunk: Thunk,
+  ): (() => Promise<Return | ThunkError>) => {
+    if (this.inFlightRequests.size >= MAX_CONCURRENT_REQUESTS) {
+      return async () => await Promise.resolve({ thunkId });
+    }
 
-      // skip unknown ids
-      if (!(thunkId in this.thunkMap)) {
-        continue;
-      }
+    this.inFlightRequests.set(thunkId, Date.now().toString());
 
-      // do not execute if max # of requests reached, try again later
-      if (this.inFlightRequests.size >= MAX_CONCURRENT_REQUESTS) {
-        failed.push(thunkId);
-        continue;
-      }
-
-      const thunk = this.thunkMap[thunkId] as BaseThunk<ReturnType>;
-      try {
-        this.inFlightRequests.set(thunkId, Date.now().toString());
-        const res = await thunk().then((data) => {
-          this.inFlightRequests.delete(thunkId);
+    return async () =>
+      await thunk()
+        .then((data) => {
+          this.thunkMap.delete(thunkId);
           return data;
+        })
+        .catch<ThunkError>((error: Error) => {
+          if (error instanceof RateLimitedError && !this.retryTimer) {
+            this.retryTimer = new Promise<void>((resolve) =>
+              setTimeout(() => {
+                resolve();
+              }, error.retryAfter * 1000),
+            );
+            return { thunkId };
+          }
+
+          return { error, thunkId };
+        })
+        .finally(() => {
+          this.inFlightRequests.delete(thunkId);
         });
-        out.push(res);
-      } catch (error) {
-        failed.push(thunkId);
-        if (error instanceof RateLimitedError) {
-          this.retryAfter = error.retryAfter;
-          failed = failed.concat(ids.slice(i));
-          break;
+  };
+
+  public runBatch = async <Return>(
+    ids: string[],
+  ): Promise<RequestBatch<Return>> =>
+    await this.run<Return>(Object.fromEntries(ids.map((id, i) => [id, i])));
+
+  public run = async <Return>(
+    idMap?: Record<string, number>,
+  ): Promise<RequestBatch<Return>> => {
+    const batchIds = this.idQueue
+      .splice(0, MAX_CONCURRENT_REQUESTS)
+      .filter((id) => (idMap ? id in idMap : true));
+
+    if (this.retryTimer) {
+      await this.retryTimer.then(() => (this.retryTimer = null));
+    }
+
+    const thunkPromises = batchIds
+      .filter((thunkId) => this.thunkMap.has(thunkId))
+      .map(async (thunkId) => {
+        const thunk = this.thunkMap.get(thunkId) as BaseThunk;
+        console.log('running thunk:', thunkId);
+        return await this.composeThunk(thunkId, thunk)();
+      });
+
+    const timer = new Promise<void>((resolve) =>
+      setTimeout(() => {
+        resolve();
+      }, MIN_MS_BETWEEN_BATCHES),
+    );
+
+    thunkPromises.push(timer);
+
+    let data = [];
+    const results = await Promise.allSettled(thunkPromises);
+    for (const result of results) {
+      if (result.status === 'rejected') {
+        throw Error(`Unknown result! ${result.status}`);
+      }
+
+      if (result.value) {
+        if ('error' in (result.value as object)) {
+          const thunkError = result.value as ThunkError;
+
+          // TODO: check instead if error is retriable
+          if (!thunkError.error) {
+            this.idQueue.push(thunkError.thunkId);
+          }
+        } else {
+          data.push(result.value as Return);
         }
       }
     }
 
-    if (failed.length) {
-      this.toRetry.push(failed);
-    }
+    const next = this.hasIds(idMap)
+      ? async () => await this.run<Return>(idMap)
+      : null;
 
-    // setTimeout(async () => {
-    //   await this.runGroup(failed);
-    // }, this.retryAfter * 1000);
-
-    return out;
+    return { data, next };
   };
 }

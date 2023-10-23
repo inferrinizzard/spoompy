@@ -39,3 +39,8 @@ export interface PlaylistRef {
   id: string;
   snapshotId: string;
 }
+
+export interface PlaylistTracksRef {
+  playlistId: string;
+  tracks: SpotifyTrack[];
+}

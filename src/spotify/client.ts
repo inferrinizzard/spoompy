@@ -8,6 +8,7 @@ import {
 import { trimPlaylist, trimTrack } from '@/utils/normalizr/trim';
 import {
   type PlaylistRef,
+  type PlaylistTracksRef,
   type SpotifyPlaylist,
   type SpotifyTrack,
 } from '@/types/api';
@@ -22,7 +23,7 @@ import {
   buildPlaylistFields,
   buildTrackItemFields,
 } from './utils/fieldBuilder';
-import { RequestQueue } from './utils/requestQueue';
+import { type RequestBatch, RequestQueue } from './utils/requestQueue';
 
 let clientSpotify: ClientSpotifyInstance;
 
@@ -79,6 +80,49 @@ export class ClientSpotifyInstance {
         return playlistObject;
       });
   };
+
+  public getAllPlaylists = async (
+    playlists: PlaylistRef[],
+  ): Promise<RequestBatch<SpotifyPlaylist>> => {
+    let thunkIds = [];
+
+    for (const playlist of playlists) {
+      // TODO: skip adding to queue if cache hit
+      const getPlaylistThunk = async (): Promise<SpotifyPlaylist> =>
+        await this.getPlaylist(playlist).then(trimPlaylist);
+
+      const getPlaylistId = this.queue.add(getPlaylistThunk);
+      thunkIds.push(getPlaylistId);
+    }
+
+    return await this.queue.runBatch<SpotifyPlaylist>(thunkIds);
+  };
+
+  public getPlaylistTracks = async (
+    playlistTrackRequests: Array<{ id: string; offset: number }>,
+  ): Promise<RequestBatch<PlaylistTracksRef>> => {
+    let thunkIds = [];
+
+    for (const trackRequest of playlistTrackRequests) {
+      const getPlaylistTracksThunk = async (): Promise<PlaylistTracksRef> =>
+        await this.sdk.playlists
+          .getPlaylistItems(
+            trackRequest.id,
+            undefined,
+            `items(${buildTrackItemFields()})`,
+            50,
+            trackRequest.offset,
+          )
+          .then((res) => ({
+            playlistId: /playlists[/](.+)[/]/.exec(res.href)?.[1] ?? '', // TODO: semi-brittle
+            tracks: res.items.map(trimTrack),
+          }));
+
+      const getPlaylistTracksId = this.queue.add(getPlaylistTracksThunk);
+      thunkIds.push(getPlaylistTracksId);
+    }
+
+    return await this.queue.runBatch<PlaylistTracksRef>(thunkIds);
   };
 
   public getPlaylistWithTracks = async (
