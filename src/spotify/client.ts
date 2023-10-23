@@ -24,7 +24,7 @@ import {
   buildPlaylistFields,
   buildTrackItemFields,
 } from './utils/fieldBuilder';
-import { RequestQueue } from './utils/requestQueue';
+import { type RequestBatch, RequestQueue } from './utils/requestQueue';
 
 let clientSpotify: ClientSpotifyInstance;
 
@@ -82,7 +82,9 @@ export class ClientSpotifyInstance {
       });
   };
 
-  public getAllPlaylists = async (playlists: PlaylistRef[]) => {
+  public getAllPlaylists = async (
+    playlists: PlaylistRef[],
+  ): Promise<RequestBatch<SpotifyPlaylist>> => {
     let thunkIds = [];
 
     for (const playlist of playlists) {
@@ -92,12 +94,15 @@ export class ClientSpotifyInstance {
       thunkIds.push(getPlaylistId);
     }
 
-    return await this.queue.run<Playlist, SpotifyPlaylist>(trimPlaylist);
+    return await this.queue.runBatch<Playlist, SpotifyPlaylist>(
+      thunkIds,
+      trimPlaylist,
+    );
   };
 
   public getPlaylistTracks = async (
     playlistTrackRequests: Array<{ id: string; offset: number }>,
-  ) => {
+  ): Promise<RequestBatch<SpotifyTrack[]>> => {
     let thunkIds = [];
 
     for (const trackRequest of playlistTrackRequests) {
@@ -113,8 +118,9 @@ export class ClientSpotifyInstance {
       thunkIds.push(getPlaylistTracksId);
     }
 
-    return await this.queue.run<Page<PlaylistedTrack>, SpotifyTrack[]>((res) =>
-      res.items.map(trimTrack),
+    return await this.queue.runBatch<Page<PlaylistedTrack>, SpotifyTrack[]>(
+      thunkIds,
+      (res) => res.items.map(trimTrack),
     );
   };
 

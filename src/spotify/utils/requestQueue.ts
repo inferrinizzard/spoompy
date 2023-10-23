@@ -1,7 +1,7 @@
 import { RateLimitedError } from '../handlers';
 
 type BaseThunk<Return = unknown> = () => Promise<Return>;
-interface RequestBatch<Data> {
+export interface RequestBatch<Data> {
   data: Data[];
   next: (() => Promise<RequestBatch<Data>>) | null;
 }
@@ -44,6 +44,14 @@ export class RequestQueue {
     return newId;
   };
 
+  private readonly hasIds = (idMap?: Record<string, unknown>): boolean => {
+    if (idMap) {
+      return this.idQueue.some((id) => id in idMap);
+    }
+
+    return this.idQueue.length > 0;
+  };
+
   private readonly composeThunk = <Return, Thunk extends BaseThunk<Return>>(
     thunkId: string,
     thunk: Thunk,
@@ -77,12 +85,26 @@ export class RequestQueue {
         });
   };
 
-  public run = async <Return, Processed = Return>(
+  public runBatch = async <Return, Processed = Return>(
+    ids: string[],
     postProcess?: (res: Return) => Processed,
   ): Promise<
     RequestBatch<typeof postProcess extends undefined ? Return : Processed>
+  > =>
+    await this.run<Return, Processed>(
+      postProcess,
+      Object.fromEntries(ids.map((id, i) => [id, i])),
+    );
+
+  public run = async <Return, Processed = Return>(
+    postProcess?: (res: Return) => Processed,
+    idMap?: Record<string, number>,
+  ): Promise<
+    RequestBatch<typeof postProcess extends undefined ? Return : Processed>
   > => {
-    const batchIds = this.idQueue.splice(0, MAX_CONCURRENT_REQUESTS);
+    const batchIds = this.idQueue
+      .splice(0, MAX_CONCURRENT_REQUESTS)
+      .filter((id) => (idMap ? id in idMap : true));
 
     if (this.retryTimer) {
       await this.retryTimer.then(() => (this.retryTimer = null));
@@ -129,8 +151,8 @@ export class RequestQueue {
       }
     }
 
-    const next = this.idQueue.length
-      ? async () => await this.run<Return, Processed>(postProcess)
+    const next = this.hasIds(idMap)
+      ? async () => await this.run<Return, Processed>(postProcess, idMap)
       : null;
 
     if (postProcess) {
