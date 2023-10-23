@@ -1,8 +1,6 @@
 import {
   ConsoleLoggingErrorHandler,
-  type Page,
   type Playlist,
-  type PlaylistedTrack,
   type SdkOptions,
   SpotifyApi,
 } from '@spotify/web-api-ts-sdk';
@@ -89,39 +87,39 @@ export class ClientSpotifyInstance {
 
     for (const playlist of playlists) {
       // TODO: skip adding to queue if cache hit
-      const getPlaylistThunk = async () => await this.getPlaylist(playlist);
+      const getPlaylistThunk = async () =>
+        await this.getPlaylist(playlist).then(trimPlaylist);
       const getPlaylistId = this.queue.add(getPlaylistThunk);
       thunkIds.push(getPlaylistId);
     }
 
-    return await this.queue.runBatch<Playlist, SpotifyPlaylist>(
-      thunkIds,
-      trimPlaylist,
-    );
+    return await this.queue.runBatch<SpotifyPlaylist>(thunkIds);
   };
 
   public getPlaylistTracks = async (
     playlistTrackRequests: Array<{ id: string; offset: number }>,
-  ): Promise<RequestBatch<SpotifyTrack[]>> => {
+  ) => {
     let thunkIds = [];
 
     for (const trackRequest of playlistTrackRequests) {
       const getPlaylistTracksThunk = async () =>
-        await this.sdk.playlists.getPlaylistItems(
-          trackRequest.id,
-          undefined,
-          `items(${buildTrackItemFields()})`,
-          50,
-          trackRequest.offset,
-        );
+        await this.sdk.playlists
+          .getPlaylistItems(
+            trackRequest.id,
+            undefined,
+            `items(${buildTrackItemFields()})`,
+            50,
+            trackRequest.offset,
+          )
+          .then((res) => ({
+            playlistId: /playlists[/](.+)[/]/.exec(res.href)?.[1] ?? '',
+            tracks: res.items.map(trimTrack),
+          }));
       const getPlaylistTracksId = this.queue.add(getPlaylistTracksThunk);
       thunkIds.push(getPlaylistTracksId);
     }
 
-    return await this.queue.runBatch<Page<PlaylistedTrack>, SpotifyTrack[]>(
-      thunkIds,
-      (res) => res.items.map(trimTrack),
-    );
+    return await this.queue.runBatch<{ tracks: SpotifyTrack[] }>(thunkIds);
   };
 
   public getPlaylistWithTracks = async (

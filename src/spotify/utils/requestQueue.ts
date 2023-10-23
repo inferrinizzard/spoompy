@@ -85,23 +85,14 @@ export class RequestQueue {
         });
   };
 
-  public runBatch = async <Return, Processed = Return>(
+  public runBatch = async <Return>(
     ids: string[],
-    postProcess?: (res: Return) => Processed,
-  ): Promise<
-    RequestBatch<typeof postProcess extends undefined ? Return : Processed>
-  > =>
-    await this.run<Return, Processed>(
-      postProcess,
-      Object.fromEntries(ids.map((id, i) => [id, i])),
-    );
+  ): Promise<RequestBatch<Return>> =>
+    await this.run<Return>(Object.fromEntries(ids.map((id, i) => [id, i])));
 
-  public run = async <Return, Processed = Return>(
-    postProcess?: (res: Return) => Processed,
+  public run = async <Return>(
     idMap?: Record<string, number>,
-  ): Promise<
-    RequestBatch<typeof postProcess extends undefined ? Return : Processed>
-  > => {
+  ): Promise<RequestBatch<Return>> => {
     const batchIds = this.idQueue
       .splice(0, MAX_CONCURRENT_REQUESTS)
       .filter((id) => (idMap ? id in idMap : true));
@@ -142,23 +133,15 @@ export class RequestQueue {
             this.idQueue.push(thunkError.thunkId);
           }
         } else {
-          if (postProcess) {
-            data.push(postProcess(result.value as Return));
-          } else {
-            data.push(result.value as Return);
-          }
+          data.push(result.value as Return);
         }
       }
     }
 
     const next = this.hasIds(idMap)
-      ? async () => await this.run<Return, Processed>(postProcess, idMap)
+      ? async () => await this.run<Return>(idMap)
       : null;
 
-    if (postProcess) {
-      return { data: data as Processed[], next };
-    }
-
-    return { data: data as unknown as Processed[], next };
+    return { data, next };
   };
 }
