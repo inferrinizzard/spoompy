@@ -3,7 +3,7 @@
 import React, { useRef } from 'react';
 
 import store, { AppState } from '../store';
-import { replaceState } from '../actions';
+import { preloadState } from '../actions';
 
 export interface PreloaderProps {
   readonly state: AppState;
@@ -12,7 +12,7 @@ export interface PreloaderProps {
 const Preloader: React.FC<PreloaderProps> = ({ state }) => {
   const loaded = useRef(false);
   if (!loaded.current) {
-    store.dispatch(replaceState(state));
+    store.dispatch(preloadState(state));
     loaded.current = true;
   }
 

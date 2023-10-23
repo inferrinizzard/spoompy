@@ -1,6 +1,7 @@
 import { Inter } from 'next/font/google';
 import { KumaRegistry } from '@kuma-ui/next-plugin/registry';
 
+import DataLoader from '@/redux/components/DataLoader';
 import ReduxProvider from '@/redux/components/Provider';
 
 import './globals.css';
@@ -21,6 +22,7 @@ export const RootLayout = ({
     <html lang="en">
       <body className={inter.className}>
         <ReduxProvider>
+          <DataLoader />
           <KumaRegistry>{children}</KumaRegistry>
         </ReduxProvider>
       </body>

@@ -5,17 +5,16 @@ import {
   type User,
 } from '@spotify/web-api-ts-sdk';
 
-import { trimPlaylist, trimTrack } from '@/utils/normalizr/trim';
-import { type SpotifyPlaylist, type SpotifyTrack } from '@/types/api';
+import { type PlaylistRef } from '@/types/api';
 
 import { tryGetAuthSession } from './utils/getSession';
 import { SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from './constants';
 import { RequestQueue } from './utils/requestQueue';
 import { handleRateLimitedError } from './handlers';
 
-let spotify: SpotifyInstance;
+let serverSpotify: ServerSpotifyInstance;
 
-export class SpotifyInstance {
+export class ServerSpotifyInstance {
   public sdk: SpotifyApi;
 
   public refreshTimer?: ReturnType<typeof setTimeout>;
@@ -65,7 +64,7 @@ export class SpotifyInstance {
     return await this.queue.runOne<User>(thunkId);
   };
 
-  public getUserPlaylists = async (userId: string): Promise<string[]> => {
+  public getUserPlaylists = async (userId: string): Promise<PlaylistRef[]> => {
     const firstSlice = await this.sdk.playlists
       .getUsersPlaylists(userId, 50)
       .then((playlistPage) => ({
@@ -77,14 +76,20 @@ export class SpotifyInstance {
 
     const numPlaylists = firstSlice.total;
 
-    let playlists = firstSlice.items.map((playlist) => playlist.id);
+    let playlists = firstSlice.items.map((playlist) => ({
+      id: playlist.id,
+      snapshotId: playlist.snapshot_id,
+    }));
     for (let i = 50; i < numPlaylists; i += 50) {
       const playlistSlice = await this.sdk.playlists
         .getUsersPlaylists(userId, 50, i)
         .then((playlistPage) =>
           playlistPage.items
             .filter((playlist) => playlist.owner.id === userId) // filter only for playlists that belong to userId
-            .map((playlist) => playlist.id),
+            .map((playlist) => ({
+              id: playlist.id,
+              snapshotId: playlist.snapshot_id,
+            })),
         );
 
       playlists = playlists.concat(playlistSlice);
@@ -92,49 +97,24 @@ export class SpotifyInstance {
 
     return playlists;
   };
-
-  public getPlaylistWithTracks = async (
-    playlistId: string,
-  ): Promise<SpotifyPlaylist> => {
-    const playlistObject = await this.sdk.playlists.getPlaylist(playlistId);
-
-    const numTracks = playlistObject.tracks.total;
-
-    let tracks: SpotifyTrack[] = [];
-    for (let i = 0; i < numTracks; i += 50) {
-      const playlistSlice = await this.sdk.playlists.getPlaylistItems(
-        playlistId,
-        undefined,
-        undefined,
-        50,
-        i,
-      );
-
-      tracks = tracks.concat(
-        playlistSlice.items.map((track) => trimTrack(track)),
-      );
-    }
-
-    return trimPlaylist(playlistObject, tracks);
-  };
 }
 
 const spotifySdkConfig: SdkOptions = {
   errorHandler: new ConsoleLoggingErrorHandler(),
 };
 
-export const getSpotify = (): SpotifyInstance => {
-  if (!spotify) {
+export const getServerSpotify = (): ServerSpotifyInstance => {
+  if (!serverSpotify) {
     if (process.env.NODE_ENV === 'production') {
-      spotify = new SpotifyInstance(spotifySdkConfig);
+      serverSpotify = new ServerSpotifyInstance(spotifySdkConfig);
     } else {
-      if (!global.spotify) {
-        global.spotify = new SpotifyInstance(spotifySdkConfig);
+      if (!global.serverSpotify) {
+        global.serverSpotify = new ServerSpotifyInstance(spotifySdkConfig);
       }
 
-      spotify = global.spotify;
+      serverSpotify = global.serverSpotify;
     }
   }
 
-  return spotify;
+  return serverSpotify;
 };

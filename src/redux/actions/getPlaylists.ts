@@ -1,21 +1,14 @@
-'use server';
-
-import { getSpotify } from '@/spotify';
+import { getClientSpotify } from '@/spotify/client';
 import { normalizePlaylists } from '@/utils/normalizr/normalize';
+import { type PlaylistRef } from '@/types/api';
 import { type NormalizedPlaylists } from '@/types/schema';
 
 import store from '../store';
 import { updateEntities } from '../slices/playlistSlice';
 
-export const getAllPlaylistTracks = async (): Promise<void> => {
-  if (!store.getState().user.isAuthed) {
-    return;
-  }
-
-  store
-    .getState()
-    .user.playlists.slice(0, 10) // TODO: temp
-    .map(getSpotify().getPlaylistWithTracks) // check here which playlists already exist in store
+export const getPlaylists = async (playlists: PlaylistRef[]): Promise<void> => {
+  playlists
+    .map(getClientSpotify().getPlaylistWithTracks) // check here which playlists already exist in store
     .map(
       async (promise) =>
         await promise.then((playlist) => {
