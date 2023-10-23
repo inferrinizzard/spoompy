@@ -1,6 +1,8 @@
 import {
   ConsoleLoggingErrorHandler,
+  type Page,
   type Playlist,
+  type PlaylistedTrack,
   type SdkOptions,
   SpotifyApi,
 } from '@spotify/web-api-ts-sdk';
@@ -80,7 +82,7 @@ export class ClientSpotifyInstance {
       });
   };
 
-  public getAllPlaylistTracks = async (playlists: PlaylistRef[]) => {
+  public getAllPlaylists = async (playlists: PlaylistRef[]) => {
     let thunkIds = [];
 
     for (const playlist of playlists) {
@@ -90,9 +92,30 @@ export class ClientSpotifyInstance {
       thunkIds.push(getPlaylistId);
     }
 
-    // for each returned playlist, check if it needs further getPlaylistTracks
-    return await this.queue
-      .run<Playlist, SpotifyPlaylist>(trimPlaylist)
+    return await this.queue.run<Playlist, SpotifyPlaylist>(trimPlaylist);
+  };
+
+  public getPlaylistTracks = async (
+    playlistTrackRequests: Array<{ id: string; offset: number }>,
+  ) => {
+    let thunkIds = [];
+
+    for (const trackRequest of playlistTrackRequests) {
+      const getPlaylistTracksThunk = async () =>
+        await this.sdk.playlists.getPlaylistItems(
+          trackRequest.id,
+          undefined,
+          `items(${buildTrackItemFields()})`,
+          50,
+          trackRequest.offset,
+        );
+      const getPlaylistTracksId = this.queue.add(getPlaylistTracksThunk);
+      thunkIds.push(getPlaylistTracksId);
+    }
+
+    return await this.queue.run<Page<PlaylistedTrack>, SpotifyTrack[]>((res) =>
+      res.items.map(trimTrack),
+    );
   };
 
   public getPlaylistWithTracks = async (
