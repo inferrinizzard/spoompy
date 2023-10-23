@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { type PlaylistEntities } from '@/types/schema';
-import { mergeEntities } from '@/utils/mergeEntities';
+import { type PlaylistEntities, type TrackEntities } from '@/types/schema';
+import { mergeEntities, mergeWithTracks } from '@/utils/mergeEntities';
 
 import { type AppState } from '../store';
 import { preloadState } from '../actions/client/preloadState';
@@ -23,6 +23,12 @@ export const playlistSlice = createSlice({
     updateEntities: (state, action: PayloadAction<PlaylistEntities>) => {
       mergeEntities(state, action.payload);
     },
+    updateWithPlaylistTracks: (
+      state,
+      action: PayloadAction<{ playlistId: string; tracks: TrackEntities }>,
+    ) => {
+      mergeWithTracks(state, action.payload);
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(preloadState, (_, action) => {
@@ -31,7 +37,8 @@ export const playlistSlice = createSlice({
   },
 });
 
-export const { updateEntities } = playlistSlice.actions;
+export const { updateEntities, updateWithPlaylistTracks } =
+  playlistSlice.actions;
 
 export const selectTracks = (state: AppState) => state.playlist.tracks;
 export const selectPlaylists = (state: AppState) => state.playlist.playlists;
