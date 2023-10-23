@@ -25,10 +25,18 @@
       "@/*": ["./src/*"]
     },
     "types": [
-      "spotify-api"
+      "spotify-api",
+      "vite/client",
+      "vitest/globals"
       // "./kuma.config.ts",
     ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "vite.config.ts"
+  ],
   "exclude": ["node_modules"]
 }
