@@ -33,7 +33,9 @@ export class RequestQueue {
     this.retryTimer = null;
   }
 
-  public add = (thunk: BaseThunk): string => {
+  public add = <Return, Thunk extends BaseThunk<Return>>(
+    thunk: Thunk,
+  ): string => {
     const newId = crypto.randomUUID();
     this.idQueue.push(newId);
 
@@ -42,13 +44,10 @@ export class RequestQueue {
     return newId;
   };
 
-  private readonly composeThunk = <
-    ReturnType,
-    Thunk extends BaseThunk<ReturnType>,
-  >(
+  private readonly composeThunk = <Return, Thunk extends BaseThunk<Return>>(
     thunkId: string,
     thunk: Thunk,
-  ): (() => Promise<ReturnType | ThunkError>) => {
+  ): (() => Promise<Return | ThunkError>) => {
     if (this.inFlightRequests.size >= MAX_CONCURRENT_REQUESTS) {
       return async () => await Promise.resolve({ thunkId });
     }
@@ -78,7 +77,11 @@ export class RequestQueue {
         });
   };
 
-  public run = async <Return>(): Promise<RequestBatch<Return>> => {
+  public run = async <Return, Processed = Return>(
+    postProcess?: (res: Return) => Processed,
+  ): Promise<
+    RequestBatch<typeof postProcess extends undefined ? Return : Processed>
+  > => {
     const batchIds = this.idQueue.splice(0, MAX_CONCURRENT_REQUESTS);
 
     if (this.retryTimer) {
@@ -117,15 +120,23 @@ export class RequestQueue {
             this.idQueue.push(thunkError.thunkId);
           }
         } else {
-          data.push(result.value as Return);
+          if (postProcess) {
+            data.push(postProcess(result.value as Return));
+          } else {
+            data.push(result.value as Return);
+          }
         }
       }
     }
 
     const next = this.idQueue.length
-      ? async () => await this.run<Return>()
+      ? async () => await this.run<Return, Processed>(postProcess)
       : null;
 
-    return { data, next };
+    if (postProcess) {
+      return { data: data as Processed[], next };
+    }
+
+    return { data: data as unknown as Processed[], next };
   };
 }

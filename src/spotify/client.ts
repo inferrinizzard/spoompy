@@ -91,7 +91,8 @@ export class ClientSpotifyInstance {
     }
 
     // for each returned playlist, check if it needs further getPlaylistTracks
-    return await this.queue.runBatch<Playlist>(thunkIds);
+    return await this.queue
+      .run<Playlist, SpotifyPlaylist>(trimPlaylist)
   };
 
   public getPlaylistWithTracks = async (
