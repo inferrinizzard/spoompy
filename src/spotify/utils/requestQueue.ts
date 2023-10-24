@@ -44,6 +44,31 @@ export class RequestQueue {
     return newId;
   };
 
+  private readonly getIds = (idMap?: Record<string, unknown>): string[] => {
+    if (idMap) {
+      let outIds: string[] = [];
+      for (
+        let i = 0, n = 1;
+        n <= MAX_CONCURRENT_REQUESTS && i < this.idQueue.length;
+
+      ) {
+        const id = this.idQueue[i];
+        if (!(id in idMap)) {
+          i++;
+          continue;
+        }
+
+        this.idQueue.splice(i, 1);
+        outIds.push(id);
+        n++;
+      }
+
+      return outIds;
+    }
+
+    return this.idQueue.slice(0, MAX_CONCURRENT_REQUESTS);
+  };
+
   private readonly hasIds = (idMap?: Record<string, unknown>): boolean => {
     if (idMap) {
       return this.idQueue.some((id) => id in idMap);
@@ -93,9 +118,7 @@ export class RequestQueue {
   public run = async <Return>(
     idMap?: Record<string, number>,
   ): Promise<RequestBatch<Return>> => {
-    const batchIds = this.idQueue
-      .splice(0, MAX_CONCURRENT_REQUESTS)
-      .filter((id) => (idMap ? id in idMap : true));
+    const batchIds = this.getIds(idMap);
 
     if (this.retryTimer) {
       await this.retryTimer.then(() => (this.retryTimer = null));
