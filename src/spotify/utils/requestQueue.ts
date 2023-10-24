@@ -66,7 +66,7 @@ export class RequestQueue {
       return outIds;
     }
 
-    return this.idQueue.slice(0, MAX_CONCURRENT_REQUESTS);
+    return this.idQueue.splice(0, MAX_CONCURRENT_REQUESTS);
   };
 
   private readonly hasIds = (idMap?: Record<string, unknown>): boolean => {
