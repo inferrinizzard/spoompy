@@ -105,17 +105,9 @@ export class RequestQueue {
       .filter((thunkId) => this.thunkMap.has(thunkId))
       .map(async (thunkId) => {
         const thunk = this.thunkMap.get(thunkId) as BaseThunk;
-        console.log('running thunk:', thunkId);
+        // console.log('running thunk:', thunkId);
         return await this.composeThunk(thunkId, thunk)();
       });
-
-    const timer = new Promise<void>((resolve) =>
-      setTimeout(() => {
-        resolve();
-      }, MIN_MS_BETWEEN_BATCHES),
-    );
-
-    thunkPromises.push(timer);
 
     let data = [];
     const results = await Promise.allSettled(thunkPromises);
@@ -138,8 +130,17 @@ export class RequestQueue {
       }
     }
 
+    const timer = new Promise<void>((resolve) =>
+      setTimeout(() => {
+        resolve();
+      }, MIN_MS_BETWEEN_BATCHES),
+    );
     const next = this.hasIds(idMap)
-      ? async () => await this.run<Return>(idMap)
+      ? async () =>
+          await Promise.allSettled([this.run<Return>(idMap), timer]).then(
+            ([batch]) =>
+              (batch as PromiseFulfilledResult<RequestBatch<Return>>).value,
+          )
       : null;
 
     return { data, next };
