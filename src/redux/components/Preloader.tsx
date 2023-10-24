@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import store, { AppState } from '../store';
 import { preloadState } from '../actions';
@@ -11,10 +11,18 @@ export interface PreloaderProps {
 
 const Preloader: React.FC<PreloaderProps> = ({ state }) => {
   const loaded = useRef(false);
-  if (!loaded.current) {
-    store.dispatch(preloadState(state));
-    loaded.current = true;
-  }
+
+  useEffect(() => {
+    if (state.user.isAuthed && !store.getState().user.isAuthed) {
+      // preloaded again after cold start auth
+      store.dispatch(preloadState(state));
+      loaded.current = true;
+    } else if (!loaded.current) {
+      // preload on default start;
+      store.dispatch(preloadState(state));
+      loaded.current = true;
+    }
+  }, [state]);
 
   return null;
 };
