@@ -9,6 +9,7 @@ export interface SpotifyPlaylist extends PlaylistRef {
   owner: string;
   public: boolean;
   snapshotId: string;
+  total: number;
   tracks: SpotifyTrack[];
   // type: string;
 }

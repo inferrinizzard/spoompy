@@ -2,6 +2,10 @@
 import { normalize, schema } from 'normalizr';
 
 import { type SpotifyPlaylist, type SpotifyTrack } from '@/types/api';
+import {
+  type NormalizedPlaylists,
+  type NormalizedTracks,
+} from '@/types/schema';
 
 const artistSchema = new schema.Entity('artists');
 
@@ -36,12 +40,14 @@ const trackSchema = new schema.Entity(
         ...rest,
         playlists: {
           ...trackWithPlaylists.playlists,
-          [parentPlaylist.id]: { added_at, added_by },
+          [parentPlaylist.id ?? 'playlist']: { added_at, added_by },
         },
       };
     },
   },
 );
+
+const tracksArray = new schema.Array(trackSchema);
 
 const playlistSchema = new schema.Entity('playlists', {
   tracks: [trackSchema],
@@ -52,5 +58,8 @@ const playlistArray = new schema.Array(playlistSchema);
 export const normalizePlaylist = (playlist: SpotifyPlaylist) =>
   normalize(playlist, playlistSchema);
 
-export const normalizePlaylists = (playlist: SpotifyPlaylist[]) =>
-  normalize(playlist, playlistArray);
+export const normalizePlaylists = (playlists: SpotifyPlaylist[]) =>
+  normalize(playlists, playlistArray) as NormalizedPlaylists;
+
+export const normalizeTracks = (tracks: SpotifyTrack[]) =>
+  normalize(tracks, tracksArray) as NormalizedTracks;
