@@ -12,6 +12,7 @@ import {
   type SpotifyPlaylist,
   type SpotifyTrack,
 } from '@/types/api';
+import { type CacheResult } from '@/types/util';
 
 import {
   REROUTE_HOME_URL,
@@ -51,6 +52,18 @@ export class ClientSpotifyInstance {
   }
 
   public getPlaylist = async (playlist: PlaylistRef): Promise<Playlist> => {
+    const cacheResult = this._getPlaylist(playlist);
+
+    if (cacheResult.cache) {
+      return cacheResult.data;
+    }
+
+    return await cacheResult.promise;
+  };
+
+  private readonly _getPlaylist = (
+    playlist: PlaylistRef,
+  ): CacheResult<Playlist> => {
     try {
       const cacheSnapshot = this.cache.get<string>(playlist.id);
 
@@ -61,7 +74,7 @@ export class ClientSpotifyInstance {
 
       const cachePlaylist = this.cache.get<Playlist>(playlist.snapshotId);
       if (cachePlaylist) {
-        return cachePlaylist;
+        return { cache: true, data: cachePlaylist };
       }
     } catch {
       console.log(
@@ -72,30 +85,40 @@ export class ClientSpotifyInstance {
       );
     }
 
-    return await this.sdk.playlists
+    const promise = this.sdk.playlists
       .getPlaylist(playlist.id, undefined, buildPlaylistFields(true))
       .then((playlistObject) => {
         this.cache.set(playlist.id, playlist.snapshotId); // latest version of playlist @ playlist.id is this snapshot
         this.cache.set(playlistObject.snapshot_id, playlistObject);
         return playlistObject;
       });
+
+    return { cache: false, promise };
   };
 
   public getAllPlaylists = async (
     playlists: PlaylistRef[],
   ): Promise<RequestBatch<SpotifyPlaylist>> => {
-    let thunkIds = [];
+    let thunkIds: string[] = [];
+    let cachedPlaylists: SpotifyPlaylist[] = [];
 
     for (const playlist of playlists) {
-      // TODO: skip adding to queue if cache hit
-      const getPlaylistThunk = async (): Promise<SpotifyPlaylist> =>
-        await this.getPlaylist(playlist).then(trimPlaylist);
+      const playlistCacheResult = this._getPlaylist(playlist);
 
+      if (playlistCacheResult.cache) {
+        cachedPlaylists.push(trimPlaylist(playlistCacheResult.data));
+        continue;
+      }
+
+      const getPlaylistThunk = async (): Promise<SpotifyPlaylist> =>
+        await playlistCacheResult.promise.then(trimPlaylist);
       const getPlaylistId = this.queue.add(getPlaylistThunk);
       thunkIds.push(getPlaylistId);
     }
 
-    return await this.queue.runBatch<SpotifyPlaylist>(thunkIds);
+    const getFirstAsyncBatch = async () =>
+      await this.queue.runBatch<SpotifyPlaylist>(thunkIds);
+    return { data: cachedPlaylists, next: getFirstAsyncBatch };
   };
 
   public getPlaylistTracks = async (

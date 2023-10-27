@@ -20,7 +20,7 @@ Each batch returned by the Request Queue will contain:
 - `data`: the requested data of the api calls
 
 
-In each batch, a timer is also included with a miniumum interval between batches to prevent making too many calls.
+In each batch, a timer is also included with a minimum interval between batches to prevent making too many calls.
 For each failed request in the batch, if the error is retry-able, the request is re-enqueued and allowed to run again.
 
 If the rate limit is hit at any point during these batch requests, all successive failed requests in the batched are re-enqueud and the queue system will wait until the returned `Retry-After` value has passed until making any new requests.

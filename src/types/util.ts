@@ -9,3 +9,10 @@ export type MergeTypes<Types extends unknown[]> = Types extends [
   : {};
 
 export type ValueOf<Obj> = Obj[keyof Obj];
+
+export type CacheResult<T> =
+  | {
+      cache: true;
+      data: T;
+    }
+  | { cache: false; promise: Promise<T> };
