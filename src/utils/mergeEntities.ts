@@ -15,7 +15,7 @@ export const mergeEntities = (
   let newTracks = newEntities.tracks;
 
   // add refs to new playlists for existing tracks
-  Object.values(newTracks).forEach((track) => {
+  Object.values(newTracks ?? {}).forEach((track) => {
     if (baseTracks[track.id]) {
       const baseTrackPlaylistRefs = baseTracks[track.id].playlists;
       baseTracks[track.id].playlists = Object.assign(

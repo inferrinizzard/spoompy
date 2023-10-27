@@ -7,7 +7,7 @@ import {
   selectAuthStatus,
   selectUserPlaylists,
 } from '@/redux/slices/userSlice';
-import { getPlaylists } from '@/redux/actions/getPlaylists';
+import { getAllPlaylists } from '@/redux/actions/getPlaylists';
 
 export const DataLoader: React.FC = () => {
   const loaded = useRef(false);
@@ -22,7 +22,9 @@ export const DataLoader: React.FC = () => {
 
     if (!loaded.current) {
       console.log('loading playlists');
-      getPlaylists(playlists.slice(0, 10));
+      getAllPlaylists(playlists.slice(0, 10)).then(() =>
+        console.log(`loaded ${playlists.slice(0, 10).length} playlists`),
+      );
 
       loaded.current = true;
     }
