@@ -9,7 +9,7 @@ import BrowseMain from './main';
 
 export const Browse = async () => {
   if (!store.getState().user.isAuthed) {
-    console.log('Redirecting from Browse back to Home');
+    console.info('[Nav] Redirecting from Browse back to Home');
     redirect('/', RedirectType.replace);
   }
 

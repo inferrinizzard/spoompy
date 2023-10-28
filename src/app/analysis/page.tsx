@@ -9,7 +9,7 @@ import AnalysisMain from './main';
 
 export const Analysis = async () => {
   if (!store.getState().user.isAuthed) {
-    console.log('Redirecting from Analysis back to Home');
+    console.info('[Nav] Redirecting from Analysis back to Home');
     redirect('/', RedirectType.replace);
   }
   return (

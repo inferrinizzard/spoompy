@@ -95,7 +95,9 @@ export class RequestQueue {
         })
         .catch<ThunkError>((error: Error) => {
           if (error instanceof RateLimitedError && !this.retryTimer) {
-            console.log('rate limit!, waiting', error.retryAfter, 'seconds');
+            console.info(
+              `[SDK] Encountered rate limit, Retrying After: ${error.retryAfter} seconds`,
+            );
 
             this.retryTimer = new Promise<void>((resolve) =>
               setTimeout(() => {

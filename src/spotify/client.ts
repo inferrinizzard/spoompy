@@ -116,6 +116,10 @@ export class ClientSpotifyInstance {
       thunkIds.push(getPlaylistId);
     }
 
+    console.info(
+      `[SDK] Found ${cachedPlaylists.length} of ${playlists.length} playlists in cache`,
+    );
+
     const getFirstAsyncBatch = async () =>
       await this.queue.runBatch<SpotifyPlaylist>(thunkIds);
     return { data: cachedPlaylists, next: getFirstAsyncBatch };

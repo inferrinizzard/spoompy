@@ -21,9 +21,11 @@ export const DataLoader: React.FC = () => {
     }
 
     if (!loaded.current) {
-      console.log('loading playlists');
+      console.info('[Redux] Start loading user playlists');
       getAllPlaylists(playlists.slice(0, 10)).then(() =>
-        console.log(`loaded ${playlists.slice(0, 10).length} playlists`),
+        console.info(
+          `[Redux] Finished, loaded ${playlists.slice(0, 10).length} playlists`,
+        ),
       );
 
       loaded.current = true;

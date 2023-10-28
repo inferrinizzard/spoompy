@@ -9,7 +9,7 @@ import ArchiveMain from './main';
 
 export const Archive = async () => {
   if (!store.getState().user.isAuthed) {
-    console.log('Redirecting from Archive back to Home');
+    console.info('[Nav] Redirecting from Archive back to Home');
     redirect('/', RedirectType.replace);
   }
 
