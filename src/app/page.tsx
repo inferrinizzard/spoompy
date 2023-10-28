@@ -1,7 +1,7 @@
 import { Spacer, Text } from '@kuma-ui/core';
 
 import HomeLink from '@/components/HomeLink';
-import LoginButton from '@/components/LoginButton';
+import AuthMain from '@/components/auth/AuthMain';
 import store from '@/redux/store';
 import { getUserDetails, getUserPlaylists } from '@/redux/actions';
 import { readAuthSession } from '@/redux/actions/server/init';
@@ -28,7 +28,7 @@ export async function Home() {
       <HomeLink disabled={!isAuthed} href="/analysis" text="Data Analysis" />
       <HomeLink disabled={!isAuthed} href="/archive" text="Archive Playlists" />
 
-      {!isAuthed && <LoginButton />}
+      {!isAuthed && <AuthMain />}
 
       {store.getState().user.userDetails && (
         <h1>{`Welcome, ${store.getState().user.userDetails?.display_name}`}</h1>
