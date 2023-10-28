@@ -3,6 +3,7 @@ import { RateLimitedError } from '../handlers';
 type BaseThunk<Return = unknown> = () => Promise<Return>;
 export interface RequestBatch<Data> {
   data: Data[];
+  errors?: string[];
   next: (() => Promise<RequestBatch<Data>>) | null;
 }
 
@@ -136,11 +137,14 @@ export class RequestQueue {
         return await this.composeThunk(thunkId, thunk)();
       });
 
+    let errors = [];
     let data = [];
     const results = await Promise.allSettled(thunkPromises);
     for (const result of results) {
       if (result.status === 'rejected') {
-        throw Error(`Unknown result! ${result.status}`);
+        // throw Error(`Unknown result! ${result.status}`);
+        errors.push(result.reason);
+        continue;
       }
 
       if (result.value) {
@@ -170,6 +174,6 @@ export class RequestQueue {
           )
       : null;
 
-    return { data, next };
+    return { data, next, errors };
   };
 }
