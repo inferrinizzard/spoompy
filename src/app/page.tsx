@@ -28,7 +28,7 @@ export async function Home() {
       <HomeLink disabled={!isAuthed} href="/analysis" text="Data Analysis" />
       <HomeLink disabled={!isAuthed} href="/archive" text="Archive Playlists" />
 
-      {!isAuthed && <AuthMain />}
+      <AuthMain />
 
       {store.getState().user.userDetails && (
         <h1>{`Welcome, ${store.getState().user.userDetails?.display_name}`}</h1>

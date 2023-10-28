@@ -1,5 +1,7 @@
 'use server';
 
+import { cookies } from 'next/headers';
+
 import { tryGetAuthSession } from '@/spotify/utils/getSession';
 
 import store from '../../store';
@@ -12,4 +14,8 @@ export const readAuthSession = (): void => {
   if (authSession) {
     store.dispatch(setAuthStatus(true));
   }
+};
+
+export const sendBrowserCookie = (key: string, cookie: string): void => {
+  cookies().set(key, cookie);
 };
