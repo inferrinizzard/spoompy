@@ -190,7 +190,6 @@ const spotifySdkConfig: SdkOptions = {
 
 export const getClientSpotify = (): ClientSpotifyInstance => {
   if (!clientSpotify) {
-    console.log('NEW CLIent INSTANCE');
     if (process.env.NODE_ENV === 'production') {
       clientSpotify = new ClientSpotifyInstance(spotifySdkConfig);
     } else {

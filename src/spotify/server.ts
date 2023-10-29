@@ -96,7 +96,6 @@ const spotifySdkConfig: SdkOptions = {
 
 export const getServerSpotify = (): ServerSpotifyInstance => {
   if (!serverSpotify) {
-    console.log('NEW serVER INSTANCE');
     if (process.env.NODE_ENV === 'production') {
       serverSpotify = new ServerSpotifyInstance(spotifySdkConfig);
     } else {
