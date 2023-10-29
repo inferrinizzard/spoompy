@@ -207,11 +207,8 @@ export const getClientSpotify = (): ClientSpotifyInstance => {
 
 export const clientSpotifyLogout = (): void => {
   clientSpotify?.sdk.logOut();
-  // clientSpotify. // clear queue
   clientSpotify = null;
   if (process.env.NODE_ENV !== 'production') {
     global.clientSpotify = null as unknown as ClientSpotifyInstance;
   }
-
-  console.log(clientSpotify, global.clientSpotify);
 };

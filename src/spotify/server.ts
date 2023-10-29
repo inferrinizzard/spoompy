@@ -113,11 +113,8 @@ export const getServerSpotify = (): ServerSpotifyInstance => {
 
 export const serverSpotifyLogout = (): void => {
   serverSpotify?.sdk.logOut();
-  // serverSpotify. // clear queue
   serverSpotify = null;
   if (process.env.NODE_ENV !== 'production') {
     global.serverSpotify = null as unknown as ServerSpotifyInstance;
   }
-
-  console.log(serverSpotify, global.serverSpotify);
 };
