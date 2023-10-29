@@ -18,6 +18,8 @@ export async function Home() {
     await getUserPlaylists();
   }
 
+  const userDetails = store.getState().user.userDetails;
+
   return (
     <main className={styles.main}>
       <Preloader state={store.getState()} />
@@ -30,8 +32,11 @@ export async function Home() {
 
       <AuthMain />
 
-      {store.getState().user.userDetails && (
-        <h1>{`Welcome, ${store.getState().user.userDetails?.display_name}`}</h1>
+      {userDetails && (
+        <>
+          <h3>{`Logged in as: ${userDetails.display_name}`}</h3>
+          <h3>{`With user id: ${userDetails.id}`}</h3>
+        </>
       )}
     </main>
   );
