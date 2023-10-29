@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectAuthStatus } from '@/redux/slices/userSlice';
@@ -17,9 +17,7 @@ export const AuthMain: React.FC<AuthMainProps> = () => {
   const login = useLogin();
   const isAuthed = useSelector(selectAuthStatus);
 
-  const sentBrowserCookie = useRef(false);
-
-  if (!sentBrowserCookie.current) {
+  useEffect(() => {
     const authTokenString = getBrowserCookieString(SPOTIFY_AUTH_COOKIE);
 
     if (authTokenString) {
@@ -27,8 +25,8 @@ export const AuthMain: React.FC<AuthMainProps> = () => {
 
       login();
     }
-    sentBrowserCookie.current = true;
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return <>{!isAuthed && <LoginButton />}</>;
 };
