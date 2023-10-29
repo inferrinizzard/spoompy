@@ -7,9 +7,10 @@ import { setAuthStatus } from '../../slices/userSlice';
 
 export const readAuthSession = (): void => {
   const authSession = tryGetAuthSession();
+  const hasValidAccessToken = !!(
+    authSession?.token_type && authSession?.expires > 0
+  );
 
-  console.info(`[Init] Reading stored auth status: ${!!authSession}`);
-  if (authSession) {
-    store.dispatch(setAuthStatus(true));
-  }
+  console.info(`[Init] Reading stored auth status: ${hasValidAccessToken}`);
+  store.dispatch(setAuthStatus(hasValidAccessToken));
 };

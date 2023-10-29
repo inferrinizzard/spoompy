@@ -1,7 +1,7 @@
 import { Spacer, Text } from '@kuma-ui/core';
 
 import HomeLink from '@/components/HomeLink';
-import LoginButton from '@/components/LoginButton';
+import AuthMain from '@/components/auth/AuthMain';
 import store from '@/redux/store';
 import { getUserDetails, getUserPlaylists } from '@/redux/actions';
 import { readAuthSession } from '@/redux/actions/server/init';
@@ -18,6 +18,8 @@ export async function Home() {
     await getUserPlaylists();
   }
 
+  const userDetails = store.getState().user.userDetails;
+
   return (
     <main className={styles.main}>
       <Preloader state={store.getState()} />
@@ -28,10 +30,13 @@ export async function Home() {
       <HomeLink disabled={!isAuthed} href="/analysis" text="Data Analysis" />
       <HomeLink disabled={!isAuthed} href="/archive" text="Archive Playlists" />
 
-      {!isAuthed && <LoginButton />}
+      <AuthMain />
 
-      {store.getState().user.userDetails && (
-        <h1>{`Welcome, ${store.getState().user.userDetails?.display_name}`}</h1>
+      {userDetails && (
+        <>
+          <h3>{`Logged in as: ${userDetails.display_name}`}</h3>
+          <h3>{`With user id: ${userDetails.id}`}</h3>
+        </>
       )}
     </main>
   );
