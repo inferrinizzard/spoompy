@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { sendBrowserCookie } from '@/redux/actions/server/init';
 import { selectAuthStatus } from '@/redux/slices/userSlice';
 import { SPOTIFY_AUTH_COOKIE } from '@/spotify/constants';
-import { parseRawCookieString } from '@/utils/parseCookie';
+import { getBrowserCookie } from '@/utils/cookies';
 import useLogin from '@/hooks/login';
 
 import LoginButton from './LoginButton';
@@ -20,15 +20,10 @@ export const AuthMain: React.FC<AuthMainProps> = () => {
   const sentBrowserCookie = useRef(false);
 
   if (!sentBrowserCookie.current) {
-    const allCookies = document.cookie;
-    const spotifyAuthTokenCookie = allCookies
-      .split(';')
-      .find((cookie) => cookie.includes(SPOTIFY_AUTH_COOKIE))
-      ?.trim();
+    const authTokenString = getBrowserCookieString(SPOTIFY_AUTH_COOKIE);
 
-    if (spotifyAuthTokenCookie) {
-      const authToken = parseRawCookieString(spotifyAuthTokenCookie);
-      sendBrowserCookie(SPOTIFY_AUTH_COOKIE, JSON.stringify(authToken));
+    if (authTokenString) {
+      sendBrowserCookie(SPOTIFY_AUTH_COOKIE, authTokenString);
 
       login();
     }
