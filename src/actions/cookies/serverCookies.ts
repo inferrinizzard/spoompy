@@ -14,3 +14,7 @@ export const getServerCookie = <Return>(key: string): Return | null => {
 export const setServerCookie = (key: string, val: string): void => {
   cookies().set(key, val);
 };
+
+export const deleteServerCookie = (key: string): void => {
+  cookies().delete(key);
+};

@@ -10,6 +10,7 @@ import { setServerCookie } from '@/actions/cookies/serverCookies';
 import useLogin from '@/hooks/login';
 
 import LoginButton from './LoginButton';
+import LogoutButton from './LogoutButton';
 
 export interface AuthMainProps {}
 
@@ -28,7 +29,12 @@ export const AuthMain: React.FC<AuthMainProps> = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <>{!isAuthed && <LoginButton />}</>;
+  return (
+    <>
+      {!isAuthed && <LoginButton />}
+      {isAuthed && <LogoutButton />}
+    </>
+  );
 };
 
 export default AuthMain;

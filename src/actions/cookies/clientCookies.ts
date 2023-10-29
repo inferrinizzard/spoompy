@@ -28,3 +28,7 @@ export const setBrowserCookie = (key: string, val: unknown): boolean => {
     return false;
   }
 };
+
+export const deleteBrowserCookie = (key: string): void => {
+  BrowserCookies.remove(key);
+};
