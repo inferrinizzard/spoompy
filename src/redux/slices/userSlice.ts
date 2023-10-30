@@ -2,12 +2,14 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { type User } from '@spotify/web-api-ts-sdk';
 
+import { type PlaylistRef } from '@/types/api';
+
 import { type AppState } from '../store';
-import { replaceState } from '../actions/replaceState';
+import { preloadState } from '../actions/client/preloadState';
 
 export interface UserState {
   isAuthed: boolean;
-  playlists: string[];
+  playlists: PlaylistRef[];
   userDetails?: User;
 }
 
@@ -23,15 +25,15 @@ export const userSlice = createSlice({
     setAuthStatus: (state, action: PayloadAction<boolean>) => {
       state.isAuthed = action.payload;
     },
-    setUserDetails: (state, action: PayloadAction<User>) => {
+    setUserDetails: (state, action: PayloadAction<User | undefined>) => {
       state.userDetails = action.payload;
     },
-    setUserPlaylists: (state, action: PayloadAction<string[]>) => {
+    setUserPlaylists: (state, action: PayloadAction<PlaylistRef[]>) => {
       state.playlists = action.payload;
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(replaceState, (_, action) => {
+    builder.addCase(preloadState, (_, action) => {
       return action.payload.user;
     });
   },

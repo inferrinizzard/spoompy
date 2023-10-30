@@ -1,4 +1,4 @@
-import { type PlaylistEntities } from '@/types/schema';
+import { type PlaylistEntities, type TrackEntities } from '@/types/schema';
 
 export const mergeEntities = (
   baseEntities: PlaylistEntities,
@@ -15,7 +15,7 @@ export const mergeEntities = (
   let newTracks = newEntities.tracks;
 
   // add refs to new playlists for existing tracks
-  Object.values(newTracks).forEach((track) => {
+  Object.values(newTracks ?? {}).forEach((track) => {
     if (baseTracks[track.id]) {
       const baseTrackPlaylistRefs = baseTracks[track.id].playlists;
       baseTracks[track.id].playlists = Object.assign(
@@ -28,4 +28,45 @@ export const mergeEntities = (
   });
 
   return { artists, albums, playlists, tracks: baseTracks };
+};
+
+export const mergeWithTracks = (
+  baseEntities: PlaylistEntities,
+  playlistTracksRef: {
+    playlistId: string;
+    tracks: TrackEntities;
+  },
+): PlaylistEntities => {
+  const playlistId = playlistTracksRef.playlistId;
+  const newEntities = playlistTracksRef.tracks;
+
+  const artists = Object.assign(baseEntities.artists, newEntities.artists);
+  const albums = Object.assign(baseEntities.albums, newEntities.albums);
+
+  const playlists = baseEntities.playlists;
+  playlists[playlistId].tracks = playlists[playlistId].tracks.concat(
+    Object.keys(newEntities.tracks),
+  );
+
+  let baseTracks = baseEntities.tracks;
+  let newTracks = newEntities.tracks;
+
+  // add refs to new playlists for existing tracks
+  Object.values(newTracks).forEach((track) => {
+    if (baseTracks[track.id]) {
+      baseTracks[track.id].playlists[playlistId] = track.playlists.playlist;
+    } else {
+      baseTracks[track.id] = {
+        ...track,
+        playlists: { [playlistId]: track.playlists.playlist },
+      };
+    }
+  });
+
+  return {
+    artists,
+    albums,
+    playlists,
+    tracks: baseTracks,
+  };
 };

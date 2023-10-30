@@ -41,3 +41,16 @@ export type PlaylistEntityMap = Record<
   string,
   SpliceObject<SpotifyPlaylist, 'tracks', string[]>
 >;
+
+export interface NormalizedTracks<
+  Tracks extends SpotifyTrack[] = SpotifyTrack[],
+> {
+  entities: TrackEntities;
+  result: IdsOf<Tracks>;
+}
+
+export interface TrackEntities {
+  albums: Record<string, SpotifyAlbum>;
+  artists: Record<string, SpotifyArtist>;
+  tracks: PlaylistTrackEntityMap;
+}

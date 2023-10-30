@@ -1,14 +1,15 @@
 import { Spacer, Text } from '@kuma-ui/core';
 
 import HomeLink from '@/components/HomeLink';
-import LoginButton from '@/components/LoginButton';
+import AuthMain from '@/components/auth/AuthMain';
 import store from '@/redux/store';
 import { getUserDetails, getUserPlaylists } from '@/redux/actions';
-import { readAuthSession } from '@/redux/actions/init';
+import { readAuthSession } from '@/redux/actions/server/init';
+import Preloader from '@/redux/components/Preloader';
 
 import styles from './page.module.css';
 
-export async function Home() {
+const Home = async () => {
   readAuthSession();
 
   const isAuthed = store.getState().user.isAuthed;
@@ -17,21 +18,28 @@ export async function Home() {
     await getUserPlaylists();
   }
 
+  const userDetails = store.getState().user.userDetails;
+
   return (
     <main className={styles.main}>
+      <Preloader state={store.getState()} />
+
       <Text fontSize={36}>{'Spotify Data Visualizer'}</Text>
       <Spacer height="2rem" />
       <HomeLink disabled={!isAuthed} href="/browse" text="Browse Library" />
       <HomeLink disabled={!isAuthed} href="/analysis" text="Data Analysis" />
       <HomeLink disabled={!isAuthed} href="/archive" text="Archive Playlists" />
 
-      {!isAuthed && <LoginButton />}
+      <AuthMain />
 
-      {store.getState().user.userDetails && (
-        <h1>{`Welcome, ${store.getState().user.userDetails?.display_name}`}</h1>
+      {userDetails && (
+        <>
+          <h3>{`Logged in as: ${userDetails.display_name}`}</h3>
+          <h3>{`With user id: ${userDetails.id}`}</h3>
+        </>
       )}
     </main>
   );
-}
+};
 
 export default Home;

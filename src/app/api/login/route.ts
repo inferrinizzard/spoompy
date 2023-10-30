@@ -1,24 +1,28 @@
 import { NextResponse } from 'next/server';
 import { type AccessToken } from '@spotify/web-api-ts-sdk';
 
-import { REROUTE_HOME_URL, SPOTIFY_AUTH_COOKIE } from '@/spotify/constants';
+import { HOME_URL, SPOTIFY_AUTH_COOKIE } from '@/spotify/constants';
 import store from '@/redux/store';
 import { setAuthStatus } from '@/redux/slices/userSlice';
+import { setServerCookie } from '@/actions/cookies/serverCookies';
 
 export async function POST(request: Request): Promise<NextResponse> {
   const body = (await request.json()) as AccessToken;
 
-  const res = NextResponse.redirect(REROUTE_HOME_URL);
+  const res = NextResponse.redirect(HOME_URL);
 
   if (!body) {
     return res;
   }
 
-  console.log('Received token, storing to cookie');
+  console.info('[API] Received token, storing to cookie');
 
-  res.cookies.set(SPOTIFY_AUTH_COOKIE, JSON.stringify(body), {
+  const cookie = JSON.stringify(body);
+
+  res.cookies.set(SPOTIFY_AUTH_COOKIE, cookie, {
     maxAge: body.expires_in,
   });
+  setServerCookie(SPOTIFY_AUTH_COOKIE, cookie);
 
   store.dispatch(setAuthStatus(true));
 

@@ -1,13 +1,17 @@
 'use server';
 
-import { getSpotify } from '@/spotify';
+import { getServerSpotify, serverSpotifyLogout } from '@/spotify/server';
 
-import store from '../store';
-import { setUserDetails, setUserPlaylists } from '../slices/userSlice';
+import store from '../../store';
+import {
+  setAuthStatus,
+  setUserDetails,
+  setUserPlaylists,
+} from '../../slices/userSlice';
 
 export const getUserDetails = async (): Promise<void> => {
   if (store.getState().user.isAuthed) {
-    await getSpotify()
+    await getServerSpotify()
       .getUserDetails()
       .then((user) => store.dispatch(setUserDetails(user)));
   }
@@ -16,8 +20,16 @@ export const getUserDetails = async (): Promise<void> => {
 export const getUserPlaylists = async (): Promise<void> => {
   const user = store.getState().user;
   if (user.isAuthed && user.userDetails) {
-    await getSpotify()
+    await getServerSpotify()
       .getUserPlaylists(user.userDetails.id)
       .then((userPlaylists) => store.dispatch(setUserPlaylists(userPlaylists)));
   }
+};
+
+export const logOut = async (): Promise<void> => {
+  serverSpotifyLogout();
+
+  store.dispatch(setAuthStatus(false));
+  store.dispatch(setUserDetails(undefined));
+  store.dispatch(setUserPlaylists([]));
 };
