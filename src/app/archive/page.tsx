@@ -7,7 +7,7 @@ import store from '@/redux/store';
 
 import ArchiveMain from './main';
 
-export const Archive = async () => {
+const Archive = async () => {
   if (!store.getState().user.isAuthed) {
     console.info('[Nav] Redirecting from Archive back to Home');
     redirect('/', RedirectType.replace);

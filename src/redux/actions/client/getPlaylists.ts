@@ -5,23 +5,11 @@ import {
 } from '@/utils/normalizr/normalize';
 import { type PlaylistRef } from '@/types/api';
 
-import store from '../store';
+import store from '../../store';
 import {
   updateEntities,
   updateWithPlaylistTracks,
-} from '../slices/playlistSlice';
-
-export const getPlaylists = async (playlists: PlaylistRef[]): Promise<void> => {
-  playlists
-    .map(getClientSpotify().getPlaylistWithTracks) // check here which playlists already exist in store
-    .map(
-      async (promise) =>
-        await promise.then((playlist) => {
-          const normalizedPlaylist = normalizePlaylists([playlist]);
-          store.dispatch(updateEntities(normalizedPlaylist.entities));
-        }),
-    );
-};
+} from '../../slices/playlistSlice';
 
 export const getPlaylistTracks = async (
   playlistTrackRequests: Array<{ id: string; total: number }>,

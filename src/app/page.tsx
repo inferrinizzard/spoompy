@@ -9,7 +9,7 @@ import Preloader from '@/redux/components/Preloader';
 
 import styles from './page.module.css';
 
-export async function Home() {
+const Home = async () => {
   readAuthSession();
 
   const isAuthed = store.getState().user.isAuthed;
@@ -40,6 +40,6 @@ export async function Home() {
       )}
     </main>
   );
-}
+};
 
 export default Home;
