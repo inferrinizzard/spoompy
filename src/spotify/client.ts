@@ -15,11 +15,7 @@ import {
 } from '@/types/api';
 import { type CacheResult } from '@/types/util';
 
-import {
-  REROUTE_HOME_URL,
-  SPOTIFY_CLIENT_ID,
-  SPOTIFY_SCOPES,
-} from './constants';
+import { HOME_URL, SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from './constants';
 import { EntityCache } from './utils/entityCache';
 import {
   buildPlaylistFields,
@@ -49,7 +45,7 @@ export class ClientSpotifyInstance {
 
     this.sdk = SpotifyApi.withUserAuthorization(
       SPOTIFY_CLIENT_ID,
-      REROUTE_HOME_URL,
+      HOME_URL,
       SPOTIFY_SCOPES,
       this.sdkConfig,
     );
