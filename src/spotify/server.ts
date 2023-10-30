@@ -11,7 +11,7 @@ import { tryGetAuthSession } from './utils/getSession';
 import { SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from './constants';
 import { handleRateLimitedError } from './handlers';
 
-let serverSpotify: ServerSpotifyInstance;
+let serverSpotify: ServerSpotifyInstance | null;
 
 export class ServerSpotifyInstance {
   public sdk: SpotifyApi;
@@ -107,5 +107,13 @@ export const getServerSpotify = (): ServerSpotifyInstance => {
     }
   }
 
-  return serverSpotify;
+  return serverSpotify as ServerSpotifyInstance;
+};
+
+export const serverSpotifyLogout = (): void => {
+  serverSpotify?.sdk.logOut();
+  serverSpotify = null;
+  if (process.env.NODE_ENV !== 'production') {
+    global.serverSpotify = null as unknown as ServerSpotifyInstance;
+  }
 };

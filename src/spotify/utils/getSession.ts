@@ -1,13 +1,13 @@
 import { type AccessToken } from '@spotify/web-api-ts-sdk';
-import { cookies } from 'next/headers';
+
+import { getServerCookie } from '@/actions/cookies/serverCookies';
 
 import { SPOTIFY_AUTH_COOKIE } from '../constants';
 
 export const tryGetAuthSession = (): AccessToken | null => {
-  const authSessionString = cookies().get(SPOTIFY_AUTH_COOKIE)?.value;
+  const authSession = getServerCookie<AccessToken>(SPOTIFY_AUTH_COOKIE);
 
-  if (authSessionString) {
-    const authSession = JSON.parse(authSessionString) as AccessToken;
+  if (authSession) {
     if (authSession.expires > new Date().getTime()) {
       return authSession;
     }
