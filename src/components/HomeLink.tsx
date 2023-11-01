@@ -6,6 +6,7 @@ const disabledLinkStyles = {
   cursor: 'not-allowed',
   opacity: 0.5,
   textDecoration: 'none',
+  pointerEvents: 'none',
 };
 
 export interface HomeLinkProps {
@@ -16,10 +17,17 @@ export interface HomeLinkProps {
 
 export const HomeLink: React.FC<HomeLinkProps> = ({ href, text, disabled }) => {
   return (
-    <Box as="article" style={{ marginBottom: '3rem' }}>
+    <Box
+      as="article"
+      style={{
+        marginBottom: '3rem',
+        ...(disabled && { cursor: 'not-allowed' }),
+      }}>
       <Link
         as={NextLink}
-        href={disabled ? 'null' : href}
+        // href={disabled ? '' : href}
+        href={href}
+        // @ts-expect-error disabled style
         style={{ ...(disabled && disabledLinkStyles) }}>
         <Text fontSize={48}>{text}</Text>
       </Link>
