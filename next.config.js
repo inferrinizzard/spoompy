@@ -5,6 +5,7 @@ const { withKumaUI } = require('@kuma-ui/next-plugin');
 const nextConfig = {
   experimental: {
     esmExternals: 'loose',
+    serverActions: true,
   },
   images: {
     remotePatterns: [
@@ -21,6 +22,9 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  env: {
+    mock: true,
   },
 };
 

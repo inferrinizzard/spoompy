@@ -5,7 +5,11 @@ import { styled } from '@kuma-ui/core';
 
 import { useAppDispatch, useAppSelector } from '@/redux/client';
 import { selectSlice, selectSort, setSort } from '@/redux/slices/browseSlice';
-import { selectAlbums, selectArtists, selectPlaylists } from '@/redux/slices/playlistSlice';
+import {
+  selectAlbums,
+  selectArtists,
+  selectPlaylists,
+} from '@/redux/slices/playlistSlice';
 import { formatDate } from '@/utils/dateFormat';
 
 import { type PlaylistTrackEntityWithPlaylist } from '../TabularView';
@@ -47,29 +51,43 @@ const PlaylistTable: React.FC<PlaylistTableProps> = ({ tracks }) => {
     dispatch(setSort(nextSort()));
   };
 
-  const getSortIcon = (column: string) => (sort?.column === column ? (sort.asc ? '▲' : '▼') : '');
+  const getSortIcon = (column: string) =>
+    sort?.column === column ? (sort.asc ? '▲' : '▼') : '';
 
-  const playlistSlice = tracks.slice(slice.index * slice.size, (slice.index + 1) * slice.size);
+  const playlistSlice = tracks.slice(
+    slice.index * slice.size,
+    (slice.index + 1) * slice.size,
+  );
 
   return (
     <table style={{ width: '100%' }}>
       <thead>
         <tr>
           <th>{'Playlist'}</th>
-          <th onClick={() => handleSort('name')}>{'Name' + getSortIcon('name')}</th>
-          <th onClick={() => handleSort('artists')}>{'Artists' + getSortIcon('artists')}</th>
-          <th onClick={() => handleSort('album')}>{'Album' + getSortIcon('album')}</th>
-          <th onClick={() => handleSort('time')}>{'Date Added' + getSortIcon('time')}</th>
+          <th onClick={() => handleSort('name')}>
+            {'Name' + getSortIcon('name')}
+          </th>
+          <th onClick={() => handleSort('artists')}>
+            {'Artists' + getSortIcon('artists')}
+          </th>
+          <th onClick={() => handleSort('album')}>
+            {'Album' + getSortIcon('album')}
+          </th>
+          <th onClick={() => handleSort('time')}>
+            {'Date Added' + getSortIcon('time')}
+          </th>
           {flags.showId && <th>{'ID'}</th>}
           {flags.showUserId && <th>{'Added by'}</th>}
         </tr>
       </thead>
       <tbody>
-        {playlistSlice.map(track => (
+        {playlistSlice.map((track) => (
           <tr key={track.playlist + track.id}>
             <TableCell>{playlists[track.playlist].name}</TableCell>
             <TableCell>{track.name}</TableCell>
-            <TableCell>{track.artists.map(id => artists[id].name).join(', ')}</TableCell>
+            <TableCell>
+              {track.artists.map((id) => artists[id].name).join(', ')}
+            </TableCell>
             <TableCell>{albums[track.album].name}</TableCell>
             <TableCell style={{ whiteSpace: 'nowrap' }}>
               {formatDate(new Date(track.added_at), 'day')}

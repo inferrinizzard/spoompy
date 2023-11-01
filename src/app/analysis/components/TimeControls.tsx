@@ -4,9 +4,13 @@ import { useState } from 'react';
 import dayjs from 'dayjs';
 
 import { useAppDispatch } from '@/redux/client';
-import { clearDates, setEndDate, setStartDate, setTimeStep } from '@/redux/slices/analysisSlice';
-
-import { type TimeStep, type DateRange } from '@/types/common';
+import {
+  clearDates,
+  setEndDate,
+  setStartDate,
+  setTimeStep,
+} from '@/redux/slices/analysisSlice';
+import { type DateRange, type TimeStep } from '@/types/common';
 
 export interface TimeControlsProps {}
 
@@ -15,12 +19,19 @@ export const TimeControls: React.FC<TimeControlsProps> = ({}) => {
 
   const [selected, setSelected] = useState<number | undefined>(undefined);
 
-  const getRangeFromNow = (diff: { num: number; unit: dayjs.ManipulateType }) => ({
+  const getRangeFromNow = (diff: {
+    num: number;
+    unit: dayjs.ManipulateType;
+  }) => ({
     start: dayjs().subtract(diff.num, diff.unit).startOf('day').toISOString(),
     end: dayjs().toISOString(),
   });
 
-  const setRange = ({ start, end }: DateRange, timeStep: TimeStep, index: number) => {
+  const setRange = (
+    { start, end }: DateRange,
+    timeStep: TimeStep,
+    index: number,
+  ) => {
     setSelected(index);
     start && dispatch(setStartDate(start));
     end && dispatch(setEndDate(end));
@@ -45,7 +56,10 @@ export const TimeControls: React.FC<TimeControlsProps> = ({}) => {
     },
     {
       label: dayjs().year(),
-      range: { start: dayjs().startOf('year').toISOString(), end: dayjs().toISOString() },
+      range: {
+        start: dayjs().startOf('year').toISOString(),
+        end: dayjs().toISOString(),
+      },
       timeStep: 'month' as TimeStep,
     },
     {
@@ -69,9 +83,10 @@ export const TimeControls: React.FC<TimeControlsProps> = ({}) => {
       <div style={{ display: 'flex' }}>
         {timeRanges.map(({ label, range, timeStep, onClick }, i) => (
           <button
-            key={`time-range-${i}`}
             disabled={selected == i}
-            onClick={() => (range ? setRange(range, timeStep, i) : onClick?.())}>
+            key={`time-range-${i}`}
+            onClick={() => (range ? setRange(range, timeStep, i) : onClick?.())}
+            type="button">
             {label}
           </button>
         ))}

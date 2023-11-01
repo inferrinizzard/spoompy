@@ -7,21 +7,26 @@ import {
 import { type IdsOf } from './entities';
 import { type SpliceObject } from './util';
 
-export interface NormalizedPlaylists<Playlists extends SpotifyPlaylist[]> {
-  result: IdsOf<Playlists>;
+export interface NormalizedPlaylists<
+  Playlists extends SpotifyPlaylist[] = SpotifyPlaylist[],
+> {
   entities: PlaylistEntities;
+  result: IdsOf<Playlists>;
 }
 
 export interface PlaylistEntities {
   albums: Record<string, SpotifyAlbum>;
   artists: Record<string, SpotifyArtist>;
-  tracks: PlaylistTrackEntityMap;
   playlists: Record<string, SpliceObject<SpotifyPlaylist, 'tracks', string[]>>;
+  tracks: PlaylistTrackEntityMap;
 }
 
 export type PlaylistTrackEntityMap = Record<
   string,
-  Omit<PlaylistTrackEntityWithNormalizedArtistsAndAlbums, 'added_at' | 'added_by'> & {
+  Omit<
+    PlaylistTrackEntityWithNormalizedArtistsAndAlbums,
+    'added_at' | 'added_by'
+  > & {
     playlists: Record<string, Pick<SpotifyTrack, 'added_at' | 'added_by'>>;
   }
 >;
@@ -32,4 +37,20 @@ export type PlaylistTrackEntityWithNormalizedArtistsAndAlbums = SpliceObject<
   string
 >;
 
-export type PlaylistEntityMap = Record<string, SpliceObject<SpotifyPlaylist, 'tracks', string[]>>;
+export type PlaylistEntityMap = Record<
+  string,
+  SpliceObject<SpotifyPlaylist, 'tracks', string[]>
+>;
+
+export interface NormalizedTracks<
+  Tracks extends SpotifyTrack[] = SpotifyTrack[],
+> {
+  entities: TrackEntities;
+  result: IdsOf<Tracks>;
+}
+
+export interface TrackEntities {
+  albums: Record<string, SpotifyAlbum>;
+  artists: Record<string, SpotifyArtist>;
+  tracks: PlaylistTrackEntityMap;
+}

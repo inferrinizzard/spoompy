@@ -1,20 +1,28 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-import store from '../store';
-import { type PlaylistState, setEntities } from '../slices/playlistSlice';
+import store, { AppState } from '../store';
+import { preloadState } from '../actions';
 
 export interface PreloaderProps {
-  playlist: PlaylistState;
+  readonly state: AppState;
 }
 
-const Preloader: React.FC<PreloaderProps> = ({ playlist }) => {
+const Preloader: React.FC<PreloaderProps> = ({ state }) => {
   const loaded = useRef(false);
-  if (!loaded.current) {
-    store.dispatch(setEntities(playlist));
-    loaded.current = true;
-  }
+
+  useEffect(() => {
+    if (state.user.isAuthed && !store.getState().user.isAuthed) {
+      // preloaded again after cold start auth
+      store.dispatch(preloadState(state));
+      loaded.current = true;
+    } else if (!loaded.current) {
+      // preload on default start;
+      store.dispatch(preloadState(state));
+      loaded.current = true;
+    }
+  }, [state]);
 
   return null;
 };

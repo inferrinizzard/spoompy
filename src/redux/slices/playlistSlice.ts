@@ -1,9 +1,13 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { type PlaylistEntities } from '@/types/schema';
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import type { AppState } from '../store';
+import { type PlaylistEntities, type TrackEntities } from '@/types/schema';
+import { mergeEntities, mergeWithTracks } from '@/utils/mergeEntities';
 
-export interface PlaylistState extends PlaylistEntities {}
+import { type AppState } from '../store';
+import { preloadState } from '../actions/client/preloadState';
+
+export type PlaylistState = PlaylistEntities;
 
 const initialState: PlaylistState = {
   albums: {},
@@ -16,13 +20,25 @@ export const playlistSlice = createSlice({
   name: 'playlist',
   initialState,
   reducers: {
-    setEntities: (state, action: PayloadAction<PlaylistEntities>) => {
-      return action.payload;
+    updateEntities: (state, action: PayloadAction<PlaylistEntities>) => {
+      mergeEntities(state, action.payload);
     },
+    updateWithPlaylistTracks: (
+      state,
+      action: PayloadAction<{ playlistId: string; tracks: TrackEntities }>,
+    ) => {
+      mergeWithTracks(state, action.payload);
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(preloadState, (_, action) => {
+      return action.payload.playlist;
+    });
   },
 });
 
-export const { setEntities } = playlistSlice.actions;
+export const { updateEntities, updateWithPlaylistTracks } =
+  playlistSlice.actions;
 
 export const selectTracks = (state: AppState) => state.playlist.tracks;
 export const selectPlaylists = (state: AppState) => state.playlist.playlists;
