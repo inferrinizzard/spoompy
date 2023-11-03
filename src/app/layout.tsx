@@ -3,9 +3,9 @@ import { KumaRegistry } from '@kuma-ui/next-plugin/registry';
 
 import DataLoader from '@/redux/components/DataLoader';
 import ReduxProvider from '@/redux/components/Provider';
+import StyledComponentsProvider from '@/styles/components/Provider';
 
 import './globals.css';
-import StyledComponentsRegistry from '../lib/styled-components/registry';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,9 +24,10 @@ export const RootLayout = ({
       <body className={inter.className}>
         <ReduxProvider>
           <DataLoader />
-          <StyledComponentsRegistry>
+          <StyledComponentsProvider>
+            {/* <GlobalStyles /> */}
             <KumaRegistry>{children}</KumaRegistry>
-          </StyledComponentsRegistry>
+          </StyledComponentsProvider>
         </ReduxProvider>
       </body>
     </html>

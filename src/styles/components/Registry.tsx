@@ -4,11 +4,7 @@ import React, { useState } from 'react';
 import { useServerInsertedHTML } from 'next/navigation';
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components';
 
-export interface StyledComponentsRegistryProps {
-  readonly children: React.ReactNode;
-}
-
-const StyledComponentsRegistry: React.FC<StyledComponentsRegistryProps> = ({
+const StyledComponentsRegistry: React.FC<React.PropsWithChildren<unknown>> = ({
   children,
 }) => {
   // Only create stylesheet once with lazy initial state
