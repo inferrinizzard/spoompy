@@ -1,7 +1,10 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle, css } from 'styled-components';
 
-const GlobalStyles = createGlobalStyle`
-  // your global styles
+const styles = css`
+  
 `;
 
+const GlobalStyles = createGlobalStyle`
+  ${styles}
+`;
 export default GlobalStyles;

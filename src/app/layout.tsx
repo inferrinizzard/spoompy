@@ -24,10 +24,9 @@ export const RootLayout = ({
       <body className={inter.className}>
         <ReduxProvider>
           <DataLoader />
-          <StyledComponentsProvider>
-            {/* <GlobalStyles /> */}
-            <KumaRegistry>{children}</KumaRegistry>
-          </StyledComponentsProvider>
+          <KumaRegistry>
+            <StyledComponentsProvider>{children}</StyledComponentsProvider>
+          </KumaRegistry>
         </ReduxProvider>
       </body>
     </html>
