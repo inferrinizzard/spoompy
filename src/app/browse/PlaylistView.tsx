@@ -1,5 +1,8 @@
 'use client';
 
+import { Text } from '@kuma-ui/core';
+import Image from 'next/image';
+
 import Block from '@/components/Block';
 import { useAppSelector } from '@/redux/client';
 import { selectPlaylists } from '@/redux/slices/playlistSlice';
@@ -23,7 +26,16 @@ export const PlaylistView = () => {
           gap: '1rem',
         }}>
         {Object.values(playlists).map((playlist) => (
-          <Block key={playlist.id}>{playlist.name}</Block>
+          <Block key={playlist.id}>
+            <Image
+              alt={playlist.name}
+              height={150}
+              src={playlist.images[0].url}
+              style={{ aspectRatio: '1/1' }}
+              width={150}
+            />
+            <Text>{playlist.name}</Text>
+          </Block>
         ))}
       </section>
     </>
