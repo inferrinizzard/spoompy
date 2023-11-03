@@ -3,6 +3,9 @@
 const { withKumaUI } = require('@kuma-ui/next-plugin');
 
 const nextConfig = {
+  compiler: {
+    styledComponents: true,
+  },
   experimental: {
     esmExternals: 'loose',
     serverActions: true,
