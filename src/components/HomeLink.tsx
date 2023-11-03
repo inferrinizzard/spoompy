@@ -1,4 +1,4 @@
-import NextLink from 'next/link';
+import Link from '@/styles/primitives/Link';
 
 const disabledLinkStyles = {
   cursor: 'not-allowed',
@@ -15,8 +15,7 @@ export interface HomeLinkProps {
 export const HomeLink: React.FC<HomeLinkProps> = ({ href, text, disabled }) => {
   return (
     <article style={{ marginBottom: '3rem' }}>
-      <NextLink
-        // as={NextLink}
+      <Link
         href={disabled ? 'null' : href}
         style={{ ...(disabled && disabledLinkStyles) }}>
         <h1
@@ -24,7 +23,7 @@ export const HomeLink: React.FC<HomeLinkProps> = ({ href, text, disabled }) => {
         >
           {text}
         </h1>
-      </NextLink>
+      </Link>
     </article>
   );
 };

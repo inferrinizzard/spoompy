@@ -1,4 +1,4 @@
-import NextLink from 'next/link';
+import Link from '@/styles/primitives/Link';
 
 export interface NavbarProps {}
 
@@ -12,42 +12,34 @@ export const Navbar: React.FC<NavbarProps> = () => {
         display: 'flex',
         gap: '1rem',
       }}>
-      <NextLink
-        // as={NextLink}
-        href="/">
+      <Link href="/">
         <h1
         // fontSize={24}
         >
           {'Home'}
         </h1>
-      </NextLink>
-      <NextLink
-        // as={NextLink}
-        href="/browse">
+      </Link>
+      <Link href="/browse">
         <h1
         // fontSize={24}
         >
           {'Browse'}
         </h1>
-      </NextLink>
-      <NextLink
-        // as={NextLink}
-        href="/analysis">
+      </Link>
+      <Link href="/analysis">
         <h1
         // fontSize={24}
         >
           {'Analysis'}
         </h1>
-      </NextLink>
-      <NextLink
-        // as={NextLink}
-        href="/archive">
+      </Link>
+      <Link href="/archive">
         <h1
         // fontSize={24}
         >
           {'Archive'}
         </h1>
-      </NextLink>
+      </Link>
     </nav>
   );
 };

@@ -1,15 +1,12 @@
-import NextLink from 'next/link';
+import Link from '@/styles/primitives/Link';
 
 export interface ReturnButtonProps {}
 
 export const ReturnButton: React.FC<ReturnButtonProps> = () => {
   return (
-    <NextLink
-      // as={NextLink}
-      href="/"
-      style={{ position: 'fixed', bottom: 0, right: 0 }}>
+    <Link href="/" style={{ position: 'fixed', bottom: 0, right: 0 }}>
       {'Home'}
-    </NextLink>
+    </Link>
   );
 };
 
