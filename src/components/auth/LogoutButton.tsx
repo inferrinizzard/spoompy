@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Button, Text } from '@kuma-ui/core';
 
 import { clientSpotifyLogout } from '@/spotify/client';
 import { SPOTIFY_AUTH_COOKIE } from '@/spotify/constants';
@@ -22,7 +21,7 @@ export const LogoutButton: React.FC<LogoutButtonProps> = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <Button
+    <button
       onClick={() => {
         clientSpotifyLogout();
         dispatch(setAuthStatus(false));
@@ -33,9 +32,14 @@ export const LogoutButton: React.FC<LogoutButtonProps> = () => {
         deleteServerCookie(SPOTIFY_AUTH_COOKIE);
 
         router.replace('/');
-      }}>
-      <Text fontSize={24}>{'Log Out'}</Text>
-    </Button>
+      }}
+      type="button">
+      <h1
+      // fontSize={24}
+      >
+        {'Log Out'}
+      </h1>
+    </button>
   );
 };
 

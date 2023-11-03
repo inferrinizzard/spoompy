@@ -1,5 +1,3 @@
-import { Spacer, Text } from '@kuma-ui/core';
-
 import HomeLink from '@/components/HomeLink';
 import AuthMain from '@/components/auth/AuthMain';
 import store from '@/redux/store';
@@ -24,8 +22,12 @@ const Home = async () => {
     <main className={styles.main}>
       <Preloader state={store.getState()} />
 
-      <Text fontSize={36}>{'Spotify Data Visualizer'}</Text>
-      <Spacer height="2rem" />
+      <h1
+      // fontSize={36}
+      >
+        {'Spotify Data Visualizer'}
+      </h1>
+      {/* <Spacer height="2rem" /> */}
       <HomeLink disabled={!isAuthed} href="/browse" text="Browse Library" />
       <HomeLink disabled={!isAuthed} href="/analysis" text="Data Analysis" />
       <HomeLink disabled={!isAuthed} href="/archive" text="Archive Playlists" />
