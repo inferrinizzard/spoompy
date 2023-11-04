@@ -1,7 +1,7 @@
 'use client';
 
 import useLogin from '@/hooks/login';
-import Text from '@/styles/primitives/Text';
+import { Text } from '@/styles/primitives';
 
 export interface LoginButtonProps {}
 

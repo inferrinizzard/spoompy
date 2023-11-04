@@ -1,4 +1,4 @@
-import Link from '@/styles/primitives/Link';
+import { Link } from '@/styles/primitives';
 
 export interface ReturnButtonProps {}
 

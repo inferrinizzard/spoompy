@@ -1,5 +1,4 @@
-import Link from '@/styles/primitives/Link';
-import Text from '@/styles/primitives/Text';
+import { Link, Text } from '@/styles/primitives';
 
 const disabledLinkStyles = {
   cursor: 'not-allowed',

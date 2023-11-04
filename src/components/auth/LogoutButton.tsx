@@ -13,7 +13,7 @@ import {
   setUserDetails,
   setUserPlaylists,
 } from '@/redux/slices/userSlice';
-import Text from '@/styles/primitives/Text';
+import { Text } from '@/styles/primitives';
 
 export interface LogoutButtonProps {}
 

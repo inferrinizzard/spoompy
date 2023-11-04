@@ -4,7 +4,7 @@ import store from '@/redux/store';
 import { getUserDetails, getUserPlaylists } from '@/redux/actions';
 import { readAuthSession } from '@/redux/actions/server/init';
 import Preloader from '@/redux/components/Preloader';
-import Text from '@/styles/primitives/Text';
+import { Text } from '@/styles/primitives';
 
 import styles from './page.module.css';
 
