@@ -13,7 +13,7 @@ import {
   setUserDetails,
   setUserPlaylists,
 } from '@/redux/slices/userSlice';
-import { Text } from '@/styles/primitives';
+import { Button, Text } from '@/styles/primitives';
 
 export interface LogoutButtonProps {}
 
@@ -22,7 +22,7 @@ export const LogoutButton: React.FC<LogoutButtonProps> = () => {
   const dispatch = useAppDispatch();
 
   return (
-    <button
+    <Button
       onClick={() => {
         clientSpotifyLogout();
         dispatch(setAuthStatus(false));
@@ -33,10 +33,9 @@ export const LogoutButton: React.FC<LogoutButtonProps> = () => {
         deleteServerCookie(SPOTIFY_AUTH_COOKIE);
 
         router.replace('/');
-      }}
-      type="button">
+      }}>
       <Text fontSize={24}>{'Log Out'}</Text>
-    </button>
+    </Button>
   );
 };
 
