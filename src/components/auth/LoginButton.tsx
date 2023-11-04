@@ -1,6 +1,7 @@
 'use client';
 
 import useLogin from '@/hooks/login';
+import Text from '@/styles/primitives/Text';
 
 export interface LoginButtonProps {}
 
@@ -9,11 +10,7 @@ export const LoginButton: React.FC<LoginButtonProps> = () => {
 
   return (
     <button onClick={() => login()} type="button">
-      <h1
-      // fontSize={24}
-      >
-        {'Login'}
-      </h1>
+      <Text fontSize={24}>{'Login'}</Text>
     </button>
   );
 };

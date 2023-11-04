@@ -13,6 +13,7 @@ import {
   setUserDetails,
   setUserPlaylists,
 } from '@/redux/slices/userSlice';
+import Text from '@/styles/primitives/Text';
 
 export interface LogoutButtonProps {}
 
@@ -34,11 +35,7 @@ export const LogoutButton: React.FC<LogoutButtonProps> = () => {
         router.replace('/');
       }}
       type="button">
-      <h1
-      // fontSize={24}
-      >
-        {'Log Out'}
-      </h1>
+      <Text fontSize={24}>{'Log Out'}</Text>
     </button>
   );
 };

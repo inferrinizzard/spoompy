@@ -1,4 +1,5 @@
 import Link from '@/styles/primitives/Link';
+import Text from '@/styles/primitives/Text';
 
 const disabledLinkStyles = {
   cursor: 'not-allowed',
@@ -18,11 +19,9 @@ export const HomeLink: React.FC<HomeLinkProps> = ({ href, text, disabled }) => {
       <Link
         href={disabled ? 'null' : href}
         style={{ ...(disabled && disabledLinkStyles) }}>
-        <h1
-        //  fontSize={48}
-        >
+        <Text as="h1" fontSize={48}>
           {text}
-        </h1>
+        </Text>
       </Link>
     </article>
   );

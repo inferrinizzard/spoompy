@@ -1,4 +1,5 @@
 import Link from '@/styles/primitives/Link';
+import Text from '@/styles/primitives/Text';
 
 export interface NavbarProps {}
 
@@ -13,32 +14,24 @@ export const Navbar: React.FC<NavbarProps> = () => {
         gap: '1rem',
       }}>
       <Link href="/">
-        <h1
-        // fontSize={24}
-        >
+        <Text as="h3" fontSize={24}>
           {'Home'}
-        </h1>
+        </Text>
       </Link>
       <Link href="/browse">
-        <h1
-        // fontSize={24}
-        >
+        <Text as="h3" fontSize={24}>
           {'Browse'}
-        </h1>
+        </Text>
       </Link>
       <Link href="/analysis">
-        <h1
-        // fontSize={24}
-        >
+        <Text as="h3" fontSize={24}>
           {'Analysis'}
-        </h1>
+        </Text>
       </Link>
       <Link href="/archive">
-        <h1
-        // fontSize={24}
-        >
+        <Text as="h3" fontSize={24}>
           {'Archive'}
-        </h1>
+        </Text>
       </Link>
     </nav>
   );

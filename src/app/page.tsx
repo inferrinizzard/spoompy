@@ -4,6 +4,7 @@ import store from '@/redux/store';
 import { getUserDetails, getUserPlaylists } from '@/redux/actions';
 import { readAuthSession } from '@/redux/actions/server/init';
 import Preloader from '@/redux/components/Preloader';
+import Text from '@/styles/primitives/Text';
 
 import styles from './page.module.css';
 
@@ -22,11 +23,9 @@ const Home = async () => {
     <main className={styles.main}>
       <Preloader state={store.getState()} />
 
-      <h1
-      // fontSize={36}
-      >
+      <Text as="h1" fontSize={36}>
         {'Spotify Data Visualizer'}
-      </h1>
+      </Text>
       {/* <Spacer height="2rem" /> */}
       <HomeLink disabled={!isAuthed} href="/browse" text="Browse Library" />
       <HomeLink disabled={!isAuthed} href="/analysis" text="Data Analysis" />
