@@ -1,9 +1,7 @@
 'use client';
 
-import Image from 'next/image';
-
 import { type PlaylistState } from '@/redux/slices/playlistSlice';
-import { Button } from '@/styles/primitives';
+import { Button, Image } from '@/styles/primitives';
 
 import { download, simplifyPlaylist } from '../util/download';
 
