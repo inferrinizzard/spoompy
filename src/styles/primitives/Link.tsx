@@ -1,3 +1,5 @@
+'use client';
+
 import NextLink, { LinkProps as NextLinkProps } from 'next/link';
 import { ComponentPropsWithoutRef, PropsWithChildren } from 'react';
 import styled from 'styled-components';
