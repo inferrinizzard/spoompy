@@ -1,2 +1,4 @@
-export const parseCssUnit = (unit: number | string): string =>
-  Number.isNaN(unit) ? (unit as string) : `${unit}px`;
+import { type CssUnit } from './types';
+
+export const parseCssUnit = (unit: CssUnit): string =>
+  typeof unit === 'string' ? unit : `${unit}px`;

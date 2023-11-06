@@ -5,6 +5,7 @@ import { getUserDetails, getUserPlaylists } from '@/redux/actions';
 import { readAuthSession } from '@/redux/actions/server/init';
 import Preloader from '@/redux/components/Preloader';
 import { Text } from '@/styles/primitives';
+import Spacer from '@/styles/primitives/Spacer';
 
 import styles from './page.module.css';
 
@@ -26,7 +27,7 @@ const Home = async () => {
       <Text as="h1" fontSize={48}>
         {'Spotify Data Visualizer'}
       </Text>
-      {/* <Spacer height="2rem" /> */}
+      <Spacer height="2rem" />
       <HomeLink disabled={!isAuthed} href="/browse" text="Browse Library" />
       <HomeLink disabled={!isAuthed} href="/analysis" text="Data Analysis" />
       <HomeLink disabled={!isAuthed} href="/archive" text="Archive Playlists" />

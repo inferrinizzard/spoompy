@@ -4,6 +4,7 @@ import { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
 
 import { parseCssUnit } from '../utils';
+import { type CssUnit } from '../types';
 
 type TextType = 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
@@ -15,12 +16,11 @@ const StyledText = styled.div<TextProps>`
 export interface TextProps {
   as?: TextType;
 
-  fontSize?: string | number;
+  fontSize?: CssUnit;
 }
 
 const Text: React.FC<TextProps & ComponentPropsWithoutRef<TextType>> = ({
   as = 'p',
-  children,
   ...props
 }) => <StyledText as={as} {...props} />;
 
