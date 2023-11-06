@@ -1,10 +1,11 @@
-import { Link, Text } from '@/styles/primitives';
+import { Box, Link, Text } from '@/styles/primitives';
 
 export interface NavbarProps {}
 
 export const Navbar: React.FC<NavbarProps> = () => {
   return (
-    <nav
+    <Box
+      as="nav"
       style={{
         height: '2rem',
         width: '100%',
@@ -32,7 +33,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
           {'Archive'}
         </Text>
       </Link>
-    </nav>
+    </Box>
   );
 };
 
