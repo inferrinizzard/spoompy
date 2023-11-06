@@ -1,11 +1,5 @@
 import { Box, Link, Text } from '@/styles/primitives';
 
-const disabledLinkStyles = {
-  cursor: 'not-allowed',
-  opacity: 0.5,
-  textDecoration: 'none',
-};
-
 export interface HomeLinkProps {
   href: string;
   text: string;
@@ -15,9 +9,7 @@ export interface HomeLinkProps {
 export const HomeLink: React.FC<HomeLinkProps> = ({ href, text, disabled }) => {
   return (
     <Box as="article" style={{ marginBottom: '3rem' }}>
-      <Link
-        href={disabled ? 'null' : href}
-        style={{ ...(disabled && disabledLinkStyles) }}>
+      <Link disabled={disabled} href={href}>
         <Text as="h2" fontSize={36}>
           {text}
         </Text>
