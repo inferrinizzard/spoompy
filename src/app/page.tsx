@@ -23,7 +23,7 @@ const Home = async () => {
     <main className={styles.main}>
       <Preloader state={store.getState()} />
 
-      <Text as="h1" fontSize={36}>
+      <Text as="h1" fontSize={48}>
         {'Spotify Data Visualizer'}
       </Text>
       {/* <Spacer height="2rem" /> */}

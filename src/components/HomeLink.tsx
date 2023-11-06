@@ -18,7 +18,7 @@ export const HomeLink: React.FC<HomeLinkProps> = ({ href, text, disabled }) => {
       <Link
         href={disabled ? 'null' : href}
         style={{ ...(disabled && disabledLinkStyles) }}>
-        <Text as="h1" fontSize={48}>
+        <Text as="h2" fontSize={36}>
           {text}
         </Text>
       </Link>
