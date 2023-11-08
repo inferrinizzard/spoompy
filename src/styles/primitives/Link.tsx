@@ -15,7 +15,7 @@ const StyledLink = styled(NextLink)<LinkProps>`
   `}
 
   &:hover {
-    color: ${'lime'};
+    color: ${({ theme }) => theme.colours.lime};
     text-decoration: underline;
   }
 `;

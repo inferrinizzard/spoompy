@@ -1,11 +1,9 @@
-import 'styled-components';
+export type Theme = typeof theme;
 
-type Theme = typeof theme;
-
-declare module 'styled-components' {
-  export type DefaultTheme = Theme;
-}
-
-const theme = {};
+const theme = {
+  colours: {
+    green: 'lime',
+  },
+} as const;
 
 export default theme;
