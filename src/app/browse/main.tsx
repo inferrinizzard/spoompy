@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 
+import { Button } from '@/styles/primitives';
+
 import TabularView from './TabularView';
 import PlaylistView from './PlaylistView';
 
@@ -12,13 +14,12 @@ const BrowseMain: React.FC<DisplayProps> = () => {
 
   return (
     <>
-      <button
+      <Button
         onClick={() => {
           view === 'playlist' ? setView('tabular') : setView('playlist');
-        }}
-        type="button">
+        }}>
         {'Switch View'}
-      </button>
+      </Button>
       {view === 'playlist' && <PlaylistView />}
       {view === 'tabular' && <TabularView />}
     </>

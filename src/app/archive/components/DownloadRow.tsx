@@ -1,8 +1,7 @@
 'use client';
 
-import Image from 'next/image';
-
 import { type PlaylistState } from '@/redux/slices/playlistSlice';
+import { Button, Image } from '@/styles/primitives';
 
 import { download, simplifyPlaylist } from '../util/download';
 
@@ -34,18 +33,15 @@ export const DownloadRow: React.FC<DownloadRowProps> = ({ playlist }) => (
       <h6>{`Num tracks: ${playlist.tracks.length}`}</h6>
     </span>
     <span>
-      <button
-        onClick={() => download(playlist, `${playlist.name}.json`)}
-        type="button">
+      <Button onClick={() => download(playlist, `${playlist.name}.json`)}>
         {'Download'}
-      </button>
-      <button
+      </Button>
+      <Button
         onClick={() =>
           download(simplifyPlaylist(playlist), `${playlist.name}.json`)
-        }
-        type="button">
+        }>
         {'Download Simplified'}
-      </button>
+      </Button>
     </span>
   </div>
 );

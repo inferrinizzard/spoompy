@@ -1,8 +1,7 @@
 'use client';
 
-import { Button, Text } from '@kuma-ui/core';
-
 import useLogin from '@/hooks/login';
+import { Button, Text } from '@/styles/primitives';
 
 export interface LoginButtonProps {}
 

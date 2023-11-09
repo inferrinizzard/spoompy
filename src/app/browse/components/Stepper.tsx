@@ -2,6 +2,7 @@
 
 import { useAppDispatch, useAppSelector } from '@/redux/client';
 import { selectSlice, setSliceIndex } from '@/redux/slices/browseSlice';
+import { Button } from '@/styles/primitives';
 
 export interface StepperProps {
   totalLength: number;
@@ -15,30 +16,25 @@ const Stepper: React.FC<StepperProps> = ({ totalLength }) => {
   return (
     <>
       <span>
-        <button
-          onClick={() => dispatch(setSliceIndex(Math.max(0, slice.index - 1)))}
-          type="button">
+        <Button
+          onClick={() => dispatch(setSliceIndex(Math.max(0, slice.index - 1)))}>
           {'Prev'}
-        </button>
+        </Button>
       </span>
       <span>
-        <button
+        <Button
           onClick={() =>
             dispatch(
               setSliceIndex(
                 Math.min(slice.index + 1, totalLength / slice.size),
               ),
             )
-          }
-          type="button">
+          }>
           {'Next'}
-        </button>
+        </Button>
       </span>
       <span>
-        <button onClick={() => dispatch(setSliceIndex(0))} type="button">
-          {'Reset'}
-        </button>
-        {"type='button'"}
+        <Button onClick={() => dispatch(setSliceIndex(0))}>{'Reset'}</Button>
       </span>
       <span>{`${slice.index * slice.size + 1} - ${
         (slice.index + 1) * slice.size
