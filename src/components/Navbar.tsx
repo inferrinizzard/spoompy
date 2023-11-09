@@ -1,11 +1,11 @@
-import NextLink from 'next/link';
-import { Link, Text } from '@kuma-ui/core';
+import { Box, Link, Text } from '@/styles/primitives';
 
 export interface NavbarProps {}
 
 export const Navbar: React.FC<NavbarProps> = () => {
   return (
-    <nav
+    <Box
+      as="nav"
       style={{
         height: '2rem',
         width: '100%',
@@ -13,19 +13,27 @@ export const Navbar: React.FC<NavbarProps> = () => {
         display: 'flex',
         gap: '1rem',
       }}>
-      <Link as={NextLink} href="/">
-        <Text fontSize={24}>{'Home'}</Text>
+      <Link href="/">
+        <Text as="h3" fontSize={24}>
+          {'Home'}
+        </Text>
       </Link>
-      <Link as={NextLink} href="/browse">
-        <Text fontSize={24}>{'Browse'}</Text>
+      <Link href="/browse">
+        <Text as="h3" fontSize={24}>
+          {'Browse'}
+        </Text>
       </Link>
-      <Link as={NextLink} href="/analysis">
-        <Text fontSize={24}>{'Analysis'}</Text>
+      <Link href="/analysis">
+        <Text as="h3" fontSize={24}>
+          {'Analysis'}
+        </Text>
       </Link>
-      <Link as={NextLink} href="/archive">
-        <Text fontSize={24}>{'Archive'}</Text>
+      <Link href="/archive">
+        <Text as="h3" fontSize={24}>
+          {'Archive'}
+        </Text>
       </Link>
-    </nav>
+    </Box>
   );
 };
 

@@ -1,11 +1,11 @@
-import { Spacer, Text } from '@kuma-ui/core';
-
 import HomeLink from '@/components/HomeLink';
 import AuthMain from '@/components/auth/AuthMain';
 import store from '@/redux/store';
 import { getUserDetails, getUserPlaylists } from '@/redux/actions';
 import { readAuthSession } from '@/redux/actions/server/init';
 import Preloader from '@/redux/components/Preloader';
+import { Text } from '@/styles/primitives';
+import Spacer from '@/styles/primitives/Spacer';
 
 import styles from './page.module.css';
 
@@ -24,7 +24,9 @@ const Home = async () => {
     <main className={styles.main}>
       <Preloader state={store.getState()} />
 
-      <Text fontSize={36}>{'Spotify Data Visualizer'}</Text>
+      <Text as="h1" fontSize={48}>
+        {'Spotify Data Visualizer'}
+      </Text>
       <Spacer height="2rem" />
       <HomeLink disabled={!isAuthed} href="/browse" text="Browse Library" />
       <HomeLink disabled={!isAuthed} href="/analysis" text="Data Analysis" />

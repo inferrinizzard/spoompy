@@ -1,13 +1,4 @@
-import NextLink from 'next/link';
-import { Box, Link, Text } from '@kuma-ui/core';
-
-// TODO: redo with kuma
-const disabledLinkStyles = {
-  cursor: 'not-allowed',
-  opacity: 0.5,
-  textDecoration: 'none',
-  pointerEvents: 'none',
-};
+import { Box, Link, Text } from '@/styles/primitives';
 
 export interface HomeLinkProps {
   href: string;
@@ -17,19 +8,11 @@ export interface HomeLinkProps {
 
 export const HomeLink: React.FC<HomeLinkProps> = ({ href, text, disabled }) => {
   return (
-    <Box
-      as="article"
-      style={{
-        marginBottom: '3rem',
-        ...(disabled && { cursor: 'not-allowed' }),
-      }}>
-      <Link
-        as={NextLink}
-        // href={disabled ? '' : href}
-        href={href}
-        // @ts-expect-error disabled style
-        style={{ ...(disabled && disabledLinkStyles) }}>
-        <Text fontSize={48}>{text}</Text>
+    <Box as="article" style={{ marginBottom: '3rem' }}>
+      <Link disabled={disabled} href={href}>
+        <Text as="h2" fontSize={36}>
+          {text}
+        </Text>
       </Link>
     </Box>
   );
