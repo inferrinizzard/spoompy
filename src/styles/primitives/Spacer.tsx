@@ -4,16 +4,18 @@ import { ComponentPropsWithoutRef } from 'react';
 import styled from 'styled-components';
 
 import { parseCssUnit } from '../utils';
-import { type CssUnit } from '../types';
+import { type CssUnit, type TransientProps } from '../types';
 
-const StyledSpacer = styled.div<{
-  height: string;
-  width: string;
-  display: string;
-}>`
-  ${(props) => `height: ${props.height};`}
-  ${(props) => `width: ${props.width};`}
-  ${(props) => `display: ${props.display};`}
+const StyledSpacer = styled.div<
+  TransientProps<{
+    height: string;
+    width: string;
+    display: string;
+  }>
+>`
+  ${(props) => `height: ${props.$height};`}
+  ${(props) => `width: ${props.$width};`}
+  ${(props) => `display: ${props.$display};`}
   flex-shrink: 0;
 `;
 
@@ -36,19 +38,19 @@ const Spacer: React.FC<SpacerProps & ComponentPropsWithoutRef<'div'>> = ({
   }
 
   const dimensions = height
-    ? { height: parseCssUnit(height), width: 'auto', display: 'block' }
+    ? { $height: parseCssUnit(height), $width: 'auto', $display: 'block' }
     : width
-    ? { width: parseCssUnit(width), height: 'auto', display: 'inline-block' }
+    ? { $width: parseCssUnit(width), $height: 'auto', $display: 'inline-block' }
     : horizontal
     ? {
-        width: parseCssUnit(size as CssUnit),
-        height: 'auto',
-        display: 'inline-block',
+        $width: parseCssUnit(size as CssUnit),
+        $height: 'auto',
+        $display: 'inline-block',
       }
     : {
-        height: parseCssUnit(size as CssUnit),
-        width: 'auto',
-        display: 'block',
+        $height: parseCssUnit(size as CssUnit),
+        $width: 'auto',
+        $display: 'block',
       };
 
   return <StyledSpacer {...dimensions} {...props} />;
