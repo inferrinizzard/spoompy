@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { styled } from '@kuma-ui/core';
+import styled from 'styled-components';
 
 import { useAppDispatch, useAppSelector } from '@/redux/client';
 import { selectSlice, selectSort, setSort } from '@/redux/slices/browseSlice';
@@ -14,7 +14,7 @@ import { formatDate } from '@/utils/dateFormat';
 
 import { type PlaylistTrackEntityWithPlaylist } from '../TabularView';
 
-const TableCell = styled('td')`
+const TableCell = styled.td`
   padding: 0.5rem 1rem;
 `;
 

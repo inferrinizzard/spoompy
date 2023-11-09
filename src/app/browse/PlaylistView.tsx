@@ -1,11 +1,11 @@
 'use client';
 
-import { Text } from '@kuma-ui/core';
 import Image from 'next/image';
 
 import Block from '@/components/Block';
 import { useAppSelector } from '@/redux/client';
 import { selectPlaylists } from '@/redux/slices/playlistSlice';
+import { Text } from '@/styles/primitives';
 
 import Search from './components/Search';
 
