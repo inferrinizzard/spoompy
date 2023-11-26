@@ -21,3 +21,5 @@ export const HOME_URL =
 export const SPOTIFY_POSTBACK_URL = `${HOME_URL}/api/login`;
 
 export const SPOTIFY_AUTH_COOKIE = 'SPOTIFY_ACCESS_TOKEN';
+
+console.info(`[LOG] ENV: ${ENV} , HOME_URL: ${HOME_URL}`);
