@@ -9,9 +9,13 @@ export const SPOTIFY_SCOPES = [
   'user-top-read',
 ];
 
+const ENV = process.env.VERCEL_ENV;
+
 export const HOME_URL =
-  process.env.NODE_ENV === 'production'
+  ENV === 'production'
     ? process.env.VERCEL_URL
+    : ENV === 'preview'
+    ? process.env.VERCEL_BRANCH_URL
     : 'http://localhost:3000';
 export const SPOTIFY_POSTBACK_URL = `${HOME_URL}/api/login`;
 
