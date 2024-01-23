@@ -1,5 +1,6 @@
 import {
   ConsoleLoggingErrorHandler,
+  LocalStorageCachingStrategy,
   type Playlist,
   type SdkOptions,
   SpotifyApi,
@@ -14,11 +15,7 @@ import {
 } from '@/types/api';
 import { type CacheResult } from '@/types/util';
 
-import {
-  REROUTE_HOME_URL,
-  SPOTIFY_CLIENT_ID,
-  SPOTIFY_SCOPES,
-} from './constants';
+import { HOME_URL, SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from './constants';
 import { EntityCache } from './utils/entityCache';
 import {
   buildPlaylistFields,
@@ -26,7 +23,7 @@ import {
 } from './utils/fieldBuilder';
 import { type RequestBatch, RequestQueue } from './utils/requestQueue';
 
-let clientSpotify: ClientSpotifyInstance;
+let clientSpotify: ClientSpotifyInstance | null;
 
 export class ClientSpotifyInstance {
   private readonly sdkConfig: SdkOptions;
@@ -41,11 +38,14 @@ export class ClientSpotifyInstance {
     this.cache = new EntityCache();
     this.queue = new RequestQueue();
 
-    this.sdkConfig = apiConfig;
+    this.sdkConfig = {
+      ...apiConfig,
+      cachingStrategy: new LocalStorageCachingStrategy(),
+    };
 
     this.sdk = SpotifyApi.withUserAuthorization(
       SPOTIFY_CLIENT_ID,
-      REROUTE_HOME_URL,
+      HOME_URL,
       SPOTIFY_SCOPES,
       this.sdkConfig,
     );
@@ -197,5 +197,13 @@ export const getClientSpotify = (): ClientSpotifyInstance => {
     }
   }
 
-  return clientSpotify;
+  return clientSpotify as ClientSpotifyInstance;
+};
+
+export const clientSpotifyLogout = (): void => {
+  clientSpotify?.sdk.logOut();
+  clientSpotify = null;
+  if (process.env.NODE_ENV !== 'production') {
+    global.clientSpotify = null as unknown as ClientSpotifyInstance;
+  }
 };

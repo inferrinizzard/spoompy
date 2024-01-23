@@ -25,7 +25,7 @@ export const userSlice = createSlice({
     setAuthStatus: (state, action: PayloadAction<boolean>) => {
       state.isAuthed = action.payload;
     },
-    setUserDetails: (state, action: PayloadAction<User>) => {
+    setUserDetails: (state, action: PayloadAction<User | undefined>) => {
       state.userDetails = action.payload;
     },
     setUserPlaylists: (state, action: PayloadAction<PlaylistRef[]>) => {

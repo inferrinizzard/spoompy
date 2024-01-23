@@ -1,3 +1,6 @@
 {
-  "extends": ["next/core-web-vitals", "@inferrinizzard/eslint-config"]
+  "extends": ["next/core-web-vitals", "@inferrinizzard/eslint-config"],
+  "rules": {
+    "vitest/no-skipped-tests": "off"
+  }
 }

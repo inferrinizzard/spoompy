@@ -11,6 +11,7 @@ import {
   setTimeStep,
 } from '@/redux/slices/analysisSlice';
 import { type DateRange, type TimeStep } from '@/types/common';
+import { Button } from '@/styles/primitives';
 
 export interface TimeControlsProps {}
 
@@ -82,13 +83,14 @@ export const TimeControls: React.FC<TimeControlsProps> = ({}) => {
       <h3>{'Time Range'}</h3>
       <div style={{ display: 'flex' }}>
         {timeRanges.map(({ label, range, timeStep, onClick }, i) => (
-          <button
+          <Button
             disabled={selected == i}
             key={`time-range-${i}`}
-            onClick={() => (range ? setRange(range, timeStep, i) : onClick?.())}
-            type="button">
+            onClick={() =>
+              range ? setRange(range, timeStep, i) : onClick?.()
+            }>
             {label}
-          </button>
+          </Button>
         ))}
       </div>
     </div>

@@ -7,7 +7,7 @@ import {
   selectAuthStatus,
   selectUserPlaylists,
 } from '@/redux/slices/userSlice';
-import { getAllPlaylists } from '@/redux/actions/getPlaylists';
+import { getAllPlaylists } from '@/redux/actions/client/getPlaylists';
 
 export const DataLoader: React.FC = () => {
   const loaded = useRef(false);

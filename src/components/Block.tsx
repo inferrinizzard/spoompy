@@ -1,5 +1,7 @@
 import { type CSSProperties } from 'react';
 
+import { Box } from '@/styles/primitives';
+
 export interface BlockProps extends React.PropsWithChildren {
   height?: number;
   width?: number;
@@ -13,7 +15,7 @@ export const Block: React.FC<BlockProps> = ({
   children,
 }) => {
   return (
-    <div
+    <Box
       style={{
         borderColor: 'white',
         borderWidth: '1',
@@ -28,7 +30,7 @@ export const Block: React.FC<BlockProps> = ({
         ...style,
       }}>
       {children}
-    </div>
+    </Box>
   );
 };
 
