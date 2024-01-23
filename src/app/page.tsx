@@ -1,3 +1,5 @@
+'use client';
+
 import HomeLink from '@/components/HomeLink';
 import AuthMain from '@/components/auth/AuthMain';
 import store from '@/redux/store';
@@ -6,23 +8,28 @@ import { readAuthSession } from '@/redux/actions/server/init';
 import Preloader from '@/redux/components/Preloader';
 import { Text } from '@/styles/primitives';
 import Spacer from '@/styles/primitives/Spacer';
+import { useAppSelector } from '@/redux/client';
+import { selectAuthStatus, selectUserDetails } from '@/redux/slices/userSlice';
 
 import styles from './page.module.css';
 
 const Home = async () => {
-  readAuthSession();
+  const isAuthed = useAppSelector(selectAuthStatus);
+  const userDetails = useAppSelector(selectUserDetails);
 
-  const isAuthed = store.getState().user.isAuthed;
-  if (isAuthed) {
-    await getUserDetails();
-    await getUserPlaylists();
-  }
+  // readAuthSession();
 
-  const userDetails = store.getState().user.userDetails;
+  // const isAuthed = store.getState().user.isAuthed;
+  // if (isAuthed) {
+  //   await getUserDetails();
+  //   await getUserPlaylists();
+  // }
+
+  // const userDetails = store.getState().user.userDetails;
 
   return (
     <main className={styles.main}>
-      <Preloader state={store.getState()} />
+      {/* <Preloader state={store.getState()} /> */}
 
       <Text as="h1" fontSize={48}>
         {'Spotify Data Visualizer'}
