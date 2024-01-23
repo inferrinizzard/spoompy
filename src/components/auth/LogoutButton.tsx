@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Button, Text } from '@kuma-ui/core';
 
 import { clientSpotifyLogout } from '@/spotify/client';
 import { SPOTIFY_AUTH_COOKIE } from '@/spotify/constants';
@@ -14,6 +13,7 @@ import {
   setUserDetails,
   setUserPlaylists,
 } from '@/redux/slices/userSlice';
+import { Button, Text } from '@/styles/primitives';
 
 export interface LogoutButtonProps {}
 
