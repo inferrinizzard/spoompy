@@ -1,9 +1,9 @@
 import {
-  ConsoleLoggingErrorHandler,
   LocalStorageCachingStrategy,
   type Playlist,
   type SdkOptions,
   SpotifyApi,
+  type User,
 } from '@spotify/web-api-ts-sdk';
 
 import { trimPlaylist, trimTrack } from '@/utils/normalizr/trim';
@@ -23,9 +23,7 @@ import {
 } from './utils/fieldBuilder';
 import { type RequestBatch, RequestQueue } from './utils/requestQueue';
 
-let clientSpotify: ClientSpotifyInstance | null;
-
-export class ClientSpotifyInstance {
+export class SpotifyInstance {
   private readonly sdkConfig: SdkOptions;
 
   public sdk: SpotifyApi;
@@ -178,32 +176,42 @@ export class ClientSpotifyInstance {
 
     return trimPlaylist(playlistObject, tracks);
   };
-}
 
-const spotifySdkConfig: SdkOptions = {
-  errorHandler: new ConsoleLoggingErrorHandler(),
-};
+  public getUserDetails = async (): Promise<User> => {
+    return await this.sdk.currentUser.profile();
+  };
 
-export const getClientSpotify = (): ClientSpotifyInstance => {
-  if (!clientSpotify) {
-    if (process.env.NODE_ENV === 'production') {
-      clientSpotify = new ClientSpotifyInstance(spotifySdkConfig);
-    } else {
-      if (!global.clientSpotify) {
-        global.clientSpotify = new ClientSpotifyInstance(spotifySdkConfig);
-      }
+  public getUserPlaylists = async (userId: string): Promise<PlaylistRef[]> => {
+    const firstSlice = await this.sdk.playlists
+      .getUsersPlaylists(userId, 50)
+      .then((playlistPage) => ({
+        ...playlistPage,
+        items: playlistPage.items.filter(
+          (playlist) => playlist.owner.id === userId,
+        ), // filter only for playlists that belong to userId
+      }));
 
-      clientSpotify = global.clientSpotify;
+    const numPlaylists = firstSlice.total;
+
+    let playlists = firstSlice.items.map((playlist) => ({
+      id: playlist.id,
+      snapshotId: playlist.snapshot_id,
+    }));
+    for (let i = 50; i < numPlaylists; i += 50) {
+      const playlistSlice = await this.sdk.playlists
+        .getUsersPlaylists(userId, 50, i)
+        .then((playlistPage) =>
+          playlistPage.items
+            .filter((playlist) => playlist.owner.id === userId) // filter only for playlists that belong to userId
+            .map((playlist) => ({
+              id: playlist.id,
+              snapshotId: playlist.snapshot_id,
+            })),
+        );
+
+      playlists = playlists.concat(playlistSlice);
     }
-  }
 
-  return clientSpotify as ClientSpotifyInstance;
-};
-
-export const clientSpotifyLogout = (): void => {
-  clientSpotify?.sdk.logOut();
-  clientSpotify = null;
-  if (process.env.NODE_ENV !== 'production') {
-    global.clientSpotify = null as unknown as ClientSpotifyInstance;
-  }
-};
+    return playlists;
+  };
+}

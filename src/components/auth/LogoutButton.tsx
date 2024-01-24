@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 
-import { clientSpotifyLogout } from '@/spotify/client';
+import { spotifyLogout } from '@/spotify';
 import { SPOTIFY_AUTH_COOKIE } from '@/spotify/constants';
 import { logOut } from '@/redux/actions/server/user';
 import { deleteBrowserCookie } from '@/actions/cookies/clientCookies';
@@ -24,7 +24,7 @@ export const LogoutButton: React.FC<LogoutButtonProps> = () => {
   return (
     <Button
       onClick={() => {
-        clientSpotifyLogout();
+        spotifyLogout();
         dispatch(setAuthStatus(false));
         dispatch(setUserDetails(undefined));
         dispatch(setUserPlaylists([]));

@@ -1,4 +1,4 @@
-import { getClientSpotify } from '@/spotify/client';
+import { getSpotify } from '@/spotify';
 import {
   normalizePlaylists,
   normalizeTracks,
@@ -26,7 +26,7 @@ export const getPlaylistTracks = async (
   );
 
   let hasFetchedAllPlaylistTracks = false;
-  let playlistTracksPromise = getClientSpotify().getPlaylistTracks(
+  let playlistTracksPromise = getSpotify().getPlaylistTracks(
     playlistTrackRequestsParams,
   );
 
@@ -57,7 +57,7 @@ export const getAllPlaylists = async (
   playlists: PlaylistRef[],
 ): Promise<void> => {
   let hasFetchedAllPlaylists = false;
-  let playlistPromise = getClientSpotify().getAllPlaylists(playlists);
+  let playlistPromise = getSpotify().getAllPlaylists(playlists);
 
   let playlistTrackRequests = [];
 
