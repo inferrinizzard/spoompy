@@ -18,9 +18,9 @@ import TimeControls from './components/TimeControls';
 import { useRollingSumOfPlaylists } from './util';
 import styles from './main.module.css';
 
-export interface AnalysisMainProps {}
+export interface AnalysisProps {}
 
-export const AnalysisMain: React.FC<AnalysisMainProps> = () => {
+export const AnalysisMain: React.FC<AnalysisProps> = () => {
   const playlists = useAppSelector(selectPlaylists);
   const tracks = useAppSelector(selectTracks);
 
