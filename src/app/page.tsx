@@ -9,14 +9,15 @@ const Home = async () => {
   readAuthSession();
 
   const isAuthed = store.getState().user.isAuthed;
-  if (isAuthed) {
+  const userDetails = store.getState().user.userDetails;
+  if (isAuthed && !userDetails) {
     await getUserDetails();
     await getUserPlaylists();
   }
 
   return (
     <>
-      <Preloader state={store.getState()} />
+      {/* <Preloader state={store.getState()} /> */}
       <LandingMain />
     </>
   );
