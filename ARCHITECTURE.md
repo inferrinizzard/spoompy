@@ -22,15 +22,19 @@ Client->>Spotify: Init Client Spotify
 alt is authed
 Spotify-->>Spotify: Auth Client Spotify
 else is not authed
-Client->>Client: Cold Start Auth<br/>Store AccessToken in cookie
-Client->>Spotify: New AccessToken
+Client->>Server: Cold Start Auth<br/>Redirect to Login route handler
+Server->>Spotify: New AccessToken<br/>Store as cookie
 Spotify-->>Spotify: Auth Client Spotify
 end
 Spotify->>Client: Client Spotify Instance
 
-Client->>Client: User navigates to a page
+Client->>Server: User navigates to a page
+Server->>Client: Initial SSR of Client Component
+
+critical Rehydrate Client Component
 Client->>Spotify: Make relevant Spotify API request
 Spotify-->>Spotify: Check localStorage for cached data
 Spotify->>State: Update per-page state
 State->>Client: Render page with data from Spotify
+end
 ```

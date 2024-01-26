@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
 
 import { selectAuthStatus } from '@/redux/slices/userSlice';
+import { useAppSelector } from '@/redux/client';
 import { SPOTIFY_AUTH_COOKIE } from '@/spotify/constants';
 import { getBrowserCookieString } from '@/actions/cookies/clientCookies';
 import { setServerCookie } from '@/actions/cookies/serverCookies';
@@ -16,7 +16,7 @@ export interface AuthMainProps {}
 
 export const AuthMain: React.FC<AuthMainProps> = () => {
   const login = useLogin();
-  const isAuthed = useSelector(selectAuthStatus);
+  const isAuthed = useAppSelector(selectAuthStatus);
 
   useEffect(() => {
     const authTokenString = getBrowserCookieString(SPOTIFY_AUTH_COOKIE);
