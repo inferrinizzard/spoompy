@@ -1,7 +1,6 @@
 import store from '@/redux/store';
 import { getUserDetails, getUserPlaylists } from '@/redux/actions';
 import { readAuthSession } from '@/redux/actions/server/init';
-import Preloader from '@/redux/components/Preloader';
 
 import LandingMain from './landing/main';
 
@@ -15,12 +14,7 @@ const Home = async () => {
     await getUserPlaylists();
   }
 
-  return (
-    <>
-      {/* <Preloader state={store.getState()} /> */}
-      <LandingMain />
-    </>
-  );
+  return <LandingMain />;
 };
 
 export default Home;
