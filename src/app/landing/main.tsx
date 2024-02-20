@@ -1,20 +1,31 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { Spacer, Text } from '@/styles/primitives';
 import HomeLink from '@/components/HomeLink';
 import AuthMain from '@/components/auth/AuthMain';
-import { useAppSelector } from '@/redux/client';
-import { selectAuthStatus, selectUserDetails } from '@/redux/slices/userSlice';
+import { useAppDispatch, useAppSelector } from '@/redux/client';
+import {
+  selectAuthStatus,
+  selectUserDetails,
+  setUserDetails,
+} from '@/redux/slices/userSlice';
 
 import styles from '../page.module.css';
 
 export interface LandingProps {}
 
 const LandingMain: React.FC<LandingProps> = () => {
+  const dispatch = useAppDispatch();
   const isAuthed = useAppSelector(selectAuthStatus);
   const userDetails = useAppSelector(selectUserDetails);
+
+  useEffect(() => {
+    if (userDetails && !isAuthed) {
+      dispatch(setUserDetails(undefined));
+    }
+  }, [userDetails, isAuthed, dispatch]);
 
   return (
     <main className={styles.main}>
