@@ -1,6 +1,6 @@
 'use server';
 
-import { getServerSpotify, serverSpotifyLogout } from '@/spotify/server';
+import { getServerSpotify, serverSpotifyLogout } from '@/spotify';
 
 import store from '../../store';
 import {

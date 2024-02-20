@@ -15,13 +15,13 @@ import {
 } from '@/types/api';
 import { type CacheResult } from '@/types/util';
 
-import { HOME_URL, SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from './constants';
-import { EntityCache } from './utils/entityCache';
+import { HOME_URL, SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from '../constants';
+import { EntityCache } from '../utils/entityCache';
 import {
   buildPlaylistFields,
   buildTrackItemFields,
-} from './utils/fieldBuilder';
-import { type RequestBatch, RequestQueue } from './utils/requestQueue';
+} from '../utils/fieldBuilder';
+import { type RequestBatch, RequestQueue } from '../utils/requestQueue';
 
 let clientSpotify: ClientSpotifyInstance | null;
 
