@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import { selectAuthStatus } from '@/redux/slices/userSlice';
 import { useAppSelector } from '@/redux/client';
@@ -8,6 +9,7 @@ import { SPOTIFY_AUTH_COOKIE } from '@/spotify/constants';
 import { getBrowserCookieString } from '@/actions/cookies/clientCookies';
 import { setServerCookie } from '@/actions/cookies/serverCookies';
 import useLogin from '@/hooks/login';
+import { syncCookies } from '@/actions/cookies/sync';
 
 import LoginButton from './LoginButton';
 import LogoutButton from './LogoutButton';
@@ -19,13 +21,8 @@ export const AuthMain: React.FC<AuthMainProps> = () => {
   const isAuthed = useAppSelector(selectAuthStatus);
 
   useEffect(() => {
-    const authTokenString = getBrowserCookieString(SPOTIFY_AUTH_COOKIE);
-
-    if (authTokenString) {
-      setServerCookie(SPOTIFY_AUTH_COOKIE, authTokenString);
-
-      login();
-    }
+    syncCookies();
+    login();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
