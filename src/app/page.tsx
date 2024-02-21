@@ -1,11 +1,10 @@
 import store from '@/redux/store';
 import { getUserDetails, getUserPlaylists, logOut } from '@/redux/actions';
 import { readAuthSession } from '@/redux/actions/server/init';
-import { type RSC } from '@/types/next';
 
 import LandingMain from './landing/main';
 
-const Home: RSC = async ({ searchParams }) => {
+const Home: Next.RSC = async ({ searchParams }) => {
   readAuthSession();
 
   const isAuthed = store.getState().user.isAuthed;
