@@ -1,10 +1,11 @@
 import store from '@/redux/store';
-import { getUserDetails, getUserPlaylists } from '@/redux/actions';
+import { getUserDetails, getUserPlaylists, logOut } from '@/redux/actions';
 import { readAuthSession } from '@/redux/actions/server/init';
+import { type RSC } from '@/types/next';
 
 import LandingMain from './landing/main';
 
-const Home = async () => {
+const Home: RSC = async ({ searchParams }) => {
   readAuthSession();
 
   const isAuthed = store.getState().user.isAuthed;
@@ -12,6 +13,10 @@ const Home = async () => {
   if (isAuthed && !userDetails) {
     await getUserDetails();
     await getUserPlaylists();
+  }
+
+  if (searchParams['error'] === 'access_denied') {
+    logOut();
   }
 
   return <LandingMain />;
