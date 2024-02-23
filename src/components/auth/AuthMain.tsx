@@ -34,21 +34,24 @@ export const AuthMain: React.FC<AuthMainProps> = ({ serverCookie }) => {
   const getUserPlaylists = useGetUserPlaylists();
 
   useEffect(() => {
-    syncCookies();
+    const effect = async () => {
+      await syncCookies();
 
-    if (!getBrowserCookieString(SPOTIFY_AUTH_COOKIE)) {
-      return;
-    }
+      if (!getBrowserCookieString(SPOTIFY_AUTH_COOKIE)) {
+        return;
+      }
 
-    if (!isAuthed) {
-      dispatch(setAuthStatus(true));
-    }
+      if (!isAuthed) {
+        dispatch(setAuthStatus(true));
+      }
 
-    if (userDetails) {
-      return;
-    }
+      if (userDetails) {
+        return;
+      }
 
-    getUserDetails?.().then(getUserPlaylists);
+      getUserDetails?.().then(getUserPlaylists);
+    };
+    effect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverCookie, isAuthed]);
 

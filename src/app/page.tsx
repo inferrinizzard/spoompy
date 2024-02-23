@@ -20,7 +20,7 @@ const Home: Next.RSC = async ({ searchParams }) => {
     logOut();
   }
 
-  const serverCookie = getServerCookieString(SPOTIFY_AUTH_COOKIE);
+  const serverCookie = await getServerCookieString(SPOTIFY_AUTH_COOKIE);
 
   return <LandingMain serverCookie={serverCookie} />;
 };

@@ -2,11 +2,14 @@
 
 import { cookies } from 'next/headers';
 
-export const getServerCookieString = (key: string): string | null =>
-  cookies().get(key)?.value ?? null;
+export const getServerCookieString = async (
+  key: string,
+): Promise<string | null> => cookies().get(key)?.value ?? null;
 
-export const getServerCookie = <Return>(key: string): Return | null => {
-  const cookie = getServerCookieString(key);
+export const getServerCookie = async <Return>(
+  key: string,
+): Promise<Return | null> => {
+  const cookie = await getServerCookieString(key);
   if (cookie) {
     return JSON.parse(cookie);
   }
@@ -14,10 +17,13 @@ export const getServerCookie = <Return>(key: string): Return | null => {
   return null;
 };
 
-export const setServerCookie = (key: string, val: string): void => {
-  cookies().set(key, val);
+export const setServerCookie = async (
+  key: string,
+  val: unknown,
+): Promise<void> => {
+  cookies().set(key, JSON.stringify(val));
 };
 
-export const deleteServerCookie = (key: string): void => {
+export const deleteServerCookie = async (key: string): Promise<void> => {
   cookies().delete(key);
 };
