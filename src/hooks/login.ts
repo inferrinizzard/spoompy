@@ -17,7 +17,9 @@ export const useLogin = (): (() => Promise<void>) => {
       HOME_URL,
       SPOTIFY_SCOPES,
       SPOTIFY_POSTBACK_URL,
-    ).then(() => router.replace('/'));
+    )
+      .then(() => router.replace('/'))
+      .then(() => router.refresh());
 };
 
 export default useLogin;

@@ -14,9 +14,11 @@ import {
 
 import styles from '../page.module.css';
 
-export interface LandingProps {}
+export interface LandingProps {
+  readonly serverCookie: string | null;
+}
 
-const LandingMain: React.FC<LandingProps> = () => {
+const LandingMain: React.FC<LandingProps> = ({ serverCookie }) => {
   const dispatch = useAppDispatch();
   const isAuthed = useAppSelector(selectAuthStatus);
   const userDetails = useAppSelector(selectUserDetails);
@@ -37,7 +39,7 @@ const LandingMain: React.FC<LandingProps> = () => {
       <HomeLink disabled={!isAuthed} href="/analysis" text="Data Analysis" />
       <HomeLink disabled={!isAuthed} href="/archive" text="Archive Playlists" />
 
-      <AuthMain />
+      <AuthMain serverCookie={serverCookie} />
 
       {userDetails && (
         <>

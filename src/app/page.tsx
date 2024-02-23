@@ -1,6 +1,8 @@
 import store from '@/redux/store';
 import { getUserDetails, getUserPlaylists, logOut } from '@/redux/actions';
 import { readAuthSession } from '@/redux/actions/server/init';
+import { getServerCookieString } from '@/actions/cookies/serverCookies';
+import { SPOTIFY_AUTH_COOKIE } from '@/spotify';
 
 import LandingMain from './landing/main';
 
@@ -18,7 +20,9 @@ const Home: Next.RSC = async ({ searchParams }) => {
     logOut();
   }
 
-  return <LandingMain />;
+  const serverCookie = getServerCookieString(SPOTIFY_AUTH_COOKIE);
+
+  return <LandingMain serverCookie={serverCookie} />;
 };
 
 export default Home;
