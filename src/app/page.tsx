@@ -1,3 +1,5 @@
+import { redirect } from 'next/navigation';
+
 import store from '@/redux/store';
 import { getUserDetails, getUserPlaylists, logOut } from '@/redux/actions';
 import { readAuthSession } from '@/redux/actions/server/init';
@@ -18,6 +20,7 @@ const Home: Next.RSC = async ({ searchParams }) => {
 
   if (searchParams['error'] === 'access_denied') {
     logOut();
+    redirect('/');
   }
 
   const serverCookie = await getServerCookieString(SPOTIFY_AUTH_COOKIE);
