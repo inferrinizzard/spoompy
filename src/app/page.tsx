@@ -18,6 +18,7 @@ const Home: Next.RSC = async ({ searchParams }) => {
     await getUserPlaylists();
   }
 
+  // remove server cookie and redirect to home after login cancel
   if (searchParams['error'] === 'access_denied') {
     logOut();
     redirect('/');

@@ -1,6 +1,8 @@
 import { type AccessToken } from '@spotify/web-api-ts-sdk';
 
 import { SPOTIFY_AUTH_COOKIE } from '@/spotify';
+import { setAuthStatus } from '@/redux/slices/userSlice';
+import store from '@/redux/store';
 
 import {
   deleteBrowserCookie,
@@ -28,6 +30,7 @@ export const syncCookies = async (): Promise<void> => {
   // sync browser cookie to server
   if (browserCookie?.access_token) {
     await setServerCookie(SPOTIFY_AUTH_COOKIE, browserCookie);
+    store.dispatch(setAuthStatus(true));
   }
 
   // sync server cookie to browser

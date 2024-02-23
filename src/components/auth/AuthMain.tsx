@@ -34,6 +34,9 @@ export const AuthMain: React.FC<AuthMainProps> = ({ serverCookie }) => {
   const getUserPlaylists = useGetUserPlaylists();
 
   useEffect(() => {
+    // sync browser and server cookies
+    // then set isAuthed and fetch userDetails if browser cookie was loaded with server
+    // TODO: use suspense boundary
     const effect = async () => {
       await syncCookies();
 
