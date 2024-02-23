@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useRouter } from 'next/navigation';
 
 import { useAppDispatch } from '@/redux/client';
 import {
@@ -10,7 +9,6 @@ import {
   selectUserDetails,
   setAuthStatus,
 } from '@/redux/slices/userSlice';
-import useLogin from '@/hooks/login';
 import {
   useGetUserDetails,
   useGetUserPlaylists,
@@ -27,25 +25,15 @@ export interface AuthMainProps {
 }
 
 export const AuthMain: React.FC<AuthMainProps> = ({ serverCookie }) => {
-  const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const login = useLogin();
   const isAuthed = useSelector(selectAuthStatus);
   const userDetails = useSelector(selectUserDetails);
 
   const getUserDetails = useGetUserDetails();
   const getUserPlaylists = useGetUserPlaylists();
 
-  const browserCookie = getBrowserCookieString(SPOTIFY_AUTH_COOKIE);
-
-  console.log('render AuthMain', {
-    serverCookie: !!serverCookie,
-    browserCookie: !!browserCookie,
-  });
-
   useEffect(() => {
-    console.log('useEffect 1 AuthMain');
     syncCookies();
 
     if (!getBrowserCookieString(SPOTIFY_AUTH_COOKIE)) {
