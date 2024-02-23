@@ -21,8 +21,9 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   res.cookies.set(SPOTIFY_AUTH_COOKIE, cookie, {
     maxAge: body.expires_in,
+    httpOnly: true,
   });
-  setServerCookie(SPOTIFY_AUTH_COOKIE, cookie);
+  await setServerCookie(SPOTIFY_AUTH_COOKIE, cookie);
 
   store.dispatch(setAuthStatus(true));
 

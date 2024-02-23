@@ -4,6 +4,7 @@ import {
   type Playlist,
   type SdkOptions,
   SpotifyApi,
+  type User,
 } from '@spotify/web-api-ts-sdk';
 
 import { trimPlaylist, trimTrack } from '@/utils/normalizr/trim';
@@ -15,13 +16,13 @@ import {
 } from '@/types/api';
 import { type CacheResult } from '@/types/util';
 
-import { HOME_URL, SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from './constants';
-import { EntityCache } from './utils/entityCache';
+import { HOME_URL, SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from '../constants';
+import { EntityCache } from '../utils/entityCache';
 import {
   buildPlaylistFields,
   buildTrackItemFields,
-} from './utils/fieldBuilder';
-import { type RequestBatch, RequestQueue } from './utils/requestQueue';
+} from '../utils/fieldBuilder';
+import { type RequestBatch, RequestQueue } from '../utils/requestQueue';
 
 let clientSpotify: ClientSpotifyInstance | null;
 
@@ -50,6 +51,44 @@ export class ClientSpotifyInstance {
       this.sdkConfig,
     );
   }
+
+  public getUserDetails = async (): Promise<User> => {
+    return await this.sdk.currentUser.profile();
+  };
+
+  public getUserPlaylists = async (userId: string): Promise<PlaylistRef[]> => {
+    const firstSlice = await this.sdk.playlists
+      .getUsersPlaylists(userId, 50)
+      .then((playlistPage) => ({
+        ...playlistPage,
+        items: playlistPage.items.filter(
+          (playlist) => playlist.owner.id === userId,
+        ), // filter only for playlists that belong to userId
+      }));
+
+    const numPlaylists = firstSlice.total;
+
+    let playlists = firstSlice.items.map((playlist) => ({
+      id: playlist.id,
+      snapshotId: playlist.snapshot_id,
+    }));
+    for (let i = 50; i < numPlaylists; i += 50) {
+      const playlistSlice = await this.sdk.playlists
+        .getUsersPlaylists(userId, 50, i)
+        .then((playlistPage) =>
+          playlistPage.items
+            .filter((playlist) => playlist.owner.id === userId) // filter only for playlists that belong to userId
+            .map((playlist) => ({
+              id: playlist.id,
+              snapshotId: playlist.snapshot_id,
+            })),
+        );
+
+      playlists = playlists.concat(playlistSlice);
+    }
+
+    return playlists;
+  };
 
   public getPlaylist = async (playlist: PlaylistRef): Promise<Playlist> => {
     const cacheResult = this._getPlaylist(playlist);
