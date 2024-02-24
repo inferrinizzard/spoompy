@@ -17,6 +17,12 @@ Spotify->>Server: Server Spotify Instance
 Server->>Client: Initial HTML with Spotify State
 Server-->>State: Init User state with ReduxProvider
 State->>Client: Render Landing
+
+alt has browser cookie
+Client->>Server: Sync server Auth token with Browser copy
+else has server cookie and no browser cookie
+Server->>Client: Sync browser Auth token with Server copy
+end
 Client->>Spotify: Init Client Spotify
 
 alt is authed
