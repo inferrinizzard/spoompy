@@ -1,5 +1,6 @@
 import { RateLimitedError } from '../handlers';
 
+type ThunkId = string;
 type BaseThunk<Return = unknown> = () => Promise<Return>;
 export interface RequestBatch<Data> {
   data: Data[];
@@ -8,7 +9,7 @@ export interface RequestBatch<Data> {
 
 interface ThunkError<ErrorType extends Error = Error> {
   error?: ErrorType;
-  thunkId: string;
+  thunkId: ThunkId;
 }
 
 // benchmark 30 requests / seconds = wait 35ms between each ?
@@ -17,12 +18,16 @@ const MAX_CONCURRENT_REQUESTS = 30;
 const MIN_MS_BETWEEN_BATCHES = 1000;
 
 export class RequestQueue {
-  public idQueue: string[];
+  // queue of promise ids to be called in order
+  public idQueue: ThunkId[];
 
-  public thunkMap: Map<string, BaseThunk>;
+  // map of promise ids to promise thunks
+  public thunkMap: Map<ThunkId, BaseThunk>;
 
-  private readonly inFlightRequests: Map<string, string>; // id: timestamp
+  // map of ongoing promises, keyed by id to timestamp when called
+  private readonly inFlightRequests: Map<ThunkId, string>;
 
+  // setInterval timer to allow for retries or retryAfter
   public retryTimer: Promise<void> | null;
 
   public constructor() {
@@ -33,10 +38,11 @@ export class RequestQueue {
     this.retryTimer = null;
   }
 
+  // creates new hash for promise thunk, adds to map and pushes to queue
   public add = <Return, Thunk extends BaseThunk<Return>>(
     thunk: Thunk,
-  ): string => {
-    const newId = crypto.randomUUID();
+  ): ThunkId => {
+    const newId: ThunkId = crypto.randomUUID();
     this.idQueue.push(newId);
 
     this.thunkMap.set(newId, thunk);
@@ -44,9 +50,11 @@ export class RequestQueue {
     return newId;
   };
 
-  private readonly getIds = (idMap?: Record<string, unknown>): string[] => {
+  // finds all Ids from this map that also exist in the internal map
+  // returns a list with max length MAX_CONCURRENT_REQUESTS
+  private readonly getIds = (idMap?: Record<string, unknown>): ThunkId[] => {
     if (idMap) {
-      let outIds: string[] = [];
+      let outIds: ThunkId[] = [];
       for (
         let i = 0, n = 1;
         n <= MAX_CONCURRENT_REQUESTS && i < this.idQueue.length;
@@ -66,34 +74,40 @@ export class RequestQueue {
       return outIds;
     }
 
+    // TODO: double check this fallback
     return this.idQueue.splice(0, MAX_CONCURRENT_REQUESTS);
   };
 
+  // check if all Ids from this map exist in the queue
   private readonly hasIds = (idMap?: Record<string, unknown>): boolean => {
     if (idMap) {
       return this.idQueue.some((id) => id in idMap);
     }
 
+    // TODO: double check this fallback
     return this.idQueue.length > 0;
   };
 
+  // adds error handling and rate limiting logic to existing thunk
   private readonly composeThunk = <Return, Thunk extends BaseThunk<Return>>(
     thunkId: string,
     thunk: Thunk,
   ): (() => Promise<Return | ThunkError>) => {
+    // if currently at capacity, return id to retry
     if (this.inFlightRequests.size >= MAX_CONCURRENT_REQUESTS) {
       return async () => await Promise.resolve({ thunkId });
     }
 
-    this.inFlightRequests.set(thunkId, Date.now().toString());
-
-    return async () =>
-      await thunk()
+    return async () => {
+      this.inFlightRequests.set(thunkId, Date.now().toString());
+      return await thunk()
         .then((data) => {
+          // remove completed thunk from map to prevent re-call
           this.thunkMap.delete(thunkId);
           return data;
         })
         .catch<ThunkError>((error: Error) => {
+          // if hit rate limit, set retryTimer and return Id to retry
           if (error instanceof RateLimitedError && !this.retryTimer) {
             console.info(
               `[SDK] Encountered rate limit, Retrying After: ${error.retryAfter} seconds`,
@@ -107,11 +121,14 @@ export class RequestQueue {
             return { thunkId };
           }
 
+          // else return proper error
           return { error, thunkId };
         })
         .finally(() => {
+          // remove from in-flight requests, regardless of result
           this.inFlightRequests.delete(thunkId);
         });
+    };
   };
 
   public runBatch = async <Return>(
@@ -157,18 +174,24 @@ export class RequestQueue {
       }
     }
 
+    // add buffer in between batches (may change to streaming)
     const timer = new Promise<void>((resolve) =>
       setTimeout(() => {
         resolve();
       }, MIN_MS_BETWEEN_BATCHES),
     );
-    const next = this.hasIds(idMap)
-      ? async () =>
-          await Promise.allSettled([this.run<Return>(idMap), timer]).then(
-            ([batch]) =>
-              (batch as PromiseFulfilledResult<RequestBatch<Return>>).value,
-          )
-      : null;
+
+    // if all thunks have been run
+    if (!this.hasIds(idMap)) {
+      return { data, next: null };
+    }
+
+    // compose next recursive batch for successive thunks
+    const next = async () =>
+      await Promise.allSettled([this.run<Return>(idMap), timer]).then(
+        ([batch]) =>
+          (batch as PromiseFulfilledResult<RequestBatch<Return>>).value,
+      );
 
     return { data, next };
   };
