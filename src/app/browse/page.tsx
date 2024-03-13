@@ -1,17 +1,28 @@
 'use client';
 
-import Navbar from '@/components/Navbar';
-import ReturnButton from '@/components/ReturnButton';
+import React, { useState } from 'react';
 
-import BrowseMain from './main';
+import { Button } from '@/styles/primitives';
 
-const Browse: React.FC = () => {
+import TabularView from './TabularView';
+import PlaylistView from './PlaylistView';
+
+export interface BrowseProps {}
+
+const Browse: React.FC<BrowseProps> = () => {
+  const [view, setView] = useState<'tabular' | 'playlist'>('tabular');
+
   return (
-    <main>
-      <Navbar />
-      <BrowseMain />
-      <ReturnButton />
-    </main>
+    <>
+      <Button
+        onClick={() => {
+          view === 'playlist' ? setView('tabular') : setView('playlist');
+        }}>
+        {'Switch View'}
+      </Button>
+      {view === 'playlist' && <PlaylistView />}
+      {view === 'tabular' && <TabularView />}
+    </>
   );
 };
 

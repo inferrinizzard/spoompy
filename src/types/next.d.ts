@@ -3,6 +3,11 @@ declare interface RSCProps {
   searchParams: Record<string, string>;
 }
 
+declare interface LayoutProps {
+  readonly children: React.ReactNode;
+}
+
 declare namespace Next {
-  declare type RSC = (props: RSCProps) => Promise<React.JSX.Element>;
+  declare type RSC = (props: RSCProps) => Promise<JSX.Element>;
+  declare type Layout = (props: LayoutProps) => JSX.Element;
 }
