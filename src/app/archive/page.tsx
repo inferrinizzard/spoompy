@@ -1,17 +1,26 @@
 'use client';
 
-import Navbar from '@/components/Navbar';
-import ReturnButton from '@/components/ReturnButton';
+import { useAppSelector } from '@/redux/client';
+import { selectPlaylists } from '@/redux/slices/playlistSlice';
 
-import ArchiveMain from './main';
+import DownloadAll from './components/DownloadAll';
+import DownloadRow from './components/DownloadRow';
 
-const Archive: React.FC = () => {
+export interface ArchiveProps {}
+
+export const Archive: React.FC<ArchiveProps> = () => {
+  const playlists = useAppSelector(selectPlaylists);
+
   return (
-    <main>
-      <Navbar />
-      <ArchiveMain />
-      <ReturnButton />
-    </main>
+    <div>
+      <DownloadAll />
+      <section>
+        {/* flex */}
+        {Object.values(playlists).map((playlist) => (
+          <DownloadRow key={playlist.id} playlist={playlist} />
+        ))}
+      </section>
+    </div>
   );
 };
 
