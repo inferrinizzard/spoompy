@@ -24,7 +24,7 @@ const Home: Next.RSC = async ({ searchParams }) => {
     redirect('/');
   }
 
-  const serverCookie = await getServerCookieString(SPOTIFY_AUTH_COOKIE);
+  const serverCookie = getServerCookieString(SPOTIFY_AUTH_COOKIE);
 
   return <LandingMain serverCookie={serverCookie} />;
 };

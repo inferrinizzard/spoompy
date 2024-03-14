@@ -23,7 +23,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     maxAge: body.expires_in,
     httpOnly: true,
   });
-  await setServerCookie(SPOTIFY_AUTH_COOKIE, cookie);
+  setServerCookie(SPOTIFY_AUTH_COOKIE, cookie);
 
   store.dispatch(setAuthStatus(true));
 

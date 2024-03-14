@@ -37,24 +37,21 @@ export const AuthMain: React.FC<AuthMainProps> = ({ serverCookie }) => {
     // sync browser and server cookies
     // then set isAuthed and fetch userDetails if browser cookie was loaded with server
     // TODO: use suspense boundary
-    const effect = async () => {
-      await syncCookies();
+    syncCookies();
 
-      if (!getBrowserCookieString(SPOTIFY_AUTH_COOKIE)) {
-        return;
-      }
+    if (!getBrowserCookieString(SPOTIFY_AUTH_COOKIE)) {
+      return;
+    }
 
-      if (!isAuthed) {
-        dispatch(setAuthStatus(true));
-      }
+    if (!isAuthed) {
+      dispatch(setAuthStatus(true));
+    }
 
-      if (userDetails) {
-        return;
-      }
+    if (userDetails) {
+      return;
+    }
 
-      getUserDetails?.().then(getUserPlaylists);
-    };
-    effect();
+    getUserDetails?.().then(getUserPlaylists);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [serverCookie, isAuthed]);
 

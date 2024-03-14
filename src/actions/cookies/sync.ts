@@ -15,12 +15,12 @@ import {
   setServerCookie,
 } from './serverCookies';
 
-export const syncCookies = async (): Promise<void> => {
-  const serverCookie = await getServerCookie<AccessToken>(SPOTIFY_AUTH_COOKIE);
+export const syncCookies = (): void => {
+  const serverCookie = getServerCookie<AccessToken>(SPOTIFY_AUTH_COOKIE);
   const browserCookie = getBrowserCookie<AccessToken>(SPOTIFY_AUTH_COOKIE);
 
   if (!serverCookie?.access_token) {
-    await deleteServerCookie(SPOTIFY_AUTH_COOKIE);
+    deleteServerCookie(SPOTIFY_AUTH_COOKIE);
   }
 
   if (!browserCookie?.access_token) {
@@ -29,7 +29,7 @@ export const syncCookies = async (): Promise<void> => {
 
   // sync browser cookie to server
   if (browserCookie?.access_token) {
-    await setServerCookie(SPOTIFY_AUTH_COOKIE, browserCookie);
+    setServerCookie(SPOTIFY_AUTH_COOKIE, JSON.stringify(browserCookie));
     store.dispatch(setAuthStatus(true));
   }
 

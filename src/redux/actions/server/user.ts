@@ -38,5 +38,5 @@ export const logOut = async (): Promise<void> => {
   store.dispatch(setUserDetails(undefined));
   store.dispatch(setUserPlaylists([]));
 
-  await deleteServerCookie(SPOTIFY_AUTH_COOKIE);
+  deleteServerCookie(SPOTIFY_AUTH_COOKIE);
 };
