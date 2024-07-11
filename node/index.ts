@@ -4,8 +4,9 @@ import SpotifyWebApiNode from 'spotify-web-api-node';
 
 import { mkdirSync, existsSync } from 'fs';
 
-import { archivePlaylists } from './playlist.js';
-import { archiveSaved } from './saved.js';
+import { archivePlaylists } from './playlist';
+import { archiveSaved } from './saved';
+import { organise } from './organise';
 
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
@@ -22,4 +23,7 @@ const spotify = new SpotifyWebApiNode({
 	redirectUri: 'http://localhost:8000',
 });
 
-archivePlaylists(spotify)(userId, date).then(() => archiveSaved(spotify)(date));
+archivePlaylists(spotify)(userId, date).then(
+	() => archiveSaved(spotify)(date)).then(
+		() => organise()
+);
