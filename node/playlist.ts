@@ -55,7 +55,7 @@ export const archivePlaylists = (spotify: SpotifyWebApiNode) => (userId: string,
 							addedBy: item.added_by.id,
 						}));
 						writeFile(
-							`archive/${date}/${playlist.name.replace(/ /g, '_').replace(':', '.')}.json`,
+							`archive/${date}/${playlist.name.replace(/ /g, '_').replace(':', '.').replace('?', 'Q')}.json`,
 							JSON.stringify(trackData),
 							() => console.log(`Archived "${playlist.name}" with ${trackData.length} items`)
 						);
