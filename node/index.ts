@@ -1,6 +1,8 @@
 /// <reference types="@types/spotify-api" />
 import SpotifyWebApiNode from "spotify-web-api-node";
 
+import { Command } from "commander";
+
 import * as dotenv from "dotenv";
 import { SpotifyArchiver } from "./archive";
 dotenv.config({ path: ".env.local" });
@@ -14,6 +16,26 @@ const spotify = new SpotifyWebApiNode({
 
 const spotifyArchiver = new SpotifyArchiver(spotify, userId);
 
-await spotifyArchiver.archivePlaylists();
-await spotifyArchiver.archiveSaved();
-spotifyArchiver.organise();
+const program = new Command();
+
+program.name("spotify-archiver").description("CLI to archive Spotify data");
+
+program
+	.command("playlists")
+	.option("--force", "force download", false)
+	.action((options) => spotifyArchiver.archivePlaylists(options.force));
+
+program
+	.command("saved")
+	.option("--force", "force download", false)
+	.action((options) => spotifyArchiver.archiveSaved(options.force));
+
+program.command("organise").action(spotifyArchiver.organise);
+
+program.command("all").action(async () => {
+	await spotifyArchiver.archivePlaylists();
+	await spotifyArchiver.archiveSaved();
+	spotifyArchiver.organise();
+});
+
+program.parse();
