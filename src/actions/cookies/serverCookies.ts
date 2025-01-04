@@ -1,20 +1,20 @@
-'use server';
+"use server";
 
-import { cookies } from 'next/headers';
+import { cookies } from "next/headers";
 
 export const getServerCookie = <Return>(key: string): Return | null => {
-  const cookie = cookies().get(key)?.value;
-  if (cookie) {
-    return JSON.parse(cookie);
-  }
+	const cookie = cookies().get(key)?.value;
+	if (cookie) {
+		return JSON.parse(cookie);
+	}
 
-  return null;
+	return null;
 };
 
 export const setServerCookie = (key: string, val: string): void => {
-  cookies().set(key, val);
+	cookies().set(key, val);
 };
 
 export const deleteServerCookie = (key: string): void => {
-  cookies().delete(key);
+	cookies().delete(key);
 };
