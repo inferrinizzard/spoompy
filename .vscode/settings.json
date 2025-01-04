@@ -1,20 +1,5 @@
 {
-	"editor.defaultFormatter": "dbaeumer.vscode-eslint",
-	"editor.codeActionsOnSave": {
-		"source.fixAll.eslint": "explicit"
-	},
+	"editor.defaultFormatter": "biomejs.biome",
 	"editor.formatOnSave": true,
 	"prettier.enable": false,
-
-	"eslint.format.enable": true,
-	"eslint.lintTask.enable": true,
-	"eslint.validate": [
-    "graphql",
-    "javascript",
-    "javascriptreact",
-    "json",
-    "typescript",
-    "typescriptreact",
-    "yaml"
-	],
 }

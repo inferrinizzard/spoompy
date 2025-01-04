@@ -1,10 +1,10 @@
-import { existsSync, mkdirSync } from 'node:fs';
+import { existsSync, mkdirSync } from "node:fs";
 
-import SpotifyWebApiNode from 'spotify-web-api-node';
+import type SpotifyWebApiNode from "spotify-web-api-node";
 
-import { archivePlaylists } from './playlist';
-import { archiveSaved } from './saved'
-import { organise } from './organise';
+import { archivePlaylists } from "./playlist";
+import { archiveSaved } from "./saved";
+import { organise } from "./organise";
 
 export class SpotifyArchiver {
 	spotify: SpotifyWebApiNode;
@@ -14,7 +14,7 @@ export class SpotifyArchiver {
 	constructor(spotify: SpotifyWebApiNode, userId: string) {
 		this.spotify = spotify;
 		this.userId = userId;
-		this.date = new Date().toISOString().replace(/T.*/, '')
+		this.date = new Date().toISOString().replace(/T.*/, "");
 	}
 
 	preRun() {

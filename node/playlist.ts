@@ -1,7 +1,7 @@
 import { existsSync, writeFile } from 'fs';
 
 /* eslint-disable no-loop-func */
-import SpotifyWebApiNode from 'spotify-web-api-node';
+import SpotifyWebApiNode from "spotify-web-api-node";
 
 import { chunkedArray, mergeArrays, stripTrack } from './util.js';
 import { getDirs } from './organise.js';
@@ -30,21 +30,23 @@ export const archivePlaylists = (spotify: SpotifyWebApiNode) => (userId: string,
 				.getUserPlaylists(userId, { limit: 1 })
 				.then(({ body }) => body.total);
 
-			let allPlaylists = await Promise.all(
-				chunkedArray(numPlaylists).map((_, i) =>
-					spotify
-						.getUserPlaylists(userId, { limit: 50, offset: 50 * i })
-						.then(({ body }) => body.items)
-				)
-			).then(mergeArrays);
-			allPlaylists = allPlaylists.filter(playlist => playlist.owner.id === userId);
+				let allPlaylists = await Promise.all(
+					chunkedArray(numPlaylists).map((_, i) =>
+						spotify
+							.getUserPlaylists(userId, { limit: 50, offset: 50 * i })
+							.then(({ body }) => body.items),
+					),
+				).then(mergeArrays);
+				allPlaylists = allPlaylists.filter(
+					(playlist) => playlist.owner.id === userId,
+				);
 
-			const missing = [
-				'6TCDIbwJ2riDAzBZvPQemA',
-				'5S1Z6XNm6vcmg1XjVmMTs8',
-				'59eqoXLSr70895rmC39KRM',
-				'3LSNpPkGf8x28X860VHyFJ',
-			];
+				const missing = [
+					"6TCDIbwJ2riDAzBZvPQemA",
+					"5S1Z6XNm6vcmg1XjVmMTs8",
+					"59eqoXLSr70895rmC39KRM",
+					"3LSNpPkGf8x28X860VHyFJ",
+				];
 
 			console.log('Found', numPlaylists, 'playlists', 'and', missing.length, 'missing');
 
@@ -86,7 +88,5 @@ export const archivePlaylists = (spotify: SpotifyWebApiNode) => (userId: string,
 							JSON.stringify(trackData),
 							() => console.log(`Archived "${playlist.name}" with ${trackData.length} items`)
 						);
-					})
-					.catch(e => console.log(`Error while archiving: "${playlist.name}"`, e));
-			}
-		});
+				}
+			});
