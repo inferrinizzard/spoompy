@@ -38,6 +38,7 @@ export class SpotifyArchiver {
 				) &&
 				!force
 			) {
+				console.log(`${playlist.name} exists, skipping`);
 				continue;
 			}
 
@@ -47,13 +48,16 @@ export class SpotifyArchiver {
 			while (tries <= 3) {
 				try {
 					await downloadPlaylist(this.spotify, playlist, this.date);
+					tries = -1;
 					break;
 				} catch {
 					console.log(`${playlist.name} failed on attempt ${tries}, retrying`);
 					tries++;
 				}
 			}
-			console.log(`${playlist.name} failed all ${tries} attempts`);
+			if (tries > 0) {
+				console.log(`${playlist.name} failed all ${tries} attempts`);
+			}
 		}
 	}
 
