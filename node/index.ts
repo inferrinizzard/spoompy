@@ -1,20 +1,9 @@
-/* eslint-disable no-loop-func */
 /// <reference types="@types/spotify-api" />
 import SpotifyWebApiNode from 'spotify-web-api-node';
 
-import { mkdirSync, existsSync } from 'fs';
-
-import { archivePlaylists } from './playlist';
-import { archiveSaved } from './saved';
-import { organise } from './organise';
-
 import * as dotenv from 'dotenv';
+import { SpotifyArchiver } from './archive';
 dotenv.config({ path: '.env.local' });
-
-const date = new Date().toISOString().replace(/T.*/, '');
-if (!existsSync(`archive/${date}`)) {
-	mkdirSync(`archive/${date}`);
-}
 
 const userId = (12121954989).toString();
 const spotify = new SpotifyWebApiNode({
@@ -23,7 +12,8 @@ const spotify = new SpotifyWebApiNode({
 	redirectUri: 'http://localhost:8000',
 });
 
-archivePlaylists(spotify)(userId, date).then(
-	() => archiveSaved(spotify)(date)).then(
-		() => organise()
-);
+const spotifyArchiver = new SpotifyArchiver(spotify, userId);
+
+await spotifyArchiver.archivePlaylists()
+await spotifyArchiver.archiveSaved();
+spotifyArchiver.organise();

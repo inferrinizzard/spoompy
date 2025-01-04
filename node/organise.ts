@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readdirSync, renameSync } from 'fs';
 import { lstat, readdir } from 'fs/promises';
 
-const getDirs = async (path: string) =>
+export const getDirs = async (path: string) =>
 	readdir(`${path}`).then(async files => {
 		const dirs: string[] = [];
 
@@ -52,4 +52,12 @@ export const organise = async () => {
 			}
 		});
 	}
+
+	const prevTopLevel = readdirSync(`archive/${prev}`);
+	const remaining =  readdirSync(`archive/${latest}`).filter(name => 
+		!prevTopLevel.includes(name)
+	);
+
+	console.log('REMAINING', remaining)
+	
 }

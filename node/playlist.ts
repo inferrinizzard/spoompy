@@ -1,10 +1,27 @@
+import { existsSync, writeFile } from 'fs';
+
 /* eslint-disable no-loop-func */
 import SpotifyWebApiNode from 'spotify-web-api-node';
 
-import { writeFile } from 'fs';
 import { chunkedArray, mergeArrays, stripTrack } from './util.js';
+import { getDirs } from './organise.js';
 
-export const archivePlaylists = (spotify: SpotifyWebApiNode) => (userId: string, date: string) =>
+const filterExisting = (playlists: SpotifyApi.PlaylistObjectSimplified[], force=false) => {
+	const dirs = getDirs()
+
+}
+
+const alreadyExists = (date:string, playlistName: string) => {
+	const archiveDir = `archive/${date}`;
+
+	getDirs
+
+
+	// const exists = existsSync(`archive/${date}/${outputPlaylistName}.json`);
+}
+
+
+export const archivePlaylists = (spotify: SpotifyWebApiNode) => (userId: string, date: string, force = false) =>
 	spotify
 		.clientCredentialsGrant()
 		.then(({ body: { access_token } }) => spotify.setAccessToken(access_token))
@@ -29,11 +46,21 @@ export const archivePlaylists = (spotify: SpotifyWebApiNode) => (userId: string,
 				'3LSNpPkGf8x28X860VHyFJ',
 			];
 
+			console.log('Found', numPlaylists, 'playlists', 'and', missing.length, 'missing');
+
 			const missingPlaylists = await Promise.all(
 				missing.map(id => spotify.getPlaylist(id).then(({ body }) => body))
 			);
 
 			for (const playlist of [...allPlaylists, ...missingPlaylists]) {
+				const outputPlaylistName = playlist.name.replace(/ /g, '_').replace(':', '.').replace('?', 'Q');
+				const exists = existsSync(`archive/${date}/${outputPlaylistName}.json`);
+
+				if (exists && !force) {
+					console.log(playlist.name, 'already exists, skipping')
+					continue;
+				}
+
 				await new Promise(resolve => setTimeout(resolve, 5000));
 				await spotify
 					.getPlaylistTracks(playlist.id, { limit: 1 })
@@ -55,7 +82,7 @@ export const archivePlaylists = (spotify: SpotifyWebApiNode) => (userId: string,
 							addedBy: item.added_by.id,
 						}));
 						writeFile(
-							`archive/${date}/${playlist.name.replace(/ /g, '_').replace(':', '.').replace('?', 'Q')}.json`,
+							`archive/${date}/${outputPlaylistName}.json`,
 							JSON.stringify(trackData),
 							() => console.log(`Archived "${playlist.name}" with ${trackData.length} items`)
 						);
