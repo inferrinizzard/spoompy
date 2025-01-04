@@ -2,4 +2,7 @@
 	"editor.defaultFormatter": "biomejs.biome",
 	"editor.formatOnSave": true,
 	"prettier.enable": false,
+	"[typescript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
 }
