@@ -1,20 +1,5 @@
-import { existsSync, mkdirSync, readdirSync, renameSync } from "fs";
-import { lstat, readdir } from "fs/promises";
-
-export const getDirs = async (path: string) =>
-	readdir(`${path}`).then(async (files) => {
-		const dirs: string[] = [];
-
-		await Promise.all(
-			files.map(async (name) => {
-				if ((await lstat(`${path}/${name}`)).isDirectory()) {
-					dirs.push(name);
-				}
-			}),
-		);
-
-		return dirs;
-	});
+import { existsSync, mkdirSync, readdirSync, renameSync } from "node:fs";
+import { getDirs } from "./util";
 
 export const organise = async () => {
 	const [latest, prev, ...dates] = readdirSync("archive").sort().reverse();
@@ -24,11 +9,11 @@ export const organise = async () => {
 	const files = readdirSync(`archive/${latest}`);
 	const fileMap = files.reduce((acc, file) => ({ ...acc, [file]: 1 }), {});
 
-	existingDirs.forEach((dir) => {
+	for (const dir of existingDirs) {
 		if (!existsSync(`archive/${latest}/${dir}`)) {
 			mkdirSync(`archive/${latest}/${dir}`);
 		}
-	});
+	}
 
 	const dirPaths = [...existingDirs];
 
@@ -42,7 +27,7 @@ export const organise = async () => {
 		dirPaths.push(...subDirs.map((sub) => `${currPath}/${sub}`));
 
 		const files = readdirSync(`archive/${prev}/${currPath}`);
-		files.forEach((file) => {
+		for (const file of files) {
 			if (fileMap[file]) {
 				try {
 					renameSync(
@@ -53,7 +38,7 @@ export const organise = async () => {
 					console.error("MISSING", file);
 				}
 			}
-		});
+		}
 	}
 
 	const prevTopLevel = readdirSync(`archive/${prev}`);
