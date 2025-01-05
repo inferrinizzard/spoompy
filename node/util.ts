@@ -1,3 +1,5 @@
+import { lstat, readdir } from "node:fs/promises";
+
 export const chunkedArray = (length: number) =>
 	new Array(Math.ceil(length / 50)).fill(0);
 
@@ -10,3 +12,18 @@ export const stripTrack = (track: SpotifyApi.TrackObjectFull) => ({
 	album: track.album.name,
 	id: track.id,
 });
+
+export const getDirs = async (path: string) =>
+	readdir(`${path}`).then(async (files) => {
+		const dirs: string[] = [];
+
+		await Promise.all(
+			files.map(async (name) => {
+				if ((await lstat(`${path}/${name}`)).isDirectory()) {
+					dirs.push(name);
+				}
+			}),
+		);
+
+		return dirs;
+	});
