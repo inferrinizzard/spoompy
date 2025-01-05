@@ -1,65 +1,59 @@
 {
-  "name": "spotify-vis",
-  "version": "0.0.1",
-  "description": "",
-  "private": true,
-  "scripts": {
-    "archive": "tsx node/index.ts",
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "test": "vitest run"
-  },
-  "dependencies": {
-    "@nivo/bar": "^0.83.0",
-    "@nivo/colors": "^0.83.0",
-    "@nivo/core": "^0.83.0",
-    "@nivo/line": "^0.83.0",
-    "@reduxjs/toolkit": "^1.9.5",
-    "@spotify/web-api-ts-sdk": "^1.1.0",
-    "dayjs": "^1.11.7",
-    "js-cookie": "^3.0.5",
-    "lz-string": "^1.5.0",
-    "next": "^13.4.12",
-    "normalizr": "^3.6.2",
-    "open": "^7.3.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-redux": "^8.0.5",
-    "spotify-web-api-node": "^5.0.2",
-    "styled-components": "^6.1.0",
-    "zipson": "^0.2.12"
-  },
-  "devDependencies": {
-    "@inferrinizzard/eslint-config": "^0.1.2",
-    "@types/js-cookie": "^3.0.5",
-    "@types/node": "20.1.0",
-    "@types/react": "^18.2.33",
-    "@types/react-dom": "18.2.4",
-    "@types/react-redux": "^7.1.25",
-    "@types/spotify-api": "^0.0.19",
-    "@types/spotify-web-api-node": "^5.0.7",
-    "@types/styled-components": "^5.1.9",
-    "dotenv": "^16.0.3",
-    "eslint": "8.40.0",
-    "eslint-config-next": "13.4.1",
-    "jsdom": "^22.1.0",
-    "tsx": "^3.12.10",
-    "typescript": "^5.2.2",
-    "vite": "^4.5.0",
-    "vitest": "^0.34.6"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+	"name": "spotify-vis",
+	"version": "0.0.1",
+	"description": "",
+	"private": true,
+	"scripts": {
+		"archive": "tsx node/index.ts",
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint",
+		"test": "vitest run"
+	},
+	"dependencies": {
+		"@nivo/bar": "^0.83.0",
+		"@nivo/colors": "^0.83.0",
+		"@nivo/core": "^0.83.0",
+		"@nivo/line": "^0.83.0",
+		"@reduxjs/toolkit": "^1.9.5",
+		"@spotify/web-api-ts-sdk": "^1.1.0",
+		"dayjs": "^1.11.7",
+		"js-cookie": "^3.0.5",
+		"lz-string": "^1.5.0",
+		"next": "^13.4.12",
+		"normalizr": "^3.6.2",
+		"open": "^7.3.0",
+		"react": "18.2.0",
+		"react-dom": "18.2.0",
+		"react-redux": "^8.0.5",
+		"spotify-web-api-node": "^5.0.2",
+		"styled-components": "^6.1.0",
+		"zipson": "^0.2.12"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"@types/js-cookie": "^3.0.5",
+		"@types/node": "20.1.0",
+		"@types/react": "^18.2.33",
+		"@types/react-dom": "18.2.4",
+		"@types/react-redux": "^7.1.25",
+		"@types/spotify-api": "^0.0.19",
+		"@types/spotify-web-api-node": "^5.0.7",
+		"@types/styled-components": "^5.1.9",
+		"dotenv": "^16.0.3",
+		"jsdom": "^22.1.0",
+		"tsx": "^3.12.10",
+		"typescript": "^5.2.2",
+		"vite": "^4.5.0",
+		"vitest": "^0.34.6"
+	},
+	"browserslist": {
+		"production": [">0.2%", "not dead", "not op_mini all"],
+		"development": [
+			"last 1 chrome version",
+			"last 1 firefox version",
+			"last 1 safari version"
+		]
+	}
 }
