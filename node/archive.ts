@@ -1,11 +1,12 @@
 import { existsSync, mkdirSync } from "node:fs";
+import { readdir } from "node:fs/promises";
+import { exit } from "node:process";
 
 import type SpotifyWebApiNode from "spotify-web-api-node";
 
 import { formatPlaylistName, getPlaylists, downloadPlaylist } from "./playlist";
-import { archiveSaved } from "./saved";
+import { authorizeSpotifyWithCodeGrant, downloadSavedSongs } from "./saved";
 import { organise } from "./organise";
-import { readdir } from "node:fs/promises";
 
 export class SpotifyArchiver {
 	spotify: SpotifyWebApiNode;
@@ -68,7 +69,11 @@ export class SpotifyArchiver {
 			return;
 		}
 
-		return archiveSaved(this.spotify)(this.date);
+		await authorizeSpotifyWithCodeGrant(this.spotify);
+
+		await downloadSavedSongs(this.spotify, this.date);
+
+		exit(0);
 	}
 
 	organise() {

@@ -11,7 +11,7 @@ const userId = (12121954989).toString();
 const spotify = new SpotifyWebApiNode({
 	clientId: process.env.SPOTIFY_ID,
 	clientSecret: process.env.SPOTIFY_SECRET,
-	redirectUri: "http://localhost:8000",
+	redirectUri: `http://localhost:${process.env.DEV_PORT}`,
 });
 
 const spotifyArchiver = new SpotifyArchiver(spotify, userId);
