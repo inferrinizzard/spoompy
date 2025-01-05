@@ -5,16 +5,7 @@
 	},
 	"editor.formatOnSave": true,
 	"prettier.enable": false,
-
-	"eslint.format.enable": true,
-	"eslint.lintTask.enable": true,
-	"eslint.validate": [
-    "graphql",
-    "javascript",
-    "javascriptreact",
-    "json",
-    "typescript",
-    "typescriptreact",
-    "yaml"
-	],
+	"[typescript]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
 }

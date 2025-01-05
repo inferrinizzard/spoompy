@@ -1,46 +1,46 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { type User } from '@spotify/web-api-ts-sdk';
+import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { type User } from "@spotify/web-api-ts-sdk";
 
-import { type PlaylistRef } from '@/types/api';
+import { type PlaylistRef } from "@/types/api";
 
-import { type AppState } from '../store';
-import { preloadState } from '../actions/client/preloadState';
+import { type AppState } from "../store";
+import { preloadState } from "../actions/client/preloadState";
 
 export interface UserState {
-  isAuthed: boolean;
-  playlists: PlaylistRef[];
-  userDetails?: User;
+	isAuthed: boolean;
+	playlists: PlaylistRef[];
+	userDetails?: User;
 }
 
 const initialState: UserState = {
-  isAuthed: false,
-  playlists: [],
+	isAuthed: false,
+	playlists: [],
 };
 
 export const userSlice = createSlice({
-  name: 'user',
-  initialState,
-  reducers: {
-    setAuthStatus: (state, action: PayloadAction<boolean>) => {
-      state.isAuthed = action.payload;
-    },
-    setUserDetails: (state, action: PayloadAction<User | undefined>) => {
-      state.userDetails = action.payload;
-    },
-    setUserPlaylists: (state, action: PayloadAction<PlaylistRef[]>) => {
-      state.playlists = action.payload;
-    },
-  },
-  extraReducers: (builder) => {
-    builder.addCase(preloadState, (_, action) => {
-      return action.payload.user;
-    });
-  },
+	name: "user",
+	initialState,
+	reducers: {
+		setAuthStatus: (state, action: PayloadAction<boolean>) => {
+			state.isAuthed = action.payload;
+		},
+		setUserDetails: (state, action: PayloadAction<User | undefined>) => {
+			state.userDetails = action.payload;
+		},
+		setUserPlaylists: (state, action: PayloadAction<PlaylistRef[]>) => {
+			state.playlists = action.payload;
+		},
+	},
+	extraReducers: (builder) => {
+		builder.addCase(preloadState, (_, action) => {
+			return action.payload.user;
+		});
+	},
 });
 
 export const { setAuthStatus, setUserDetails, setUserPlaylists } =
-  userSlice.actions;
+	userSlice.actions;
 
 export const selectAuthStatus = (state: AppState) => state.user.isAuthed;
 export const selectUserDetails = (state: AppState) => state.user.userDetails;

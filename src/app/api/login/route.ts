@@ -1,31 +1,31 @@
-import { NextResponse } from 'next/server';
-import { type AccessToken } from '@spotify/web-api-ts-sdk';
+import { NextResponse } from "next/server";
+import { type AccessToken } from "@spotify/web-api-ts-sdk";
 
-import { HOME_URL, SPOTIFY_AUTH_COOKIE } from '@/spotify/constants';
-import store from '@/redux/store';
-import { setAuthStatus } from '@/redux/slices/userSlice';
-import { setServerCookie } from '@/actions/cookies/serverCookies';
+import { HOME_URL, SPOTIFY_AUTH_COOKIE } from "@/spotify/constants";
+import store from "@/redux/store";
+import { setAuthStatus } from "@/redux/slices/userSlice";
+import { setServerCookie } from "@/actions/cookies/serverCookies";
 
 export async function POST(request: Request): Promise<NextResponse> {
-  const body = (await request.json()) as AccessToken;
+	const body = (await request.json()) as AccessToken;
 
-  const res = NextResponse.redirect(HOME_URL);
+	const res = NextResponse.redirect(HOME_URL);
 
-  if (!body) {
-    return res;
-  }
+	if (!body) {
+		return res;
+	}
 
-  console.info('[API] Received token, storing to cookie');
+	console.info("[API] Received token, storing to cookie");
 
-  const cookie = JSON.stringify(body);
+	const cookie = JSON.stringify(body);
 
-  res.cookies.set(SPOTIFY_AUTH_COOKIE, cookie, {
-    maxAge: body.expires_in,
-    httpOnly: true,
-  });
-  await setServerCookie(SPOTIFY_AUTH_COOKIE, cookie);
+	res.cookies.set(SPOTIFY_AUTH_COOKIE, cookie, {
+		maxAge: body.expires_in,
+		httpOnly: true,
+	});
+	await setServerCookie(SPOTIFY_AUTH_COOKIE, cookie);
 
-  store.dispatch(setAuthStatus(true));
+	store.dispatch(setAuthStatus(true));
 
-  return res;
+	return res;
 }
