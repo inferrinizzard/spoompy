@@ -2,8 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-import { clientSpotifyLogout } from "@/spotify/client";
-import { SPOTIFY_AUTH_COOKIE } from "@/spotify/constants";
+import { SPOTIFY_AUTH_COOKIE, clientSpotifyLogout } from "@/spotify";
 import { logOut } from "@/redux/actions/server/user";
 import { deleteBrowserCookie } from "@/actions/cookies/clientCookies";
 import { deleteServerCookie } from "@/actions/cookies/serverCookies";

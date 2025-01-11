@@ -7,9 +7,9 @@ import {
 
 import { type PlaylistRef } from "@/types/api";
 
-import { tryGetAuthSession } from "./utils/getSession";
-import { SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from "./constants";
-import { handleRateLimitedError } from "./handlers";
+import { tryGetAuthSession } from "../utils/getSession";
+import { SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from "../constants";
+import { handleRateLimitedError } from "../handlers";
 
 let serverSpotify: ServerSpotifyInstance | null;
 
