@@ -1,47 +1,32 @@
-import HomeLink from "@/components/HomeLink";
-import AuthMain from "@/components/auth/AuthMain";
+import { redirect } from "next/navigation";
+
 import store from "@/redux/store";
-import { getUserDetails, getUserPlaylists } from "@/redux/actions";
+import { getUserDetails, getUserPlaylists, logOut } from "@/redux/actions";
 import { readAuthSession } from "@/redux/actions/server/init";
-import Preloader from "@/redux/components/Preloader";
-import { Text } from "@/styles/primitives";
-import Spacer from "@/styles/primitives/Spacer";
+import { getServerCookieString } from "@/actions/cookies/serverCookies";
+import { SPOTIFY_AUTH_COOKIE } from "@/spotify";
 
-import styles from "./page.module.css";
+import LandingMain from "./landing/main";
 
-const Home = async () => {
+const Home: Next.RSC = async ({ searchParams }) => {
 	readAuthSession();
 
 	const isAuthed = store.getState().user.isAuthed;
-	if (isAuthed) {
+	const userDetails = store.getState().user.userDetails;
+	if (isAuthed && !userDetails) {
 		await getUserDetails();
 		await getUserPlaylists();
 	}
 
-	const userDetails = store.getState().user.userDetails;
+	// remove server cookie and redirect to home after login cancel
+	if (searchParams["error"] === "access_denied") {
+		logOut();
+		redirect("/");
+	}
 
-	return (
-		<main className={styles.main}>
-			<Preloader state={store.getState()} />
+	const serverCookie = await getServerCookieString(SPOTIFY_AUTH_COOKIE);
 
-			<Text as="h1" fontSize={48}>
-				{"Spotify Data Visualizer"}
-			</Text>
-			<Spacer height="2rem" />
-			<HomeLink disabled={!isAuthed} href="/browse" text="Browse Library" />
-			<HomeLink disabled={!isAuthed} href="/analysis" text="Data Analysis" />
-			<HomeLink disabled={!isAuthed} href="/archive" text="Archive Playlists" />
-
-			<AuthMain />
-
-			{userDetails && (
-				<>
-					<h3>{`Logged in as: ${userDetails.display_name}`}</h3>
-					<h3>{`With user id: ${userDetails.id}`}</h3>
-				</>
-			)}
-		</main>
-	);
+	return <LandingMain serverCookie={serverCookie} />;
 };
 
 export default Home;

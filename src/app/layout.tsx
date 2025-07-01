@@ -1,5 +1,6 @@
 import { Inter } from "next/font/google";
 
+import store from "@/redux/store";
 import DataLoader from "@/redux/components/DataLoader";
 import ReduxProvider from "@/redux/components/Provider";
 import StyledComponentsProvider from "@/styles/components/Provider";
@@ -21,8 +22,7 @@ export const RootLayout = ({
 	return (
 		<html lang="en">
 			<body className={inter.className}>
-				<ReduxProvider>
-					<DataLoader />
+				<ReduxProvider state={store.getState()}>
 					<StyledComponentsProvider>{children}</StyledComponentsProvider>
 				</ReduxProvider>
 			</body>

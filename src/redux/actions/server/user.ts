@@ -1,6 +1,11 @@
 "use server";
 
-import { getServerSpotify, serverSpotifyLogout } from "@/spotify/server";
+import {
+	SPOTIFY_AUTH_COOKIE,
+	getServerSpotify,
+	serverSpotifyLogout,
+} from "@/spotify";
+import { deleteServerCookie } from "@/actions/cookies/serverCookies";
 
 import store from "../../store";
 import {
@@ -32,4 +37,6 @@ export const logOut = async (): Promise<void> => {
 	store.dispatch(setAuthStatus(false));
 	store.dispatch(setUserDetails(undefined));
 	store.dispatch(setUserPlaylists([]));
+
+	await deleteServerCookie(SPOTIFY_AUTH_COOKIE);
 };

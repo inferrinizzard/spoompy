@@ -7,9 +7,9 @@ import { Button } from "@/styles/primitives";
 import TabularView from "./TabularView";
 import PlaylistView from "./PlaylistView";
 
-export interface DisplayProps {}
+export interface BrowseProps {}
 
-const BrowseMain: React.FC<DisplayProps> = () => {
+const BrowseMain: React.FC<BrowseProps> = () => {
 	const [view, setView] = useState<"tabular" | "playlist">("tabular");
 
 	return (

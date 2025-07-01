@@ -7,14 +7,14 @@ import {
 
 import { type PlaylistRef } from "@/types/api";
 
-import { tryGetAuthSession } from "./utils/getSession";
-import { SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from "./constants";
-import { handleRateLimitedError } from "./handlers";
+import { tryGetAuthSession } from "../utils/getSession";
+import { SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from "../constants";
+import { handleRateLimitedError } from "../handlers";
 
 let serverSpotify: ServerSpotifyInstance | null;
 
 export class ServerSpotifyInstance {
-	public sdk: SpotifyApi;
+	public sdk!: SpotifyApi;
 
 	public refreshTimer?: ReturnType<typeof setTimeout>;
 
@@ -26,29 +26,30 @@ export class ServerSpotifyInstance {
 			responseValidator: { validateResponse: handleRateLimitedError },
 		};
 
-		let sdk;
-		const authSession = tryGetAuthSession();
-		try {
-			if (authSession) {
-				console.log("TRY with PKCE");
-				sdk = SpotifyApi.withAccessToken(
-					SPOTIFY_CLIENT_ID,
-					authSession,
-					this.sdkConfig,
-				);
-			}
-		} finally {
-			if (!sdk) {
-				console.log("CC fallback");
-				sdk = SpotifyApi.withClientCredentials(
-					SPOTIFY_CLIENT_ID,
-					process.env.SPOTIFY_SECRET ?? "",
-					SPOTIFY_SCOPES,
-				);
-			}
-		}
+		let sdk: SpotifyApi;
+		tryGetAuthSession()
+			.then((authSession) => {
+				if (authSession) {
+					console.log("TRY with PKCE");
+					sdk = SpotifyApi.withAccessToken(
+						SPOTIFY_CLIENT_ID,
+						authSession,
+						this.sdkConfig,
+					);
+				}
+			})
+			.finally(() => {
+				if (!sdk) {
+					console.log("CC fallback");
+					sdk = SpotifyApi.withClientCredentials(
+						SPOTIFY_CLIENT_ID,
+						process.env.SPOTIFY_SECRET ?? "",
+						SPOTIFY_SCOPES,
+					);
+				}
 
-		this.sdk = sdk;
+				this.sdk = sdk;
+			});
 	}
 
 	public getUserDetails = async (): Promise<User> => {

@@ -1,4 +1,4 @@
-import { getClientSpotify } from "@/spotify/client";
+import { getClientSpotify } from "@/spotify";
 import {
 	normalizePlaylists,
 	normalizeTracks,
