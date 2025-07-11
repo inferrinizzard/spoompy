@@ -22,6 +22,7 @@
 		"js-cookie": "^3.0.5",
 		"lz-string": "^1.5.0",
 		"next": "^13.4.12",
+		"next-auth": "^4.24.11",
 		"normalizr": "^3.6.2",
 		"open": "^7.3.0",
 		"react": "18.2.0",
