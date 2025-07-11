@@ -21,7 +21,7 @@ export async function refreshAccessToken(token: JWT) {
 			...token,
 			access_token: refreshedToken.access_token,
 			token_type: refreshedToken.token_type,
-			expires_at: refreshedToken.expires_at,
+			expires: refreshedToken.expires_at,
 			expires_in: (refreshedToken.expires_at ?? 0) - Date.now() / 1000,
 			refresh_token: refreshedToken.refresh_token ?? token.refresh_token,
 			scope: refreshedToken.scope,

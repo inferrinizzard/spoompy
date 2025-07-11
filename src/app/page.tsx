@@ -13,13 +13,14 @@ const Home: Next.RSC = async ({ searchParams }) => {
 
 	const isAuthed = store.getState().user.isAuthed;
 	const userDetails = store.getState().user.userDetails;
+
 	if (isAuthed && !userDetails) {
 		await getUserDetails();
 		await getUserPlaylists();
 	}
 
 	// remove server cookie and redirect to home after login cancel
-	if (searchParams["error"] === "access_denied") {
+	if (searchParams.error === "access_denied") {
 		logOut();
 		redirect("/");
 	}
