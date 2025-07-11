@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import store from "@/redux/store";
 import DataLoader from "@/redux/components/DataLoader";
 import ReduxProvider from "@/redux/components/Provider";
+import { AuthProvider } from "@/components/AuthProvider";
 import StyledComponentsProvider from "@/styles/components/Provider";
 
 import "./globals.css";
@@ -22,9 +23,11 @@ export const RootLayout = ({
 	return (
 		<html lang="en">
 			<body className={inter.className}>
-				<ReduxProvider state={store.getState()}>
-					<StyledComponentsProvider>{children}</StyledComponentsProvider>
-				</ReduxProvider>
+				<AuthProvider>
+					<ReduxProvider state={store.getState()}>
+						<StyledComponentsProvider>{children}</StyledComponentsProvider>
+					</ReduxProvider>
+				</AuthProvider>
 			</body>
 		</html>
 	);

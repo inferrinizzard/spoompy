@@ -17,6 +17,8 @@ import { SPOTIFY_AUTH_COOKIE } from "@/spotify";
 import { syncCookies } from "@/actions/cookies/sync";
 import { getBrowserCookieString } from "@/actions/cookies/clientCookies";
 
+import { useSession } from "next-auth/react";
+
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
 
@@ -25,38 +27,40 @@ export interface AuthMainProps {
 }
 
 export const AuthMain: React.FC<AuthMainProps> = ({ serverCookie }) => {
+	const { data: session } = useSession();
 	const dispatch = useAppDispatch();
 
-	const isAuthed = useSelector(selectAuthStatus);
-	const userDetails = useSelector(selectUserDetails);
+	const isAuthed = !!session?.user;
+	// const isAuthed = useSelector(selectAuthStatus);
+	// const userDetails = useSelector(selectUserDetails);
 
-	const getUserDetails = useGetUserDetails();
-	const getUserPlaylists = useGetUserPlaylists();
+	// const getUserDetails = useGetUserDetails();
+	// const getUserPlaylists = useGetUserPlaylists();
 
-	useEffect(() => {
-		// sync browser and server cookies
-		// then set isAuthed and fetch userDetails if browser cookie was loaded with server
-		// TODO: use suspense boundary
-		const effect = async () => {
-			await syncCookies();
+	// useEffect(() => {
+	// 	// sync browser and server cookies
+	// 	// then set isAuthed and fetch userDetails if browser cookie was loaded with server
+	// 	// TODO: use suspense boundary
+	// 	const effect = async () => {
+	// 		await syncCookies();
 
-			if (!getBrowserCookieString(SPOTIFY_AUTH_COOKIE)) {
-				return;
-			}
+	// 		if (!getBrowserCookieString(SPOTIFY_AUTH_COOKIE)) {
+	// 			return;
+	// 		}
 
-			if (!isAuthed) {
-				dispatch(setAuthStatus(true));
-			}
+	// 		if (!isAuthed) {
+	// 			dispatch(setAuthStatus(true));
+	// 		}
 
-			if (userDetails) {
-				return;
-			}
+	// 		if (userDetails) {
+	// 			return;
+	// 		}
 
-			getUserDetails?.().then(getUserPlaylists);
-		};
-		effect();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [serverCookie, isAuthed]);
+	// 		getUserDetails?.().then(getUserPlaylists);
+	// 	};
+	// 	effect();
+	// 	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// }, [serverCookie, isAuthed]);
 
 	return (
 		<>
