@@ -1,30 +1,43 @@
-import NextAuth from "next-auth";
+import NextAuth, { type NextAuthOptions } from "next-auth";
+import type { JWT } from "next-auth/jwt";
 import SpotifyProvider from "next-auth/providers/spotify";
 
 import { SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from "@/spotify/constants";
 
-// async function refreshAcessToken(token) {
-//     try {
-//         spotifyApi.setAccessToken(token.accessToken)
-//         spotifyApi.setRefreshToken(token.refreshToken)
+export async function refreshAccessToken(token: JWT) {
+	try {
+		const response = await fetch(authURL, {
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded",
+			},
+			method: "POST",
+		});
 
-//         const { body: refreshedToken } = await spotifyApi.refreshAccessToken()
-//         return {
-//             ...token,
-//             accessToken: refreshedToken.access_token,
-//             accessTokenExpires: Date.now() + refreshedToken.expires_in * 1000,
-//             refreshToken: refreshedToken.refresh_token ?? token.refreshToken
-//         }
-//     } catch (error) {
-//         console.error(error)
-//         return {
-//             ...token,
-//             error: "refresh token error"
-//         }
-//     }
-// }
+		const refreshedTokens = await response.json();
 
-const handler = NextAuth({
+		if (!response.ok) {
+			throw refreshedTokens;
+		}
+
+		return {
+			...token,
+			access_token: refreshedTokens.access_token,
+			token_type: refreshedTokens.token_type,
+			expires_at: refreshedTokens.expires_at,
+			expires_in: (refreshedTokens.expires_at ?? 0) - Date.now() / 1000,
+			refresh_token: refreshedTokens.refresh_token ?? token.refresh_token,
+			scope: refreshedTokens.scope,
+		};
+	} catch (error) {
+		console.error(error);
+		return {
+			...token,
+			error: "RefreshAccessTokenError",
+		};
+	}
+}
+
+export const authOptions: NextAuthOptions = {
 	providers: [
 		SpotifyProvider({
 			clientId: SPOTIFY_CLIENT_ID,
@@ -43,26 +56,31 @@ const handler = NextAuth({
 		// 	return baseUrl;
 		// },
 		async jwt({ token, account, user }) {
-			if (account) {
-				token.access_token = account.access_token;
+			// Initial sign in
+			if (account && user) {
+				if (account.access_token) {
+					token.access_token = account.access_token;
+				}
+				if (account.expires_at) {
+					token.access_token_expires = Date.now() + account.expires_at * 1000;
+				}
+				if (account.refresh_token) {
+					token.refresh_token = account.refresh_token;
+				}
+				token.user = user;
+				return token;
 			}
-			return token;
 
-			//  // initial sign in
-			//       if (account && user) return {
-			//           ...token,
-			//           accessToken: account.access_token,
-			//           refreshToken: account.refresh_token,
-			//           username: account.providerAccountId,
-			//           accessTokenExpires: account.expires_at * 1000
-			//       }
-			//       // token is valid
-			//       if (Date.now() < token.accessTokenExpires) {
-			//           return token;
-			//       }
+			// Return previous token if the access token has not expired yet
+			if (
+				token.access_token_expires &&
+				Date.now() < token.access_token_expires
+			) {
+				return token;
+			}
 
-			//       // access token expires -> refresh the token
-			//       return await refreshAcessToken(token)
+			// Access token has expired, try to update it
+			return refreshAccessToken(token);
 		},
 		async session({ session, token }) {
 			return {
@@ -71,6 +89,8 @@ const handler = NextAuth({
 			};
 		},
 	},
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

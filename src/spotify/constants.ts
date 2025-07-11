@@ -19,7 +19,7 @@ export const HOME_URL =
 			? (process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL ??
 				process.env.VERCEL_BRANCH_URL!)
 			: "http://localhost:3000";
-export const SPOTIFY_POSTBACK_URL = `${HOME_URL}/api/login`;
+export const SPOTIFY_POSTBACK_URL = `${HOME_URL}/api/auth/callback/spotify`;
 
 export const SPOTIFY_AUTH_COOKIE = "SPOTIFY_ACCESS_TOKEN";
 
