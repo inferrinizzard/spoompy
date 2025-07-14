@@ -17,6 +17,8 @@ import { SPOTIFY_AUTH_COOKIE } from "@/spotify";
 import { syncCookies } from "@/actions/cookies/sync";
 import { getBrowserCookieString } from "@/actions/cookies/clientCookies";
 
+import { useSession } from "next-auth/react";
+
 import LoginButton from "./LoginButton";
 import LogoutButton from "./LogoutButton";
 
@@ -25,6 +27,7 @@ export interface AuthMainProps {
 }
 
 export const AuthMain: React.FC<AuthMainProps> = ({ serverCookie }) => {
+	const { data: session } = useSession();
 	const dispatch = useAppDispatch();
 
 	const isAuthed = useSelector(selectAuthStatus);
@@ -33,6 +36,7 @@ export const AuthMain: React.FC<AuthMainProps> = ({ serverCookie }) => {
 	const getUserDetails = useGetUserDetails();
 	const getUserPlaylists = useGetUserPlaylists();
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		// sync browser and server cookies
 		// then set isAuthed and fetch userDetails if browser cookie was loaded with server
@@ -55,8 +59,7 @@ export const AuthMain: React.FC<AuthMainProps> = ({ serverCookie }) => {
 			getUserDetails?.().then(getUserPlaylists);
 		};
 		effect();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [serverCookie, isAuthed]);
+	}, [isAuthed]);
 
 	return (
 		<>

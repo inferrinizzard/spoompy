@@ -5,9 +5,9 @@ import {
 	type User,
 } from "@spotify/web-api-ts-sdk";
 
+import { getServerSession } from "@/lib/auth/getServerSession";
 import { type PlaylistRef } from "@/types/api";
 
-import { tryGetAuthSession } from "../utils/getSession";
 import { SPOTIFY_CLIENT_ID, SPOTIFY_SCOPES } from "../constants";
 import { handleRateLimitedError } from "../handlers";
 
@@ -27,20 +27,18 @@ export class ServerSpotifyInstance {
 		};
 
 		let sdk: SpotifyApi;
-		tryGetAuthSession()
-			.then((authSession) => {
-				if (authSession) {
-					console.log("TRY with PKCE");
+		getServerSession()
+			.then((session) => {
+				if (session) {
 					sdk = SpotifyApi.withAccessToken(
 						SPOTIFY_CLIENT_ID,
-						authSession,
+						session.token,
 						this.sdkConfig,
 					);
 				}
 			})
 			.finally(() => {
 				if (!sdk) {
-					console.log("CC fallback");
 					sdk = SpotifyApi.withClientCredentials(
 						SPOTIFY_CLIENT_ID,
 						process.env.SPOTIFY_SECRET ?? "",

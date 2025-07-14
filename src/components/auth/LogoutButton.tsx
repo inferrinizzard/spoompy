@@ -14,6 +14,8 @@ import {
 } from "@/redux/slices/userSlice";
 import { Button, Text } from "@/styles/primitives";
 
+import { signOut } from "next-auth/react";
+
 export interface LogoutButtonProps {}
 
 export const LogoutButton: React.FC<LogoutButtonProps> = () => {
@@ -27,7 +29,7 @@ export const LogoutButton: React.FC<LogoutButtonProps> = () => {
 				dispatch(setAuthStatus(false));
 				dispatch(setUserDetails(undefined));
 				dispatch(setUserPlaylists([]));
-				logOut();
+				signOut();
 				deleteBrowserCookie(SPOTIFY_AUTH_COOKIE);
 				deleteServerCookie(SPOTIFY_AUTH_COOKIE);
 
