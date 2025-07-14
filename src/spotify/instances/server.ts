@@ -29,9 +29,7 @@ export class ServerSpotifyInstance {
 		let sdk: SpotifyApi;
 		getServerSession()
 			.then((session) => {
-				console.log("server spotify", { session });
 				if (session) {
-					console.log("TRY with PKCE");
 					sdk = SpotifyApi.withAccessToken(
 						SPOTIFY_CLIENT_ID,
 						session.token,
@@ -41,7 +39,6 @@ export class ServerSpotifyInstance {
 			})
 			.finally(() => {
 				if (!sdk) {
-					console.log("CC fallback");
 					sdk = SpotifyApi.withClientCredentials(
 						SPOTIFY_CLIENT_ID,
 						process.env.SPOTIFY_SECRET ?? "",
