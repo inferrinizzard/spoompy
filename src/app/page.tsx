@@ -1,32 +1,33 @@
-import { redirect } from 'next/navigation';
+import { redirect } from "next/navigation";
 
-import store from '@/redux/store';
-import { getUserDetails, getUserPlaylists, logOut } from '@/redux/actions';
-import { readAuthSession } from '@/redux/actions/server/init';
-import { getServerCookieString } from '@/actions/cookies/serverCookies';
-import { SPOTIFY_AUTH_COOKIE } from '@/spotify';
+import store from "@/redux/store";
+import { getUserDetails, getUserPlaylists, logOut } from "@/redux/actions";
+import { readAuthSession } from "@/redux/actions/server/init";
+import { getServerCookieString } from "@/actions/cookies/serverCookies";
+import { SPOTIFY_AUTH_COOKIE } from "@/spotify";
 
-import LandingMain from './landing/main';
+import LandingMain from "./landing/main";
 
 const Home: Next.RSC = async ({ searchParams }) => {
-  readAuthSession();
+	readAuthSession();
 
-  const isAuthed = store.getState().user.isAuthed;
-  const userDetails = store.getState().user.userDetails;
-  if (isAuthed && !userDetails) {
-    await getUserDetails();
-    await getUserPlaylists();
-  }
+	const isAuthed = store.getState().user.isAuthed;
+	const userDetails = store.getState().user.userDetails;
 
-  // remove server cookie and redirect to home after login cancel
-  if (searchParams['error'] === 'access_denied') {
-    logOut();
-    redirect('/');
-  }
+	if (isAuthed && !userDetails) {
+		await getUserDetails();
+		await getUserPlaylists();
+	}
 
-  const serverCookie = getServerCookieString(SPOTIFY_AUTH_COOKIE);
+	// remove server cookie and redirect to home after login cancel
+	if (searchParams.error === "access_denied") {
+		logOut();
+		redirect("/");
+	}
 
-  return <LandingMain serverCookie={serverCookie} />;
+	const serverCookie = await getServerCookieString(SPOTIFY_AUTH_COOKIE);
+
+	return <LandingMain serverCookie={serverCookie} />;
 };
 
 export default Home;

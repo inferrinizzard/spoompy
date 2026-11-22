@@ -1,6 +1,6 @@
 export interface DateRange {
-  end?: string;
-  start?: string;
+	end?: string;
+	start?: string;
 }
 
-export type TimeStep = 'day' | 'month' | 'year';
+export type TimeStep = "day" | "month" | "year";

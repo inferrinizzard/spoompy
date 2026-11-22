@@ -1,16 +1,16 @@
-'use server';
+"use server";
 
-import { tryGetAuthSession } from '@/spotify/utils/getSession';
+import { getServerSession } from "@/auth/getServerSession";
 
-import store from '../../store';
-import { setAuthStatus } from '../../slices/userSlice';
+import store from "../../store";
+import { setAuthStatus } from "../../slices/userSlice";
 
-export const readAuthSession = (): void => {
-  const authSession = tryGetAuthSession();
-  const hasValidAccessToken = !!(
-    authSession?.token_type && authSession?.expires > 0
-  );
+export const readAuthSession = async (): Promise<void> => {
+	const authSession = await getServerSession();
+	const hasValidAccessToken = !!(
+		authSession?.token.token_type && authSession?.token.expires > 0
+	);
 
-  console.info(`[Init] Reading stored auth status: ${hasValidAccessToken}`);
-  store.dispatch(setAuthStatus(hasValidAccessToken));
+	console.info(`[Init] Reading stored auth status: ${hasValidAccessToken}`);
+	store.dispatch(setAuthStatus(hasValidAccessToken));
 };
